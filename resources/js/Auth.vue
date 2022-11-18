@@ -138,12 +138,12 @@ export default {
 
 <style>
 .login-page {
-    background: var(--principal);
+    background: #111111;
 }
 
 .login-page .card {
     border-radius: 0px;
-    box-shadow: 0px 0px 5px 5px var(--secundario);
+    box-shadow: 0px 0px 7px 6px var(--secundario);
 }
 .login-page .card-header {
     border-bottom: solid 1px var(--principal);
