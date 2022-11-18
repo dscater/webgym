@@ -226,7 +226,7 @@ export default {
                 "Unidad Organizacional",
                 "Rango de fechas",
             ],
-            listTipos: ["ADMINISTRADOR", "AUXILIAR"],
+            listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
             errors: [],
             listUnidades: [],
         };

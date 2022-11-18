@@ -141,6 +141,11 @@
             background: rgb(202, 202, 202);
         }
 
+        .green {
+            background: #28a745;
+            color: white;
+        }
+
         .txt_rojo {}
 
         .img_celda img {
@@ -162,19 +167,15 @@
         <h4 class="fecha">Expedido: {{ date('d-m-Y') }}</h4>
     </div>
     <table border="1">
-        <thead>
+        <thead class="green">
             <tr>
                 <th width="5%">Foto</th>
-                <th width="5%">Usuario</th>
-                <th>Nombre(s) y apellidos</th>
-                <th width="5%">C.I.</th>
-                <th>Dirección</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th>Celular</th>
-                <th>Cargo</th>
-                <th>Tipo de Usuario</th>
-                <th>Fecha Registro</th>
+                <th>NOMBRE USUARIO</th>
+                <th>CÓDIGO DE USUARIO</th>
+                <th>E-MAIL</th>
+                <th>TIPO DE USUARIO</th>
+                <th>SUCURSAL</th>
+                <th>FECHA DE REGISTRO</th>
             </tr>
         </thead>
         <tbody>
@@ -183,17 +184,12 @@
             @endphp
             @foreach ($usuarios as $user)
                 <tr>
-                    <td class="img_celda"><img src="{{ asset('imgs/users/' . $user->foto) }}"
-                            alt="Foto"></td>
+                    <td class="img_celda"><img src="{{ asset('imgs/users/' . $user->foto) }}" alt="Foto"></td>
                     <td>{{ $user->usuario }}</td>
-                    <td>{{ $user->full_name }}</td>
-                    <td>{{ $user->ci }} {{ $user->ci_exp }}</td>
-                    <td>{{ $user->dir }}</td>
+                    <td>{{ $user->codigo }}</td>
                     <td>{{ $user->correo }}</td>
-                    <td>{{ $user->fono }}</td>
-                    <td>{{ $user->cel }}</td>
-                    <td>{{ $user->cargo }}</td>
                     <td>{{ $user->tipo }}</td>
+                    <td>{{ $user->sucursal->nombre }}</td>
                     <td>{{ $user->fecha_registro }}</td>
                 </tr>
             @endforeach
