@@ -121,7 +121,7 @@
 
                                                 <template #cell(accion)="row">
                                                     <div
-                                                        class="row justify-content-center"
+                                                        class="row justify-content-center flex-column"
                                                     >
                                                         <b-button
                                                             size="sm"
@@ -137,8 +137,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        ><br />
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -230,7 +230,7 @@ export default {
                 { key: "tipo", label: "Tipo", sortable: true },
                 { key: "foto", label: "Foto" },
                 {
-                    key: "sucursal",
+                    key: "sucursal.nombre",
                     label: "Sucursal",
                     sortable: true,
                 },
@@ -250,17 +250,13 @@ export default {
             modal_accion: "nuevo",
             oUsuario: {
                 id: 0,
-                nombre: "",
-                paterno: "",
-                materno: "",
-                ci: "",
-                ci_exp: "",
-                fono: "",
-                cargo: "",
-                unidad_id: "",
+                usuario: "",
+                codigo: "",
+                correo: "",
                 tipo: "",
                 foto: null,
-                acceso: "0",
+                contrasenia: "",
+                sucursal_id: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -284,16 +280,15 @@ export default {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
             this.oUsuario.id = item.id;
-            this.oUsuario.nombre = item.nombre ? item.nombre : "";
-            this.oUsuario.paterno = item.paterno ? item.paterno : "";
-            this.oUsuario.materno = item.materno ? item.materno : "";
-            this.oUsuario.ci = item.ci ? item.ci : "";
-            this.oUsuario.ci_exp = item.ci_exp ? item.ci_exp : "";
-            this.oUsuario.fono = item.fono ? item.fono : "";
-            this.oUsuario.cargo = item.cargo ? item.cargo : "";
-            this.oUsuario.unidad_id = item.unidad_id ? item.unidad_id : "";
+            this.oUsuario.usuario = item.usuario ? item.usuario : "";
+            this.oUsuario.codigo = item.codigo ? item.codigo : "";
+            this.oUsuario.correo = item.correo ? item.correo : "";
             this.oUsuario.tipo = item.tipo ? item.tipo : "";
-            this.oUsuario.acceso = item.acceso ? "" + item.acceso : "0";
+            if (item.sucursal_id != 1) {
+                this.oUsuario.sucursal_id = item.sucursal_id
+                    ? item.sucursal_id
+                    : "";
+            }
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
@@ -358,17 +353,12 @@ export default {
             this.currentPage = 1;
         },
         limpiaUsuario() {
-            this.oUsuario.nombre = "";
-            this.oUsuario.paterno = "";
-            this.oUsuario.materno = "";
-            this.oUsuario.ci = "";
-            this.oUsuario.ci_exp = "";
-            this.oUsuario.fono = "";
-            this.oUsuario.cargo = "";
-            this.oUsuario.unidad_id = "";
+            this.oUsuario.usuario = "";
+            this.oUsuario.codigo = "";
+            this.oUsuario.correo = "";
             this.oUsuario.tipo = "";
-            this.oUsuario.foto = null;
-            this.oUsuario.acceso = "0";
+            this.oUsuario.sucursal_id = "";
+            this.oUsuario.contrasenia = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

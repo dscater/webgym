@@ -12,31 +12,16 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public $validacion = [
-        'nombre' => 'required|min:4',
-        'paterno' => 'required|min:4',
-        'ci' => 'required|numeric|digits_between:4, 20|unique:users,ci',
-        'ci_exp' => 'required',
-        'fono' => 'required|min:4',
-        'cargo' => 'required',
-        'unidad_id' => 'required',
-        'tipo' => 'required',
-        'acceso' => 'required',
+
+        "usuario" => "required|min:4",
+        "codigo" => "required|min:4|unique:users,codigo",
+        "correo" => "nullable|min:4",
+        "tipo" => "required",
+        "sucursal_id" => "required",
     ];
 
     public $mensajes = [
-        'nombre.required' => 'Este campo es obligatorio',
-        'nombre.min' => 'Debes ingressar al menos 4 carácteres',
-        'paterno.required' => 'Este campo es obligatorio',
-        'paterno.min' => 'Debes ingresar al menos 4 carácteres',
-        'ci.required' => 'Este campo es obligatorio',
-        'ci.numeric' => 'Debes ingresar un valor númerico',
-        'ci.unique' => 'Este número de C.I. ya fue registrado',
-        'ci_exp.required' => 'Este campo es obligatorio',
-        'fono.required' => 'Este campo es obligatorio',
-        'fono.min' => 'Debes ingresar al menos 4 carácteres',
-        'cargo.required' => 'Debes ingresar un cargo',
-        'unidad_id.required' => 'Debes seleccionar una unidad',
-        'tipo.required' => 'Este campo es obligatorio',
+        'sucursal_id.required' => 'Este campo es obligatorio',
     ];
 
     public $permisos = [
@@ -133,22 +118,15 @@ class UserController extends Controller
         if ($request->hasFile('foto')) {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
+        $this->validacion['contrasenia'] = 'required|min:4';
 
         $request->validate($this->validacion, $this->mensajes);
-        $cont = 0;
-        do {
-            $nombre_usuario = User::getNombreUsuario($request->nombre, $request->paterno);
-            if ($cont > 0) {
-                $nombre_usuario = $nombre_usuario . $cont;
-            }
-            $request['usuario'] = $nombre_usuario;
-            $cont++;
-        } while (User::where('usuario', $nombre_usuario)->get()->first());
-        $request['password'] = 'NoNulo';
+        $request['password'] = "pass";
         $request['fecha_registro'] = date('Y-m-d');
         // CREAR EL USER
         $nuevo_usuario = User::create(array_map('mb_strtoupper', $request->except('foto')));
-        $nuevo_usuario->password = Hash::make($request->ci);
+        $nuevo_usuario->password = Hash::make($request->contrasenia);
+        $nuevo_usuario->save();
         $nuevo_usuario->save();
         $nuevo_usuario->foto = 'default.png';
         if ($request->hasFile('foto')) {
@@ -168,14 +146,21 @@ class UserController extends Controller
 
     public function update(Request $request, User $usuario)
     {
-        $this->validacion['ci'] = 'required|min:4|numeric|unique:users,ci,' . $usuario->id;
+        $this->validacion['codigo'] = 'required|min:4|unique:users,codigo,' . $usuario->id;
         if ($request->hasFile('foto')) {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
 
-        $request->validate($this->validacion, $this->mensajes);
+        if (isset($request->contrasenia) && trim($request->contrasenia) != "") {
+            $this->validacion['contrasenia'] = 'required|min:4';
+        }
 
-        $usuario->update(array_map('mb_strtoupper', $request->except('foto')));
+        $request->validate($this->validacion, $this->mensajes);
+        $usuario->update(array_map('mb_strtoupper', $request->except('foto', 'password')));
+        if (isset($request->contrasenia) && trim($request->contrasenia) != "") {
+            $usuario->password = Hash::make($request->contrasenia);
+            $usuario->save();
+        }
 
         if ($request->hasFile('foto')) {
             $antiguo = $usuario->foto;

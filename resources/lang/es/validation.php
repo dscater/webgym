@@ -148,7 +148,7 @@ return [
         'units_id' => 'units',
         'socio_proveedor_id' => 'socio proveedor',
         'embarcado_id' => 'embarcado',
-
+        'contrasenia' => 'contraseña',
         'name'                  => 'nombre',
         'user_id'                  => 'Personal',
         'estudiante_id'                  => 'Estudiante',
