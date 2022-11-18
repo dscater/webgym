@@ -93,11 +93,19 @@
                                                     ></b-avatar>
                                                 </template>
 
-                                                <template
-                                                    #cell(acceso)="row"
-                                                >
-                                                    <span class="badge badge-success" v-if="row.item.acceso == 1">HABILITADO</span>
-                                                    <span class="badge badge-danger" v-else>DESHABILITADO</span>
+                                                <template #cell(acceso)="row">
+                                                    <span
+                                                        class="badge badge-success"
+                                                        v-if="
+                                                            row.item.acceso == 1
+                                                        "
+                                                        >HABILITADO</span
+                                                    >
+                                                    <span
+                                                        class="badge badge-danger"
+                                                        v-else
+                                                        >DESHABILITADO</span
+                                                    >
                                                 </template>
 
                                                 <template
@@ -129,8 +137,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i>
-                                                        </b-button><br>
+                                                            ></i> </b-button
+                                                        ><br />
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -212,23 +220,18 @@ export default {
             listRegistros: [],
             showOverlay: false,
             fields: [
-                {
-                    key: "usuario",
-                    label: "Usuario",
-                    sortable: true,
-                },
                 { key: "full_name", label: "Nombre", sortable: true },
-                { key: "full_ci", label: "C.I.", sortable: true },
                 {
-                    key: "fono",
-                    label: "Teléfono",
+                    key: "codigo",
+                    label: "Código",
                     sortable: true,
                 },
-                { key: "tipo", label: "Tipo Usuario", sortable: true },
+                { key: "correo", label: "E-mail", sortable: true },
+                { key: "tipo", label: "Tipo", sortable: true },
                 { key: "foto", label: "Foto" },
                 {
-                    key: "acceso",
-                    label: "Acceso",
+                    key: "sucursal",
+                    label: "Sucursal",
                     sortable: true,
                 },
                 {
@@ -290,7 +293,7 @@ export default {
             this.oUsuario.cargo = item.cargo ? item.cargo : "";
             this.oUsuario.unidad_id = item.unidad_id ? item.unidad_id : "";
             this.oUsuario.tipo = item.tipo ? item.tipo : "";
-            this.oUsuario.acceso = item.acceso ? ""+item.acceso : "0";
+            this.oUsuario.acceso = item.acceso ? "" + item.acceso : "0";
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },

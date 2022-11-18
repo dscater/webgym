@@ -32,11 +32,88 @@ export default new Router({
             component: require('./components/modulos/usuarios/index.vue').default
         },
 
-        // UNIDADES
+        // SUCURSALES
         {
-            path: '/unidads',
-            name: 'unidads.index',
-            component: require('./components/modulos/unidads/index.vue').default,
+            path: '/sucursals',
+            name: 'sucursals.index',
+            component: require('./components/modulos/sucursals/index.vue').default,
+        },
+
+        // EMPLEADOS
+        {
+            path: '/empleados',
+            name: 'empleados.index',
+            component: require('./components/modulos/empleados/index.vue').default,
+        },
+
+        // CLIENTES
+        {
+            path: '/clientes',
+            name: 'clientes.index',
+            component: require('./components/modulos/clientes/index.vue').default,
+        },
+
+        // COBROS
+        {
+            path: '/cobros',
+            name: 'cobros.index',
+            component: require('./components/modulos/cobros/index.vue').default,
+        },
+
+        // INSCRIPCIONES
+        {
+            path: '/inscripcions',
+            name: 'inscripcions.index',
+            component: require('./components/modulos/inscripcions/index.vue').default,
+        },
+
+        // EVALUACION FISISCA
+        {
+            path: '/evaluacion_fisicas',
+            name: 'evaluacion_fisicas.index',
+            component: require('./components/modulos/evaluacion_fisicas/index.vue').default,
+        },
+
+        // ingreso productos
+        {
+            path: '/ingreso_productos',
+            name: 'ingreso_productos.index',
+            component: require('./components/modulos/ingreso_productos/index.vue').default,
+        },
+
+        // VENTAS
+        {
+            path: '/ventas',
+            name: 'ventas.index',
+            component: require('./components/modulos/ventas/index.vue').default,
+        },
+
+        // PRODUCTOS
+        {
+            path: '/productos',
+            name: 'productos.index',
+            component: require('./components/modulos/productos/index.vue').default,
+        },
+
+        // accesos
+        {
+            path: '/accesos',
+            name: 'accesos.index',
+            component: require('./components/modulos/accesos/index.vue').default,
+        },
+
+        // maquinas
+        {
+            path: '/maquinas',
+            name: 'maquinas.index',
+            component: require('./components/modulos/maquinas/index.vue').default,
+        },
+
+        // planes
+        {
+            path: '/plans',
+            name: 'plans.index',
+            component: require('./components/modulos/plans/index.vue').default,
         },
 
         // CONFIGURACIÓN

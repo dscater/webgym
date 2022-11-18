@@ -51,6 +51,66 @@ class UserController extends Controller
             'sucursals.edit',
             'sucursals.destroy',
 
+            'empleados.index',
+            'empleados.create',
+            'empleados.edit',
+            'empleados.destroy',
+
+            'clientes.index',
+            'clientes.create',
+            'clientes.edit',
+            'clientes.destroy',
+
+            'cobros.index',
+            'cobros.create',
+            'cobros.edit',
+            'cobros.destroy',
+
+            'inscripcions.index',
+            'inscripcions.create',
+            'inscripcions.edit',
+            'inscripcions.destroy',
+
+            'evaluacion_fisicas.index',
+            'evaluacion_fisicas.create',
+            'evaluacion_fisicas.edit',
+            'evaluacion_fisicas.destroy',
+
+            'ingreso_productos.index',
+            'ingreso_productos.create',
+            'ingreso_productos.edit',
+            'ingreso_productos.destroy',
+
+            'ventas.index',
+            'ventas.create',
+            'ventas.edit',
+            'ventas.destroy',
+
+            'productos.index',
+            'productos.create',
+            'productos.edit',
+            'productos.destroy',
+
+            'accesos.index',
+            'accesos.create',
+            'accesos.edit',
+            'accesos.destroy',
+
+            'maquinas.index',
+            'maquinas.create',
+            'maquinas.edit',
+            'maquinas.destroy',
+
+            'mantenimiento_maquinas.index',
+            'mantenimiento_maquinas.create',
+            'mantenimiento_maquinas.edit',
+            'mantenimiento_maquinas.destroy',
+
+            'plans.index',
+            'plans.create',
+            'plans.edit',
+            'plans.destroy',
+
             'configuracion.index',
             'configuracion.edit',
 

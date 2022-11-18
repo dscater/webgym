@@ -82,19 +82,22 @@
                     <li
                         class="nav-header bg-navy"
                         v-if="
-                            permisos.includes('users.index') ||
-                            permisos.includes('configuracion.index')
+                            permisos.includes('cobros.index') ||
+                            permisos.includes('inscripcions.index') ||
+                            permisos.includes('evaluacion_fisicas.index') ||
+                            permisos.includes('ingreso_productos.index') ||
+                            permisos.includes('ventas.index')
                         "
                     >
                         OPERACIONES
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('cobros.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'cobros.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -104,11 +107,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('inscripcions.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'inscripcions.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -118,11 +121,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('evaluacion_fisicas.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'evaluacion_fisicas.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -132,11 +135,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('ingreso_productos.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'ingreso_productos.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -146,11 +149,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('ventas.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'ventas.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -161,7 +164,14 @@
                     <li
                         class="nav-header bg-navy"
                         v-if="
+                            permisos.includes('sucursals.index') ||
                             permisos.includes('users.index') ||
+                            permisos.includes('empleados.index') ||
+                            permisos.includes('clientes.index') ||
+                            permisos.includes('productos.index') ||
+                            permisos.includes('accesos.index') ||
+                            permisos.includes('maquinas.index') ||
+                            permisos.includes('plans.index') ||
                             permisos.includes('configuracion.index')
                         "
                     >
@@ -169,11 +179,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('clientes.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'clientes.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -183,11 +193,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('productos.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'productos.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -197,11 +207,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('accesos.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'accesos.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -211,11 +221,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('maquinas.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'maquinas.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -225,11 +235,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('empleados.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'empleados.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -239,11 +249,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('sucursals.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'sucursals.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
@@ -253,11 +263,11 @@
                     </li>
                     <li
                         class="nav-item"
-                        v-if="permisos.includes('usuarios.index')"
+                        v-if="permisos.includes('plans.index')"
                     >
                         <router-link
                             exact
-                            :to="{ name: 'usuarios.index' }"
+                            :to="{ name: 'plans.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
                         >
