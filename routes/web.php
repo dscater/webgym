@@ -16,7 +16,6 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SucursalController;
-use App\Http\Controllers\UnidadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
@@ -105,7 +104,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // EVALUACION FISICA
-    Route::resource('plans', EvaluacionFisicaController::class)->only([
+    Route::resource('evaluacion_fisicas', EvaluacionFisicaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
 

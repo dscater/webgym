@@ -23,17 +23,49 @@
                 <div class="modal-body">
                     <form>
                         <div class="row">
-                            <div class="form-group col-md-12">
+                            <div
+                                class="form-group col-md-6"
+                                v-if="user.tipo == 'GERENTE'"
+                            >
+                                <label
+                                    :class="{
+                                        'text-danger': errors.sucursal_id,
+                                    }"
+                                    >Sucursal*</label
+                                >
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.sucursal_id,
+                                    }"
+                                    v-model="plan.sucursal_id"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="item in listSucursales"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.sucursal_id"
+                                    v-text="errors.sucursal_id[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
                                         'text-danger': errors.nombre,
                                     }"
-                                    >Nombre*</label
+                                    >Nombre del Plan*</label
                                 >
                                 <el-input
-                                    placeholder="Nombre"
+                                    placeholder="Nombre del Plan"
                                     :class="{ 'is-invalid': errors.nombre }"
-                                    v-model="sucursal.nombre"
+                                    v-model="plan.nombre"
                                     clearable
                                 >
                                 </el-input>
@@ -43,25 +75,67 @@
                                     v-text="errors.nombre[0]"
                                 ></span>
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger': errors.dir,
+                                        'text-danger': errors.costo,
                                     }"
-                                    >Dirección</label
+                                    >Costo*</label
                                 >
-
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    :class="{ 'is-invalid': errors.costo }"
+                                    v-model="plan.costo"
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.costo"
+                                    v-text="errors.costo[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.duracion,
+                                    }"
+                                    >Duración* (número días)</label
+                                >
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    :class="{ 'is-invalid': errors.duracion }"
+                                    v-model="plan.duracion"
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.duracion"
+                                    v-text="errors.duracion[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.descripcion,
+                                    }"
+                                    >Descripción</label
+                                >
                                 <el-input
-                                    placeholder="Dirección"
-                                    :class="{ 'is-invalid': errors.dir }"
-                                    v-model="sucursal.dir"
-                                    clearable
+                                    type="textarea"
+                                    autosize
+                                    placeholder="Descripción"
+                                    :class="{
+                                        'is-invalid': errors.descripcion,
+                                    }"
+                                    v-model="plan.descripcion"
                                 >
                                 </el-input>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.dir"
-                                    v-text="errors.dir[0]"
+                                    v-if="errors.descripcion"
+                                    v-text="errors.descripcion[0]"
                                 ></span>
                             </div>
                         </div>
@@ -100,12 +174,15 @@ export default {
             type: String,
             default: "nuevo",
         },
-        sucursal: {
+        plan: {
             type: Object,
             default: {
                 id: 0,
+                sucursal_id: "",
                 nombre: "",
-                dir: "",
+                costo: "",
+                duracion: "",
+                descripcion: "",
             },
         },
     },
@@ -141,17 +218,24 @@ export default {
             bModal: this.muestra_modal,
             enviando: false,
             errors: [],
+            listSucursales: [],
         };
     },
     mounted() {
+        this.getSucursales();
         this.bModal = this.muestra_modal;
     },
     methods: {
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
+            });
+        },
         setRegistroModal() {
             this.enviando = true;
             try {
                 this.textoBtn = "Enviando...";
-                let url = "/admin/sucursals";
+                let url = "/admin/plans";
                 let config = {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -159,15 +243,28 @@ export default {
                 };
                 let formdata = new FormData();
                 formdata.append(
-                    "nombre",
-                    this.sucursal.nombre ? this.sucursal.nombre : ""
+                    "sucursal_id",
+                    this.plan.sucursal_id ? this.plan.sucursal_id : ""
                 );
                 formdata.append(
-                    "dir",
-                    this.sucursal.dir ? this.sucursal.dir : ""
+                    "nombre",
+                    this.plan.nombre ? this.plan.nombre : ""
                 );
+                formdata.append(
+                    "costo",
+                    this.plan.costo ? this.plan.costo : ""
+                );
+                formdata.append(
+                    "duracion",
+                    this.plan.duracion ? this.plan.duracion : ""
+                );
+                formdata.append(
+                    "descripcion",
+                    this.plan.descripcion ? this.plan.descripcion : ""
+                );
+
                 if (this.accion == "edit") {
-                    url = "/admin/sucursals/" + this.sucursal.id;
+                    url = "/admin/plans/" + this.plan.id;
                     formdata.append("_method", "PUT");
                 }
                 axios
@@ -180,7 +277,7 @@ export default {
                             showConfirmButton: false,
                             timer: 1500,
                         });
-                        this.limpiaSucursal();
+                        this.limpiaPlan();
                         this.$emit("envioModal");
                         this.errors = [];
                         if (this.accion == "edit") {
@@ -212,10 +309,13 @@ export default {
             this.bModal = false;
             this.$emit("close");
         },
-        limpiaSucursal() {
+        limpiaPlan() {
             this.errors = [];
-            this.sucursal.nombre = "";
-            this.sucursal.dir = "";
+            this.plan.sucursal_id = "";
+            this.plan.nombre = "";
+            this.plan.costo = "";
+            this.plan.duracion = "";
+            this.plan.descripcion = "";
         },
     },
 };

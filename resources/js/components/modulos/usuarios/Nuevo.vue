@@ -282,10 +282,10 @@ export default {
     },
     mounted() {
         this.bModal = this.muestra_modal;
-        this.getUnidades();
+        this.getSucursales();
     },
     methods: {
-        getUnidades() {
+        getSucursales() {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
             });

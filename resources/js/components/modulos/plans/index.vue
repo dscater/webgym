@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Planes</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'plans.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaPlan();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -113,8 +113,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,7 +122,7 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaPlan(
                                                                     row.item.id,
                                                                     row.item
                                                                         .nombre
@@ -176,9 +176,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :sucursal="oSucursal"
+            :plan="oPlan"
             @close="muestra_modal = false"
-            @envioModal="getSucursals"
+            @envioModal="getPlans"
         ></Nuevo>
     </div>
 </template>
@@ -197,11 +197,18 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "sucursal.nombre",
+                    label: "Sucursal",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                {
+                    key: "nombre",
+                    label: "Nombre de Plan",
+                    sortable: true,
+                },
+                { key: "costo", label: "Costo", sortable: true },
+                { key: "duracion", label: "Duración", sortable: true },
+                { key: "descripcion", label: "Descripción", sortable: true },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -216,10 +223,13 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oPlan: {
                 id: 0,
+                sucursal_id: "",
                 nombre: "",
-                dir: "",
+                costo: "",
+                duracion: "",
+                descripcion: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -237,23 +247,27 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getPlans();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oPlan.id = item.id;
+            this.oPlan.sucursal_id = item.sucursal_id ? item.sucursal_id : "";
+            this.oPlan.nombre = item.nombre ? item.nombre : "";
+            this.oPlan.costo = item.costo ? item.costo : "";
+            this.oPlan.duracion = item.duracion ? item.duracion : "";
+            this.oPlan.descripcion = item.descripcion ? item.descripcion : "";
+
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Plans
+        getPlans() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/plans";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +277,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.plans;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaPlan(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +294,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/plans/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getPlans();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +310,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", plan = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (plan) {
+                this.oPlan = plan;
             }
         },
         onFiltered(filteredItems) {
@@ -308,9 +322,12 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaPlan() {
+            this.oPlan.sucursal_id = "";
+            this.oPlan.nombre = "";
+            this.oPlan.costo = "";
+            this.oPlan.duracion = "";
+            this.oPlan.descripcion = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

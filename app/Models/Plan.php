@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Plan extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "sucursal_id", "nombre", "costo", "duracion",
+        "descripcion", "fecha_registro",
+    ];
+
+    public function sucursal()
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id');
+    }
 }
