@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Usuarios</h1>
+                        <h1>Clientes</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'usuarios.create'
+                                                    'clientes.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaUsuario();
+                                                limpiaCliente();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -93,19 +93,20 @@
                                                     ></b-avatar>
                                                 </template>
 
-                                                <template #cell(acceso)="row">
-                                                    <span
-                                                        class="badge badge-success"
-                                                        v-if="
-                                                            row.item.acceso == 1
-                                                        "
-                                                        >HABILITADO</span
-                                                    >
-                                                    <span
-                                                        class="badge badge-danger"
-                                                        v-else
-                                                        >DESHABILITADO</span
-                                                    >
+                                                <template #cell(fono)="row">
+                                                    {{ row.item.fono }} -
+                                                    {{ row.item.fono2 }}
+                                                </template>
+
+                                                <template
+                                                    #cell(fecha_nacimiento)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item
+                                                                .fecha_nacimiento
+                                                        )
+                                                    }}
                                                 </template>
 
                                                 <template
@@ -121,7 +122,7 @@
 
                                                 <template #cell(accion)="row">
                                                     <div
-                                                        class="row justify-content-center"
+                                                        class="row justify-content-center flex-column"
                                                     >
                                                         <b-button
                                                             size="sm"
@@ -138,7 +139,7 @@
                                                             <i
                                                                 class="fa fa-edit"
                                                             ></i> </b-button
-                                                        ><br />
+                                                        >
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -146,7 +147,7 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaUsuario(
+                                                                eliminaCliente(
                                                                     row.item.id,
                                                                     row.item
                                                                         .full_name
@@ -200,9 +201,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :usuario="oUsuario"
+            :cliente="oCliente"
             @close="muestra_modal = false"
-            @envioModal="getUsuarios"
+            @envioModal="getClientes"
         ></Nuevo>
     </div>
 </template>
@@ -221,19 +222,23 @@ export default {
             showOverlay: false,
             fields: [
                 { key: "full_name", label: "Nombre", sortable: true },
+                { key: "full_ci", label: "C.I.", sortable: true },
                 {
-                    key: "codigo",
-                    label: "Código",
+                    key: "fecha_nacimiento",
+                    label: "Fecha de Nacimiento",
                     sortable: true,
                 },
-                { key: "correo", label: "E-mail", sortable: true },
-                { key: "tipo", label: "Tipo", sortable: true },
+                {
+                    key: "edad",
+                    label: "Edad",
+                    sortable: true,
+                },
+                { key: "genero", label: "Género", sortable: true },
+                { key: "dir", label: "Dirección", sortable: true },
+                { key: "fono", label: "Teléfonos", sortable: true },
+                { key: "correo", label: "Correo", sortable: true },
                 { key: "foto", label: "Foto" },
-                {
-                    key: "sucursal",
-                    label: "Sucursal",
-                    sortable: true,
-                },
+                { key: "sucursal.nombre", label: "Sucursal" },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -248,19 +253,22 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oUsuario: {
+            oCliente: {
                 id: 0,
                 nombre: "",
                 paterno: "",
                 materno: "",
                 ci: "",
                 ci_exp: "",
+                fecha_nacimiento: "",
+                edad: "",
+                genero: "",
+                dir: "",
                 fono: "",
-                cargo: "",
-                unidad_id: "",
-                tipo: "",
+                fono2: "",
+                correo: "",
                 foto: null,
-                acceso: "0",
+                sucursal_id: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -278,31 +286,40 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getUsuarios();
+        this.getClientes();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oUsuario.id = item.id;
-            this.oUsuario.nombre = item.nombre ? item.nombre : "";
-            this.oUsuario.paterno = item.paterno ? item.paterno : "";
-            this.oUsuario.materno = item.materno ? item.materno : "";
-            this.oUsuario.ci = item.ci ? item.ci : "";
-            this.oUsuario.ci_exp = item.ci_exp ? item.ci_exp : "";
-            this.oUsuario.fono = item.fono ? item.fono : "";
-            this.oUsuario.cargo = item.cargo ? item.cargo : "";
-            this.oUsuario.unidad_id = item.unidad_id ? item.unidad_id : "";
-            this.oUsuario.tipo = item.tipo ? item.tipo : "";
-            this.oUsuario.acceso = item.acceso ? "" + item.acceso : "0";
+            this.oCliente.id = item.id;
+            this.oCliente.nombre = item.nombre ? item.nombre : "";
+            this.oCliente.paterno = item.paterno ? item.paterno : "";
+            this.oCliente.materno = item.materno ? item.materno : "";
+            this.oCliente.ci = item.ci ? item.ci : "";
+            this.oCliente.ci_exp = item.ci_exp ? item.ci_exp : "";
+            this.oCliente.fecha_nacimiento = item.fecha_nacimiento
+                ? item.fecha_nacimiento
+                : "";
+            this.oCliente.edad = item.edad ? item.edad : "";
+            this.oCliente.genero = item.genero ? item.genero : "";
+            this.oCliente.dir = item.dir ? item.dir : "";
+            this.oCliente.fono = item.fono ? item.fono : "";
+            this.oCliente.fono2 = item.fono2 ? item.fono2 : "";
+            this.oCliente.correo = item.correo ? item.correo : "";
+            this.oCliente.foto = item.foto ? item.foto : "";
+            this.oCliente.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
+
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Usuarios
-        getUsuarios() {
+        // Listar Clientes
+        getClientes() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/usuarios";
+            let url = "/admin/clientes";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -312,11 +329,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.usuarios;
+                    this.listRegistros = res.data.clientes;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaUsuario(id, descripcion) {
+        eliminaCliente(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -329,11 +346,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/usuarios/" + id, {
+                        .post("/admin/clientes/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getUsuarios();
+                            this.getClientes();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -345,11 +362,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", usuario = null) {
+        abreModal(tipo_accion = "nuevo", cliente = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (usuario) {
-                this.oUsuario = usuario;
+            if (cliente) {
+                this.oCliente = cliente;
             }
         },
         onFiltered(filteredItems) {
@@ -357,18 +374,21 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaUsuario() {
-            this.oUsuario.nombre = "";
-            this.oUsuario.paterno = "";
-            this.oUsuario.materno = "";
-            this.oUsuario.ci = "";
-            this.oUsuario.ci_exp = "";
-            this.oUsuario.fono = "";
-            this.oUsuario.cargo = "";
-            this.oUsuario.unidad_id = "";
-            this.oUsuario.tipo = "";
-            this.oUsuario.foto = null;
-            this.oUsuario.acceso = "0";
+        limpiaCliente() {
+            this.oCliente.nombre = "";
+            this.oCliente.paterno = "";
+            this.oCliente.materno = "";
+            this.oCliente.ci = "";
+            this.oCliente.ci_exp = "";
+            this.oCliente.fecha_nacimiento = "";
+            this.oCliente.edad = "";
+            this.oCliente.genero = "";
+            this.oCliente.dir = "";
+            this.oCliente.fono = "";
+            this.oCliente.fono2 = "";
+            this.oCliente.correo = "";
+            this.oCliente.foto = null;
+            this.oCliente.sucursal_id = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

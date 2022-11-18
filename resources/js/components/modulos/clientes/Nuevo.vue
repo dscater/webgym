@@ -33,7 +33,7 @@
                                 <el-input
                                     placeholder="Nombre"
                                     :class="{ 'is-invalid': errors.nombre }"
-                                    v-model="usuario.nombre"
+                                    v-model="cliente.nombre"
                                     clearable
                                 >
                                 </el-input>
@@ -48,13 +48,13 @@
                                     :class="{
                                         'text-danger': errors.paterno,
                                     }"
-                                    >Ap. Paterno*</label
+                                    >Ap. Paterno</label
                                 >
 
                                 <el-input
                                     placeholder="Ap. Paterno"
                                     :class="{ 'is-invalid': errors.paterno }"
-                                    v-model="usuario.paterno"
+                                    v-model="cliente.paterno"
                                     clearable
                                 >
                                 </el-input>
@@ -74,7 +74,7 @@
                                 <el-input
                                     placeholder="Ap. Materno"
                                     :class="{ 'is-invalid': errors.materno }"
-                                    v-model="usuario.materno"
+                                    v-model="cliente.materno"
                                     clearable
                                 >
                                 </el-input>
@@ -89,12 +89,12 @@
                                     :class="{
                                         'text-danger': errors.ci,
                                     }"
-                                    >C.I.*</label
+                                    >Número C.I.*</label
                                 >
                                 <el-input
                                     placeholder="Número de C.I."
                                     :class="{ 'is-invalid': errors.ci }"
-                                    v-model="usuario.ci"
+                                    v-model="cliente.ci"
                                     clearable
                                 >
                                 </el-input>
@@ -109,14 +109,14 @@
                                     :class="{
                                         'text-danger': errors.ci_exp,
                                     }"
-                                    >Expedido*</label
+                                    >Expedición C.I.*</label
                                 >
                                 <el-select
                                     class="w-100 d-block"
                                     :class="{
                                         'is-invalid': errors.ci_exp,
                                     }"
-                                    v-model="usuario.ci_exp"
+                                    v-model="cliente.ci_exp"
                                     clearable
                                 >
                                     <el-option
@@ -136,99 +136,149 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
+                                        'text-danger': errors.fecha_nacimiento,
+                                    }"
+                                    >Fecha de nacimiento*</label
+                                >
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    :class="{
+                                        'is-invalid': errors.fecha_nacimiento,
+                                    }"
+                                    v-model="cliente.fecha_nacimiento"
+                                    @keyup="calculaEdad"
+                                    @change="calculaEdad"
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.fecha_nacimiento"
+                                    v-text="errors.fecha_nacimiento[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.edad,
+                                    }"
+                                    >Edad*</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    :class="{
+                                        'is-invalid': errors.edad,
+                                    }"
+                                    v-model="cliente.edad"
+                                    readonly
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.edad"
+                                    v-text="errors.edad[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.genero,
+                                    }"
+                                    >Género*</label
+                                >
+                                <el-input
+                                    placeholder="Género"
+                                    :class="{ 'is-invalid': errors.genero }"
+                                    v-model="cliente.genero"
+                                    clearable
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.genero"
+                                    v-text="errors.genero[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.dir,
+                                    }"
+                                    >Dirección</label
+                                >
+                                <el-input
+                                    placeholder="Dirección"
+                                    :class="{ 'is-invalid': errors.dir }"
+                                    v-model="cliente.dir"
+                                    clearable
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.dir"
+                                    v-text="errors.dir[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
                                         'text-danger': errors.fono,
+                                        'text-danger': errors.fono2,
                                     }"
-                                    >Teléfono*</label
+                                    >Teléfonos</label
+                                >
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <el-input
+                                            placeholder="Teléfono 1"
+                                            :class="{
+                                                'is-invalid': errors.fono,
+                                            }"
+                                            v-model="cliente.fono"
+                                            clearable
+                                        >
+                                        </el-input>
+                                        <span
+                                            class="error invalid-feedback"
+                                            v-if="errors.fono"
+                                            v-text="errors.fono[0]"
+                                        ></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <el-input
+                                            placeholder="Teléfono 2"
+                                            :class="{
+                                                'is-invalid': errors.fono2,
+                                            }"
+                                            v-model="cliente.fono2"
+                                            clearable
+                                        >
+                                        </el-input>
+                                        <span
+                                            class="error invalid-feedback"
+                                            v-if="errors.fono2"
+                                            v-text="errors.fono2[0]"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.correo,
+                                    }"
+                                    >Correo Electrónico*</label
                                 >
                                 <el-input
-                                    placeholder="Teléfono"
-                                    :class="{ 'is-invalid': errors.fono }"
-                                    v-model="usuario.fono"
+                                    placeholder="Correo Electrónico"
+                                    :class="{ 'is-invalid': errors.correo }"
+                                    v-model="cliente.correo"
                                     clearable
                                 >
                                 </el-input>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.fono"
-                                    v-text="errors.fono[0]"
-                                ></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label
-                                    :class="{
-                                        'text-danger': errors.cargo,
-                                    }"
-                                    >Cargo*</label
-                                >
-                                <el-input
-                                    placeholder="Cargo"
-                                    :class="{ 'is-invalid': errors.cargo }"
-                                    v-model="usuario.cargo"
-                                    clearable
-                                >
-                                </el-input>
-                                <span
-                                    class="error invalid-feedback"
-                                    v-if="errors.cargo"
-                                    v-text="errors.cargo[0]"
-                                ></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label
-                                    :class="{
-                                        'text-danger': errors.unidad_id,
-                                    }"
-                                    >Unidad Organizacional*</label
-                                >
-                                <el-select
-                                    class="w-100 d-block"
-                                    :class="{
-                                        'is-invalid': errors.unidad_id,
-                                    }"
-                                    v-model="usuario.unidad_id"
-                                    clearable
-                                >
-                                    <el-option
-                                        v-for="item in listUnidades"
-                                        :key="item.id"
-                                        :value="item.id"
-                                        :label="item.nombre"
-                                    >
-                                    </el-option>
-                                </el-select>
-                                <span
-                                    class="error invalid-feedback"
-                                    v-if="errors.unidad_id"
-                                    v-text="errors.unidad_id[0]"
-                                ></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label
-                                    :class="{
-                                        'text-danger': errors.tipo,
-                                    }"
-                                    >Tipo de Usuario*</label
-                                >
-                                <el-select
-                                    class="w-100 d-block"
-                                    :class="{
-                                        'is-invalid': errors.tipo,
-                                    }"
-                                    v-model="usuario.tipo"
-                                    clearable
-                                >
-                                    <el-option
-                                        v-for="(item, index) in listRoles"
-                                        :key="index"
-                                        :value="item"
-                                        :label="item"
-                                    >
-                                    </el-option>
-                                </el-select>
-                                <span
-                                    class="error invalid-feedback"
-                                    v-if="errors.tipo"
-                                    v-text="errors.tipo[0]"
+                                    v-if="errors.correo"
+                                    v-text="errors.correo[0]"
                                 ></span>
                             </div>
                             <div class="form-group col-md-6">
@@ -256,29 +306,30 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger': errors.acceso,
+                                        'text-danger': errors.sucursal_id,
                                     }"
-                                    >Acceso*</label
+                                    >Sucursal*</label
                                 >
-                                <el-switch
+                                <el-select
+                                    class="w-100 d-block"
                                     :class="{
-                                        'is-invalid': errors.acceso,
+                                        'is-invalid': errors.sucursal_id,
                                     }"
-                                    style="display: block"
-                                    v-model="usuario.acceso"
-                                    active-color="#13ce66"
-                                    inactive-color="#ff4949"
-                                    active-text="HABILITADO"
-                                    inactive-text="DESHABILITADO"
-                                    active-value="1"
-                                    inactive-value="0"
+                                    v-model="cliente.sucursal_id"
+                                    clearable
                                 >
+                                    <el-option
+                                        v-for="item in listSucursales"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
                                     >
-                                </el-switch>
+                                    </el-option>
+                                </el-select>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.acceso"
-                                    v-text="errors.acceso[0]"
+                                    v-if="errors.sucursal_id"
+                                    v-text="errors.sucursal_id[0]"
                                 ></span>
                             </div>
                         </div>
@@ -317,7 +368,7 @@ export default {
             type: String,
             default: "nuevo",
         },
-        usuario: {
+        cliente: {
             type: Object,
             default: {
                 id: 0,
@@ -326,10 +377,15 @@ export default {
                 materno: "",
                 ci: "",
                 ci_exp: "",
+                fecha_nacimiento: "",
+                edad: "",
+                genero: "",
+                dir: "",
                 fono: "",
-                tipo: "",
+                fono2: "",
+                correo: "",
                 foto: null,
-                acceso: "0",
+                sucursal_id: "",
             },
         },
     },
@@ -376,34 +432,25 @@ export default {
                 { value: "PD", label: "Pando" },
                 { value: "BN", label: "Beni" },
             ],
-            listRoles: [
-                "SUPER USUARIO",
-                "MAE",
-                "FINANCIERA",
-                "JEFES DE ÁREAS",
-                "DIRECTORES",
-                "JEFES DE UNIDAD",
-                "ENLACE",
-            ],
-            listUnidades: [],
+            listSucursales: [],
             errors: [],
         };
     },
     mounted() {
+        this.getSucursales();
         this.bModal = this.muestra_modal;
-        this.getUnidades();
     },
     methods: {
-        getUnidades() {
-            axios.get("/admin/unidads").then((response) => {
-                this.listUnidades = response.data.unidads;
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
             });
         },
         setRegistroModal() {
             this.enviando = true;
             try {
                 this.textoBtn = "Enviando...";
-                let url = "/admin/usuarios";
+                let url = "/admin/clientes";
                 let config = {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -412,49 +459,62 @@ export default {
                 let formdata = new FormData();
                 formdata.append(
                     "nombre",
-                    this.usuario.nombre ? this.usuario.nombre : ""
+                    this.cliente.nombre ? this.cliente.nombre : ""
                 );
                 formdata.append(
                     "paterno",
-                    this.usuario.paterno ? this.usuario.paterno : ""
+                    this.cliente.paterno ? this.cliente.paterno : ""
                 );
                 formdata.append(
                     "materno",
-                    this.usuario.materno ? this.usuario.materno : ""
+                    this.cliente.materno ? this.cliente.materno : ""
                 );
-                formdata.append("ci", this.usuario.ci ? this.usuario.ci : "");
+                formdata.append("ci", this.cliente.ci ? this.cliente.ci : "");
                 formdata.append(
                     "ci_exp",
-                    this.usuario.ci_exp ? this.usuario.ci_exp : ""
+                    this.cliente.ci_exp ? this.cliente.ci_exp : ""
+                );
+                formdata.append(
+                    "fecha_nacimiento",
+                    this.cliente.fecha_nacimiento
+                        ? this.cliente.fecha_nacimiento
+                        : ""
+                );
+                formdata.append(
+                    "edad",
+                    this.cliente.edad ? this.cliente.edad : ""
+                );
+                formdata.append(
+                    "genero",
+                    this.cliente.genero ? this.cliente.genero : ""
+                );
+                formdata.append(
+                    "dir",
+                    this.cliente.dir ? this.cliente.dir : ""
                 );
                 formdata.append(
                     "fono",
-                    this.usuario.fono ? this.usuario.fono : ""
+                    this.cliente.fono ? this.cliente.fono : ""
                 );
                 formdata.append(
-                    "cargo",
-                    this.usuario.cargo ? this.usuario.cargo : ""
+                    "fono2",
+                    this.cliente.fono2 ? this.cliente.fono2 : ""
                 );
                 formdata.append(
-                    "unidad_id",
-                    this.usuario.unidad_id ? this.usuario.unidad_id : ""
-                );
-                formdata.append(
-                    "tipo",
-                    this.usuario.tipo ? this.usuario.tipo : ""
+                    "correo",
+                    this.cliente.correo ? this.cliente.correo : ""
                 );
                 formdata.append(
                     "foto",
-                    this.usuario.foto ? this.usuario.foto : ""
+                    this.cliente.foto ? this.cliente.foto : ""
                 );
-
                 formdata.append(
-                    "acceso",
-                    this.usuario.acceso ? this.usuario.acceso : "0"
+                    "sucursal_id",
+                    this.cliente.sucursal_id ? this.cliente.sucursal_id : ""
                 );
 
                 if (this.accion == "edit") {
-                    url = "/admin/usuarios/" + this.usuario.id;
+                    url = "/admin/clientes/" + this.cliente.id;
                     formdata.append("_method", "PUT");
                 }
                 axios
@@ -467,7 +527,7 @@ export default {
                             showConfirmButton: false,
                             timer: 1500,
                         });
-                        this.limpiaUsuario();
+                        this.limpiaCliente();
                         this.$emit("envioModal");
                         this.errors = [];
                         if (this.accion == "edit") {
@@ -495,27 +555,46 @@ export default {
             }
         },
         cargaImagen(e) {
-            this.usuario.foto = e.target.files[0];
+            this.cliente.foto = e.target.files[0];
         },
         // Dialog/modal
         cierraModal() {
             this.bModal = false;
             this.$emit("close");
         },
-        limpiaUsuario() {
+        limpiaCliente() {
             this.errors = [];
-            this.usuario.nombre = "";
-            this.usuario.paterno = "";
-            this.usuario.materno = "";
-            this.usuario.ci = "";
-            this.usuario.ci_exp = "";
-            this.usuario.fono = "";
-            this.usuario.cargo = "";
-            this.usuario.unidad_id = "";
-            this.usuario.tipo = "";
-            this.usuario.foto = null;
-            this.usuario.acceso = "0";
+            this.cliente.nombre = "";
+            this.cliente.paterno = "";
+            this.cliente.materno = "";
+            this.cliente.ci = "";
+            this.cliente.ci_exp = "";
+            this.cliente.fecha_nacimiento = "";
+            this.cliente.edad = "";
+            this.cliente.genero = "";
+            this.cliente.dir = "";
+            this.cliente.fono = "";
+            this.cliente.fono2 = "";
+            this.cliente.correo = "";
+            this.cliente.foto = null;
+            this.cliente.sucursal_id = "";
             this.$refs.input_file.value = null;
+        },
+        calculaEdad() {
+            if (this.cliente.fecha_nacimiento != "") {
+                var hoy = new Date();
+                var cumpleanos = new Date(this.cliente.fecha_nacimiento);
+                var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+                var m = hoy.getMonth() - cumpleanos.getMonth();
+
+                if (
+                    m < 0 ||
+                    (m === 0 && hoy.getDate() < cumpleanos.getDate())
+                ) {
+                    edad--;
+                }
+                this.cliente.edad = edad;
+            }
         },
     },
 };
