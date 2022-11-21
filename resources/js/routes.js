@@ -102,6 +102,13 @@ export default new Router({
             component: require('./components/modulos/accesos/index.vue').default,
         },
 
+        // categorias
+        {
+            path: '/categorias',
+            name: 'categorias.index',
+            component: require('./components/modulos/categorias/index.vue').default,
+        },
+
         // maquinas
         {
             path: '/maquinas',

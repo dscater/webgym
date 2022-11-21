@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Maquinas</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'maquinas.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaMaquina();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -84,6 +84,25 @@
                                                 empty-filtered-text="Sin resultados"
                                                 :filter="filter"
                                             >
+                                                <template #cell(foto)="row">
+                                                    <b-avatar
+                                                        :src="
+                                                            row.item.path_image
+                                                        "
+                                                        size="3rem"
+                                                    ></b-avatar>
+                                                </template>
+
+                                                <template
+                                                    #cell(fecha_incorporacion)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item
+                                                                .fecha_incorporacion
+                                                        )
+                                                    }}
+                                                </template>
                                                 <template
                                                     #cell(fecha_registro)="row"
                                                 >
@@ -113,8 +132,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,7 +141,7 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaMaquina(
                                                                     row.item.id,
                                                                     row.item
                                                                         .nombre
@@ -176,9 +195,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :sucursal="oSucursal"
+            :maquina="oMaquina"
             @close="muestra_modal = false"
-            @envioModal="getSucursals"
+            @envioModal="getMaquinas"
         ></Nuevo>
     </div>
 </template>
@@ -201,7 +220,16 @@ export default {
                     label: "Nombre",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                { key: "categoria.nombre", label: "Categoría", sortable: true },
+                { key: "descripcion", label: "Descripción", sortable: true },
+                { key: "sucursal.nombre", label: "Sucursal", sortable: true },
+                {
+                    key: "fecha_incorporacion",
+                    label: "Fecha de incorporación",
+                    sortable: true,
+                },
+                { key: "cantidad", label: "Cantidad", sortable: true },
+                { key: "foto", label: "Foto", sortable: true },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -216,10 +244,15 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oMaquina: {
                 id: 0,
                 nombre: "",
-                dir: "",
+                categoria_id: "",
+                descripcion: "",
+                sucursal_id: "",
+                fecha_incorporacion: "",
+                cantidad: "",
+                foto: null,
             },
             currentPage: 1,
             perPage: 5,
@@ -237,23 +270,37 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getMaquinas();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oMaquina.id = item.id;
+            this.oMaquina.nombre = item.nombre ? item.nombre : "";
+            this.oMaquina.categoria_id = item.categoria_id
+                ? item.categoria_id
+                : "";
+            this.oMaquina.descripcion = item.descripcion
+                ? item.descripcion
+                : "";
+            this.oMaquina.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
+            this.oMaquina.fecha_incorporacion = item.fecha_incorporacion
+                ? item.fecha_incorporacion
+                : "";
+            this.oMaquina.cantidad = item.cantidad ? item.cantidad : "";
+            this.oMaquina.foto = item.foto ? item.foto : "";
+
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Maquinas
+        getMaquinas() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/maquinas";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +310,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.maquinas;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaMaquina(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +327,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/maquinas/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getMaquinas();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +343,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", maquina = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (maquina) {
+                this.oMaquina = maquina;
             }
         },
         onFiltered(filteredItems) {
@@ -308,9 +355,14 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaMaquina() {
+            this.oMaquina.nombre = "";
+            this.oMaquina.categoria_id = "";
+            this.oMaquina.descripcion = "";
+            this.oMaquina.sucursal_id = "";
+            this.oMaquina.fecha_incorporacion = "";
+            this.oMaquina.cantidad = "";
+            this.oMaquina.foto = null;
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

@@ -64,6 +64,28 @@
                                     v-text="errors.dir[0]"
                                 ></span>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.foto,
+                                    }"
+                                    >Foto</label
+                                >
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    :class="{
+                                        'is-invalid': errors.foto,
+                                    }"
+                                    ref="input_file"
+                                    @change="cargaImagen"
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.foto"
+                                    v-text="errors.foto[0]"
+                                ></span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -105,7 +127,12 @@ export default {
             default: {
                 id: 0,
                 nombre: "",
-                dir: "",
+                categoria_id: "",
+                descripcion: "",
+                sucursal_id: "",
+                fecha_incorporacion: "",
+                cantidad: "",
+                foto: null,
             },
         },
     },
@@ -113,6 +140,7 @@ export default {
         muestra_modal: function (newVal, oldVal) {
             this.errors = [];
             if (newVal) {
+                this.$refs.input_file.value = null;
                 this.bModal = true;
             } else {
                 this.bModal = false;
@@ -122,7 +150,7 @@ export default {
     computed: {
         tituloModal() {
             if (this.accion == "nuevo") {
-                return "AGREGAR USUARIO";
+                return "AGREGAR REGISTRO";
             } else {
                 return "MODIFICAR REGISTRO";
             }
@@ -141,12 +169,19 @@ export default {
             bModal: this.muestra_modal,
             enviando: false,
             errors: [],
+            listCategorias: [],
         };
     },
     mounted() {
+        this.getCategorias();
         this.bModal = this.muestra_modal;
     },
     methods: {
+        getCategorias() {
+            axios.get("/admin/categorias").then((response) => {
+                this.listCategorias = response.data.categorias;
+            });
+        },
         setRegistroModal() {
             this.enviando = true;
             try {
@@ -163,8 +198,30 @@ export default {
                     this.sucursal.nombre ? this.sucursal.nombre : ""
                 );
                 formdata.append(
-                    "dir",
-                    this.sucursal.dir ? this.sucursal.dir : ""
+                    "categoria_id",
+                    this.sucursal.categoria_id ? this.sucursal.categoria_id : ""
+                );
+                formdata.append(
+                    "descripcion",
+                    this.sucursal.descripcion ? this.sucursal.descripcion : ""
+                );
+                formdata.append(
+                    "sucursal_id",
+                    this.sucursal.sucursal_id ? this.sucursal.sucursal_id : ""
+                );
+                formdata.append(
+                    "fecha_incorporacion",
+                    this.sucursal.fecha_incorporacion
+                        ? this.sucursal.fecha_incorporacion
+                        : ""
+                );
+                formdata.append(
+                    "cantidad",
+                    this.sucursal.cantidad ? this.sucursal.cantidad : ""
+                );
+                formdata.append(
+                    "foto",
+                    this.sucursal.foto ? this.sucursal.foto : ""
                 );
                 if (this.accion == "edit") {
                     url = "/admin/sucursals/" + this.sucursal.id;
@@ -207,6 +264,9 @@ export default {
                 console.log(e);
             }
         },
+        cargaImagen(e) {
+            this.maquina.foto = e.target.files[0];
+        },
         // Dialog/modal
         cierraModal() {
             this.bModal = false;
@@ -215,7 +275,13 @@ export default {
         limpiaSucursal() {
             this.errors = [];
             this.sucursal.nombre = "";
-            this.sucursal.dir = "";
+            this.sucursal.categoria_id = "";
+            this.sucursal.descripcion = "";
+            this.sucursal.sucursal_id = "";
+            this.sucursal.fecha_incorporacion = "";
+            this.sucursal.cantidad = "";
+            this.sucursal.foto = null;
+            this.$refs.input_file.value = null;
         },
     },
 };

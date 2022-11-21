@@ -320,6 +320,22 @@
                         </router-link>
                     </li>
                     <li class="nav-header bg-navy">OTRAS OPCIONES</li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('categorias.index')"
+                    >
+                        <router-link
+                            exact
+                            :to="{
+                                name: 'categorias.index',
+                                params: { id: user_sidebar.id },
+                            }"
+                            class="nav-link"
+                        >
+                            <i class="nav-icon fas fa-list-alt"></i>
+                            <p>Categorías</p>
+                        </router-link>
+                    </li>
                     <li class="nav-item">
                         <router-link
                             exact

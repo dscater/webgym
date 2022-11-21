@@ -81,6 +81,11 @@ class UserController extends Controller
             'accesos.edit',
             'accesos.destroy',
 
+            'categorias.index',
+            'categorias.create',
+            'categorias.edit',
+            'categorias.destroy',
+
             'maquinas.index',
             'maquinas.create',
             'maquinas.edit',

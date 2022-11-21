@@ -93,19 +93,15 @@
                                                     ></b-avatar>
                                                 </template>
 
-                                                <template #cell(acceso)="row">
-                                                    <span
-                                                        class="badge badge-success"
-                                                        v-if="
-                                                            row.item.acceso == 1
-                                                        "
-                                                        >HABILITADO</span
-                                                    >
-                                                    <span
-                                                        class="badge badge-danger"
-                                                        v-else
-                                                        >DESHABILITADO</span
-                                                    >
+                                                <template
+                                                    #cell(fecha_inicio)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item
+                                                                .fecha_inicio
+                                                        )
+                                                    }}
                                                 </template>
 
                                                 <template
