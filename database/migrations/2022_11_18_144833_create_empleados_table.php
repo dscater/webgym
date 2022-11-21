@@ -26,14 +26,13 @@ class CreateEmpleadosTable extends Migration
             $table->string("correo", 255)->nullable();
             $table->date("fecha_inicio");
             $table->string("cargo", 255)->nullable();
-            $table->decimal("salario", 24, 2);
+            $table->decimal("salario", 24, 2)->nullable();
             $table->string("horario", 255)->nullable();
-            $table->unsignedBigInteger("sucursal");
             $table->string("foto", 255)->nullable();
             $table->unsignedBigInteger("sucursal_id");
             $table->date("fecha_registro");
             $table->timestamps();
-            
+
             $table->foreign("sucursal_id")->on("sucursals")->references("id");
         });
     }

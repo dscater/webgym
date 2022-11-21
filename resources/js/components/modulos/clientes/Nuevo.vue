@@ -403,7 +403,7 @@ export default {
     computed: {
         tituloModal() {
             if (this.accion == "nuevo") {
-                return "AGREGAR USUARIO";
+                return "AGREGAR REGISTRO";
             } else {
                 return "MODIFICAR REGISTRO";
             }

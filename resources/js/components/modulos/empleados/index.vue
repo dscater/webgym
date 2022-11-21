@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Usuarios</h1>
+                        <h1>Empleados</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'usuarios.create'
+                                                    'empleados.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaUsuario();
+                                                limpiaEmpleado();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -121,7 +121,7 @@
 
                                                 <template #cell(accion)="row">
                                                     <div
-                                                        class="row justify-content-center"
+                                                        class="row justify-content-center flex-column"
                                                     >
                                                         <b-button
                                                             size="sm"
@@ -138,7 +138,7 @@
                                                             <i
                                                                 class="fa fa-edit"
                                                             ></i> </b-button
-                                                        ><br />
+                                                        >
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -146,7 +146,7 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaUsuario(
+                                                                eliminaEmpleado(
                                                                     row.item.id,
                                                                     row.item
                                                                         .full_name
@@ -200,9 +200,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :usuario="oUsuario"
+            :empleado="oEmpleado"
             @close="muestra_modal = false"
-            @envioModal="getUsuarios"
+            @envioModal="getEmpleados"
         ></Nuevo>
     </div>
 </template>
@@ -222,16 +222,46 @@ export default {
             fields: [
                 { key: "full_name", label: "Nombre", sortable: true },
                 {
-                    key: "codigo",
-                    label: "Código",
+                    key: "full_ci",
+                    label: "C.I.",
+                    sortable: true,
+                },
+                { key: "dir", label: "Dirección", sortable: true },
+                { key: "fono", label: "Teléfono", sortable: true },
+                {
+                    key: "fono_referencia",
+                    label: "Teléfono de refencia",
                     sortable: true,
                 },
                 { key: "correo", label: "E-mail", sortable: true },
-                { key: "tipo", label: "Tipo", sortable: true },
-                { key: "foto", label: "Foto" },
                 {
-                    key: "sucursal",
+                    key: "fecha_inicio",
+                    label: "Fecha Inicio de Contrato",
+                    sortable: true,
+                },
+                {
+                    key: "cargo",
+                    label: "Cargo",
+                    sortable: true,
+                },
+                {
+                    key: "salario",
+                    label: "Salario",
+                    sortable: true,
+                },
+                {
+                    key: "horario",
+                    label: "Horario",
+                    sortable: true,
+                },
+                {
+                    key: "sucursal.nombre",
                     label: "Sucursal",
+                    sortable: true,
+                },
+                {
+                    key: "foto",
+                    label: "Foto",
                     sortable: true,
                 },
                 {
@@ -248,19 +278,23 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oUsuario: {
+            oEmpleado: {
                 id: 0,
                 nombre: "",
                 paterno: "",
                 materno: "",
                 ci: "",
                 ci_exp: "",
+                dir: "",
                 fono: "",
+                fono_referencia: "",
+                correo: "",
+                fecha_inicio: "",
                 cargo: "",
-                unidad_id: "",
-                tipo: "",
+                salario: "",
+                horario: "",
                 foto: null,
-                acceso: "0",
+                sucursal_id: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -278,31 +312,37 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getUsuarios();
+        this.getEmpleados();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oUsuario.id = item.id;
-            this.oUsuario.nombre = item.nombre ? item.nombre : "";
-            this.oUsuario.paterno = item.paterno ? item.paterno : "";
-            this.oUsuario.materno = item.materno ? item.materno : "";
-            this.oUsuario.ci = item.ci ? item.ci : "";
-            this.oUsuario.ci_exp = item.ci_exp ? item.ci_exp : "";
-            this.oUsuario.fono = item.fono ? item.fono : "";
-            this.oUsuario.cargo = item.cargo ? item.cargo : "";
-            this.oUsuario.unidad_id = item.unidad_id ? item.unidad_id : "";
-            this.oUsuario.tipo = item.tipo ? item.tipo : "";
-            this.oUsuario.acceso = item.acceso ? "" + item.acceso : "0";
+            this.oEmpleado.id = item.id;
+            this.oEmpleado.nombre = item.nombre ? item.nombre : "";
+            this.oEmpleado.paterno = item.paterno ? item.paterno : "";
+            this.oEmpleado.materno = item.materno ? item.materno : "";
+            this.oEmpleado.ci = item.ci ? item.ci : "";
+            this.oEmpleado.ci_exp = item.ci_exp ? item.ci_exp : "";
+            this.oEmpleado.dir = item.dir ? item.dir : "";
+            this.oEmpleado.fono = item.fono ? item.fono : "";
+            this.oEmpleado.fono_referencia = item.fono_referencia ? item.fono_referencia : "";
+            this.oEmpleado.correo = item.correo ? item.correo : "";
+            this.oEmpleado.fecha_inicio = item.fecha_inicio ? item.fecha_inicio : "";
+            this.oEmpleado.cargo = item.cargo ? item.cargo : "";
+            this.oEmpleado.salario = item.salario ? item.salario : "";
+            this.oEmpleado.horario = item.horario ? item.horario : "";
+            this.oEmpleado.foto = item.foto ? item.foto : "";
+            this.oEmpleado.sucursal_id = item.sucursal_id ? item.sucursal_id : "";
+    
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Usuarios
-        getUsuarios() {
+        // Listar Empleados
+        getEmpleados() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/usuarios";
+            let url = "/admin/empleados";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -312,11 +352,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.usuarios;
+                    this.listRegistros = res.data.empleados;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaUsuario(id, descripcion) {
+        eliminaEmpleado(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -329,11 +369,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/usuarios/" + id, {
+                        .post("/admin/empleados/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getUsuarios();
+                            this.getEmpleados();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -345,11 +385,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", usuario = null) {
+        abreModal(tipo_accion = "nuevo", empleado = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (usuario) {
-                this.oUsuario = usuario;
+            if (empleado) {
+                this.oEmpleado = empleado;
             }
         },
         onFiltered(filteredItems) {
@@ -357,18 +397,22 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaUsuario() {
-            this.oUsuario.nombre = "";
-            this.oUsuario.paterno = "";
-            this.oUsuario.materno = "";
-            this.oUsuario.ci = "";
-            this.oUsuario.ci_exp = "";
-            this.oUsuario.fono = "";
-            this.oUsuario.cargo = "";
-            this.oUsuario.unidad_id = "";
-            this.oUsuario.tipo = "";
-            this.oUsuario.foto = null;
-            this.oUsuario.acceso = "0";
+        limpiaEmpleado() {
+            this.oEmpleado.nombre = "";
+            this.oEmpleado.paterno = "";
+            this.oEmpleado.materno = "";
+            this.oEmpleado.ci = "";
+            this.oEmpleado.ci_exp = "";
+            this.oEmpleado.dir = "";
+            this.oEmpleado.fono = "";
+            this.oEmpleado.fono_referencia = "";
+            this.oEmpleado.correo = "";
+            this.oEmpleado.fecha_inicio = "";
+            this.oEmpleado.cargo = "";
+            this.oEmpleado.salario = "";
+            this.oEmpleado.horario = "";
+            this.oEmpleado.foto = null;
+            this.oEmpleado.sucursal_id = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
