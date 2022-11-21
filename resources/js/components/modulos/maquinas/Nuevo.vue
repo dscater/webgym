@@ -23,7 +23,7 @@
                 <div class="modal-body">
                     <form>
                         <div class="row">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
                                         'text-danger': errors.nombre,
@@ -33,7 +33,7 @@
                                 <el-input
                                     placeholder="Nombre"
                                     :class="{ 'is-invalid': errors.nombre }"
-                                    v-model="sucursal.nombre"
+                                    v-model="maquina.nombre"
                                     clearable
                                 >
                                 </el-input>
@@ -43,25 +43,128 @@
                                     v-text="errors.nombre[0]"
                                 ></span>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.categoria_id,
+                                    }"
+                                    >Categoría*</label
+                                >
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.categoria_id,
+                                    }"
+                                    v-model="maquina.categoria_id"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="item in listCategorias"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.categoria_id"
+                                    v-text="errors.categoria_id[0]"
+                                ></span>
+                            </div>
                             <div class="form-group col-md-12">
                                 <label
                                     :class="{
-                                        'text-danger': errors.dir,
+                                        'text-danger': errors.descripcion,
                                     }"
-                                    >Dirección</label
+                                    >Descripción</label
                                 >
 
                                 <el-input
+                                    type="textarea"
+                                    autosize
                                     placeholder="Dirección"
-                                    :class="{ 'is-invalid': errors.dir }"
-                                    v-model="sucursal.dir"
+                                    :class="{ 'is-invalid': errors.descripcion }"
+                                    v-model="maquina.descripcion"
                                     clearable
                                 >
                                 </el-input>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.dir"
-                                    v-text="errors.dir[0]"
+                                    v-if="errors.descripcion"
+                                    v-text="errors.descripcion[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.sucursal_id,
+                                    }"
+                                    >Seleccionar Sucursal*</label
+                                >
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.sucursal_id,
+                                    }"
+                                    v-model="maquina.sucursal_id"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="item in listSucursales"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.sucursal_id"
+                                    v-text="errors.sucursal_id[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.fecha_incorporacion,
+                                    }"
+                                    >Fecha de Incorporación</label
+                                >
+
+                                <el-input
+                                    type="date"
+                                    placeholder="Dirección"
+                                    :class="{ 'is-invalid': errors.fecha_incorporacion }"
+                                    v-model="maquina.fecha_incorporacion"
+                                    clearable
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.fecha_incorporacion"
+                                    v-text="errors.fecha_incorporacion[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.cantidad,
+                                    }"
+                                    >Cantidad</label
+                                >
+
+                                <el-input
+                                    type="number"
+                                    placeholder="Dirección"
+                                    :class="{ 'is-invalid': errors.cantidad }"
+                                    v-model="maquina.cantidad"
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.cantidad"
+                                    v-text="errors.cantidad[0]"
                                 ></span>
                             </div>
                             <div class="form-group col-md-6">
@@ -122,7 +225,7 @@ export default {
             type: String,
             default: "nuevo",
         },
-        sucursal: {
+        maquina: {
             type: Object,
             default: {
                 id: 0,
@@ -170,13 +273,20 @@ export default {
             enviando: false,
             errors: [],
             listCategorias: [],
+            listSucursales: [],
         };
     },
     mounted() {
         this.getCategorias();
+        this.getSucursales();
         this.bModal = this.muestra_modal;
     },
     methods: {
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
+            });
+        },
         getCategorias() {
             axios.get("/admin/categorias").then((response) => {
                 this.listCategorias = response.data.categorias;
@@ -186,7 +296,7 @@ export default {
             this.enviando = true;
             try {
                 this.textoBtn = "Enviando...";
-                let url = "/admin/sucursals";
+                let url = "/admin/maquinas";
                 let config = {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -195,36 +305,36 @@ export default {
                 let formdata = new FormData();
                 formdata.append(
                     "nombre",
-                    this.sucursal.nombre ? this.sucursal.nombre : ""
+                    this.maquina.nombre ? this.maquina.nombre : ""
                 );
                 formdata.append(
                     "categoria_id",
-                    this.sucursal.categoria_id ? this.sucursal.categoria_id : ""
+                    this.maquina.categoria_id ? this.maquina.categoria_id : ""
                 );
                 formdata.append(
                     "descripcion",
-                    this.sucursal.descripcion ? this.sucursal.descripcion : ""
+                    this.maquina.descripcion ? this.maquina.descripcion : ""
                 );
                 formdata.append(
                     "sucursal_id",
-                    this.sucursal.sucursal_id ? this.sucursal.sucursal_id : ""
+                    this.maquina.sucursal_id ? this.maquina.sucursal_id : ""
                 );
                 formdata.append(
                     "fecha_incorporacion",
-                    this.sucursal.fecha_incorporacion
-                        ? this.sucursal.fecha_incorporacion
+                    this.maquina.fecha_incorporacion
+                        ? this.maquina.fecha_incorporacion
                         : ""
                 );
                 formdata.append(
                     "cantidad",
-                    this.sucursal.cantidad ? this.sucursal.cantidad : ""
+                    this.maquina.cantidad ? this.maquina.cantidad : ""
                 );
                 formdata.append(
                     "foto",
-                    this.sucursal.foto ? this.sucursal.foto : ""
+                    this.maquina.foto ? this.maquina.foto : ""
                 );
                 if (this.accion == "edit") {
-                    url = "/admin/sucursals/" + this.sucursal.id;
+                    url = "/admin/maquinas/" + this.maquina.id;
                     formdata.append("_method", "PUT");
                 }
                 axios
@@ -237,7 +347,7 @@ export default {
                             showConfirmButton: false,
                             timer: 1500,
                         });
-                        this.limpiaSucursal();
+                        this.limpiaMaquina();
                         this.$emit("envioModal");
                         this.errors = [];
                         if (this.accion == "edit") {
@@ -272,15 +382,15 @@ export default {
             this.bModal = false;
             this.$emit("close");
         },
-        limpiaSucursal() {
+        limpiaMaquina() {
             this.errors = [];
-            this.sucursal.nombre = "";
-            this.sucursal.categoria_id = "";
-            this.sucursal.descripcion = "";
-            this.sucursal.sucursal_id = "";
-            this.sucursal.fecha_incorporacion = "";
-            this.sucursal.cantidad = "";
-            this.sucursal.foto = null;
+            this.maquina.nombre = "";
+            this.maquina.categoria_id = "";
+            this.maquina.descripcion = "";
+            this.maquina.sucursal_id = "";
+            this.maquina.fecha_incorporacion = "";
+            this.maquina.cantidad = "";
+            this.maquina.foto = null;
             this.$refs.input_file.value = null;
         },
     },

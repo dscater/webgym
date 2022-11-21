@@ -96,12 +96,14 @@
                                                 <template
                                                     #cell(fecha_incorporacion)="row"
                                                 >
-                                                    {{
-                                                        formatoFecha(
-                                                            row.item
-                                                                .fecha_incorporacion
-                                                        )
-                                                    }}
+                                                    <span v-if="row.item.fecha_incorporacion">
+                                                        {{
+                                                            formatoFecha(
+                                                                row.item
+                                                                    .fecha_incorporacion
+                                                            )
+                                                        }}
+                                                    </span>
                                                 </template>
                                                 <template
                                                     #cell(fecha_registro)="row"

@@ -10,7 +10,7 @@ class MaquinaController extends Controller
     public $validacion = [
         "nombre" => "required",
         "categoria_id" => "required",
-        "sucursal_id" => "",
+        "sucursal_id" => "required",
     ];
 
     public $mensajes = [
@@ -19,7 +19,7 @@ class MaquinaController extends Controller
 
     public function index(Request $request)
     {
-        $maquinas = Maquina::with("sucursal")->get();
+        $maquinas = Maquina::with("sucursal")->with("categoria")->get();
         return response()->JSON(['maquinas' => $maquinas, 'total' => count($maquinas)], 200);
     }
 
@@ -29,10 +29,28 @@ class MaquinaController extends Controller
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
 
+        if (isset($request->fecha_incorporacion) && $request->fecha_incorporacion != "") {
+            $this->validacion['fecha_incorporacion'] = 'date';
+        }
+        if (isset($request->cantidad) && $request->cantidad != "") {
+            $this->validacion['cantidad'] = 'numeric|min:1';
+        }
+
         $request->validate($this->validacion, $this->mensajes);
         $request['fecha_registro'] = date('Y-m-d');
         // CREAR EL USER
-        $nuevo_maquina = Maquina::create(array_map('mb_strtoupper', $request->except('foto')));
+        $nuevo_maquina = Maquina::create(array_map('mb_strtoupper', $request->except('foto', "fecha_incorporacion", "cantidad")));
+
+        if (!$request->fecha_incorporacion || $request->fecha_incorporacion == "") {
+            $nuevo_maquina['fecha_incorporacion'] = null;
+        } else {
+            $nuevo_maquina['fecha_incorporacion'] = $request->fecha_incorporacion;
+        }
+        if (!$request->cantidad || $request->cantidad == "") {
+            $nuevo_maquina['cantidad'] = null;
+        } else {
+            $nuevo_maquina['cantidad'] = $request->cantidad;
+        }
 
         $nuevo_maquina->foto = 'default.png';
         if ($request->hasFile('foto')) {
@@ -52,13 +70,29 @@ class MaquinaController extends Controller
 
     public function update(Request $request, Maquina $maquina)
     {
-        $this->validacion['ci'] = 'required|min:4|unique:maquinas,ci,' . $maquina->id;
         if ($request->hasFile('foto')) {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
+        if (isset($request->fecha_incorporacion) && $request->fecha_incorporacion != "") {
+            $this->validacion['fecha_incorporacion'] = 'date';
+        }
+        if (isset($request->cantidad) && $request->cantidad != "") {
+            $this->validacion['cantidad'] = 'numeric|min:1';
+        }
 
         $request->validate($this->validacion, $this->mensajes);
-        $maquina->update(array_map('mb_strtoupper', $request->except('foto', 'password')));
+        $maquina->update(array_map('mb_strtoupper', $request->except('foto', 'fecha_incorporacion', "cantidad")));
+
+        if (!$request->fecha_incorporacion || $request->fecha_incorporacion == "") {
+            $maquina->fecha_incorporacion = null;
+        } else {
+            $maquina->fecha_incorporacion = $request->fecha_incorporacion;
+        }
+        if (!$request->cantidad || $request->cantidad == "") {
+            $maquina->cantidad = null;
+        } else {
+            $maquina->cantidad = $request->cantidad;
+        }
 
         if ($request->hasFile('foto')) {
             $antiguo = $maquina->foto;

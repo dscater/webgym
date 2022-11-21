@@ -20,7 +20,7 @@ class CreateMaquinasTable extends Migration
             $table->text("descripcion");
             $table->unsignedBigInteger("sucursal_id");
             $table->date("fecha_incorporacion")->nullable();
-            $table->integer("cantidad")->nullable();
+            $table->integer("cantidad")->nullable()->default(0);
             $table->string("foto", 255)->nullable();
             $table->date("fecha_registro");
             $table->timestamps();
