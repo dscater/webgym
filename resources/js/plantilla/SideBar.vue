@@ -235,6 +235,20 @@
                     </li>
                     <li
                         class="nav-item"
+                        v-if="permisos.includes('mantenimiento_maquinas.index')"
+                    >
+                        <router-link
+                            exact
+                            :to="{ name: 'mantenimiento_maquinas.index' }"
+                            class="nav-link"
+                            v-loading.fullscreen.lock="fullscreenLoading"
+                        >
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p>Mantenimiento de Maquinas</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
                         v-if="permisos.includes('empleados.index')"
                     >
                         <router-link

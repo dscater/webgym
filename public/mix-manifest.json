@@ -7,6 +7,10 @@
     "/imgs/avatar.png": "/imgs/avatar.png",
     "/imgs/clientes/1668809453_.jpg": "/imgs/clientes/1668809453_.jpg",
     "/imgs/clientes/default.png": "/imgs/clientes/default.png",
+    "/imgs/empleados/default.png": "/imgs/empleados/default.png",
+    "/imgs/maquinas/1669045475_.jpg": "/imgs/maquinas/1669045475_.jpg",
+    "/imgs/maquinas/1669045598_.jpg": "/imgs/maquinas/1669045598_.jpg",
+    "/imgs/maquinas/default.png": "/imgs/maquinas/default.png",
     "/imgs/users/default.png": "/imgs/users/default.png",
     "/webfonts/fa-brands-400.eot": "/webfonts/fa-brands-400.eot",
     "/webfonts/fa-brands-400.svg": "/webfonts/fa-brands-400.svg",
@@ -22,7 +26,5 @@
     "/webfonts/fa-solid-900.svg": "/webfonts/fa-solid-900.svg",
     "/webfonts/fa-solid-900.ttf": "/webfonts/fa-solid-900.ttf",
     "/webfonts/fa-solid-900.woff": "/webfonts/fa-solid-900.woff",
-    "/webfonts/fa-solid-900.woff2": "/webfonts/fa-solid-900.woff2",
-    "/imgs/empleados/default.png": "/imgs/empleados/default.png",
-    "/imgs/maquinas/default.png": "/imgs/maquinas/default.png"
+    "/webfonts/fa-solid-900.woff2": "/webfonts/fa-solid-900.woff2"
 }

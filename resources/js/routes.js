@@ -116,6 +116,13 @@ export default new Router({
             component: require('./components/modulos/maquinas/index.vue').default,
         },
 
+        // mantenimiento_maquinas
+        {
+            path: '/mantenimiento_maquinas',
+            name: 'mantenimiento_maquinas.index',
+            component: require('./components/modulos/mantenimiento_maquinas/index.vue').default,
+        },
+        
         // planes
         {
             path: '/plans',
