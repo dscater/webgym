@@ -21,13 +21,14 @@
                                 type="password"
                                 class="form-control"
                                 placeholder="Código RFID"
-                                v-model="password"
-                                @keypress.enter="login()"
+                                v-model="rfid"
+                                @keypress.enter="enviaRfid()"
                                 ref="input_rfid"
+                                autofocus
                             />
                             <div class="input-group-append">
                                 <div class="input-group-text bg-success">
-                                    <span class="fas fa-lock"></span>
+                                    <span class="fas fa-id-card"></span>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +49,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-success btn-block btn-flat font-weight-bold"
-                                    @click.prevent="enviaRfid()"
+                                    @click.prevent="enviaRfid"
                                     v-loading.fullscreen.lock="
                                         fullscreenLoading
                                     "
@@ -61,14 +62,14 @@
                                 <button
                                     type="button"
                                     class="btn btn-outline-primary btn-block btn-flat font-weight-bold"
-                                    @click.prevent="vistaInicio()"
+                                    @click.prevent="vistaInicio"
                                 >
                                     Volver
                                 </button>
                             </div>
                             <!-- /.col -->
                         </div>
-                    </div=>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -93,7 +94,7 @@ export default {
     },
     data() {
         return {
-            usuario: "",
+            rfid: "",
             error: false,
             fullscreenLoading: false,
         };
@@ -102,7 +103,36 @@ export default {
         this.$refs.input_rfid.focus();
     },
     methods: {
-        enviaRfid() {},
+        enviaRfid() {
+            if (this.rfid != "") {
+                axios
+                    .post("/admin/accesos", {
+                        rfid: this.rfid,
+                    })
+                    .then((response) => {
+                        if (response.data.sw) {
+                            Swal.fire({
+                                icon: "success",
+                                title: response.data.accion,
+                                html: `${response.data.img} <br/> ${response.data.msj}`,
+                                showConfirmButton: false,
+                                timer: 2500,
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: response.data.msj,
+                                showConfirmButton: false,
+                                timer: 3500,
+                            });
+                        }
+                        this.rfid = "";
+                        this.$refs.input_rfid.focus();
+                    });
+            } else {
+            }
+        },
         vistaInicio() {
             window.location = "/";
         },
@@ -125,5 +155,11 @@ export default {
 
 .logo {
     max-width: 100%;
+}
+
+.swal2-html-container img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
 }
 </style>

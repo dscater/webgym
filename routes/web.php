@@ -40,8 +40,6 @@ Route::get("control", function () {
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 
-// Route::get('/acceso/vista_control', [AccesoController::class, 'vista_control']);
-
 // CONFIGURACIÓN
 Route::get('/configuracion/getConfiguracion', [ConfiguracionController::class, 'getConfiguracion']);
 Route::post('/configuracion/update', [ConfiguracionController::class, 'update']);
