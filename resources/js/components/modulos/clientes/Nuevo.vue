@@ -266,7 +266,7 @@
                                     :class="{
                                         'text-danger': errors.correo,
                                     }"
-                                    >Correo Electrónico*</label
+                                    >Correo Electrónico</label
                                 >
                                 <el-input
                                     placeholder="Correo Electrónico"

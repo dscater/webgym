@@ -59,11 +59,13 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // PLANES
+    Route::get("plans/plans_sucursal", [PlanController::class, 'plans_sucursal']);
     Route::resource('plans', PlanController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
 
     // CLIENTES
+    Route::get("clientes/clientes_sucursal", [ClienteController::class, 'clientes_sucursal']);
     Route::resource('clientes', ClienteController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);

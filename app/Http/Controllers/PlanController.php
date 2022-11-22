@@ -20,6 +20,12 @@ class PlanController extends Controller
         return response()->JSON(["plans" => $plans, "total" => count($plans)]);
     }
 
+    public function plans_sucursal(Request $request)
+    {
+        $plans = Plan::with("sucursal")->where("sucursal_id", $request->id)->get();
+        return response()->JSON($plans);
+    }
+
     public function store(Request $request)
     {
         $request->validate($this->validacion);

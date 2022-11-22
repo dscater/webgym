@@ -19,6 +19,7 @@ class CreateInscripcionsTable extends Migration
             $table->unsignedBigInteger("plan_id");
             $table->unsignedBigInteger("sucursal_id");
             $table->date("fecha_inscripcion");
+            $table->date("fecha_fin");
             $table->string("codigo_rfid")->unique();
             $table->date("fecha_registro");
             $table->timestamps();

@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Inscripciones</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'inscripcions.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaInscripcion();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -85,6 +85,25 @@
                                                 :filter="filter"
                                             >
                                                 <template
+                                                    #cell(fecha_inscripcion)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item
+                                                                .fecha_inscripcion
+                                                        )
+                                                    }}
+                                                </template>
+                                                <template
+                                                    #cell(fecha_fin)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item.fecha_fin
+                                                        )
+                                                    }}
+                                                </template>
+                                                <template
                                                     #cell(fecha_registro)="row"
                                                 >
                                                     {{
@@ -113,8 +132,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,10 +141,17 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaInscripcion(
                                                                     row.item.id,
                                                                     row.item
-                                                                        .nombre
+                                                                        .cliente
+                                                                        .full_name +
+                                                                        ' con fecha de inscripcion ' +
+                                                                        formatoFecha(
+                                                                            row
+                                                                                .item
+                                                                                .fecha_inscripcion
+                                                                        )
                                                                 )
                                                             "
                                                         >
@@ -176,9 +202,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :sucursal="oSucursal"
+            :inscripcion="oInscripcion"
             @close="muestra_modal = false"
-            @envioModal="getSucursals"
+            @envioModal="getInscripcions"
         ></Nuevo>
     </div>
 </template>
@@ -197,11 +223,27 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "cliente.full_name",
+                    label: "Cliente",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                { key: "plan.nombre", label: "Plan", sortable: true },
+                { key: "sucursal.nombre", label: "Sucursal", sortable: true },
+                {
+                    key: "fecha_inscripcion",
+                    label: "Fecha de inscripción",
+                    sortable: true,
+                },
+                {
+                    key: "fecha_fin",
+                    label: "Fecha de finalización",
+                    sortable: true,
+                },
+                {
+                    key: "codigo_rfid",
+                    label: "Código RFID",
+                    sortable: true,
+                },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -216,10 +258,13 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oInscripcion: {
                 id: 0,
-                nombre: "",
-                dir: "",
+                cliente_id: "",
+                plan_id: "",
+                sucursal_id: "",
+                fecha_inscripcion: "",
+                codigo_rfid: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -237,23 +282,35 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getInscripcions();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oInscripcion.id = item.id;
+            this.oInscripcion.cliente_id = item.cliente_id
+                ? item.cliente_id
+                : "";
+            this.oInscripcion.plan_id = item.plan_id ? item.plan_id : "";
+            this.oInscripcion.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
+            this.oInscripcion.fecha_inscripcion = item.fecha_inscripcion
+                ? item.fecha_inscripcion
+                : "";
+            this.oInscripcion.codigo_rfid = item.codigo_rfid
+                ? item.codigo_rfid
+                : "";
+
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Inscripcions
+        getInscripcions() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/inscripcions";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +320,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.inscripcions;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaInscripcion(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +337,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/inscripcions/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getInscripcions();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +353,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", inscripcion = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (inscripcion) {
+                this.oInscripcion = inscripcion;
             }
         },
         onFiltered(filteredItems) {
@@ -308,12 +365,36 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaInscripcion() {
+            this.oInscripcion.cliente_id = "";
+            this.oInscripcion.plan_id = "";
+            this.oInscripcion.sucursal_id = "";
+            this.oInscripcion.fecha_inscripcion = this.fechaActual();
+            this.oInscripcion.codigo_rfid = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
+        },
+        fechaActual() {
+            // crea un nuevo objeto `Date`
+            var today = new Date();
+
+            // `getDate()` devuelve el día del mes (del 1 al 31)
+            var day = today.getDate();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            // `getMonth()` devuelve el mes (de 0 a 11)
+            var month = today.getMonth() + 1;
+            if (month < 10) {
+                month = "0" + month;
+            }
+
+            // `getFullYear()` devuelve el año completo
+            var year = today.getFullYear();
+
+            // muestra la fecha de hoy en formato `MM/DD/YYYY`
+            return `${year}-${month}-${day}`;
         },
     },
 };
