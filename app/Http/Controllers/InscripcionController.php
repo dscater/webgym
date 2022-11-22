@@ -13,7 +13,7 @@ class InscripcionController extends Controller
         "plan_id" => "required",
         "sucursal_id" => "required",
         "fecha_inscripcion" => "required",
-        "codigo_rfid" => "required",
+        "codigo_rfid" => "required|unique:inscripcions,codigo_rfid",
     ];
 
     public function index()
@@ -51,6 +51,7 @@ class InscripcionController extends Controller
 
     public function update(Inscripcion $inscripcion, Request $request)
     {
+        $this->validacion['codigo_rfid'] = 'required|unique:inscripcions,codigo_rfid,' . $inscripcion->id;
         $request->validate($this->validacion);
         $inscripcion_vigente = Inscripcion::where("sucursal_id", $request->sucursal_id)
             ->where("cliente_id", $request->cliente_id)
