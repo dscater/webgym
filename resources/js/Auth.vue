@@ -14,7 +14,7 @@
                         Ingresa tu usuario y contraseña para inicar sesión
                     </p>
 
-                    <form action="../../index3.html" method="post">
+                    <div>
                         <div class="input-group mb-3">
                             <input
                                 type="text"
@@ -69,8 +69,18 @@
                                 </button>
                             </div>
                             <!-- /.col -->
+                            <div class="col-12 mt-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary btn-block btn-flat font-weight-bold"
+                                    @click.prevent="vistaControl()"
+                                >
+                                    Control de Acceso
+                                </button>
+                            </div>
+                            <!-- /.col -->
                         </div>
-                    </form>
+                    </div=>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -131,6 +141,9 @@ export default {
                 localStorage.setItem("user", JSON.stringify(user));
                 location.reload();
             });
+        },
+        vistaControl() {
+            window.location = "/control";
         },
     },
 };

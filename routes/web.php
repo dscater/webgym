@@ -31,10 +31,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get("control", function () {
+    return view("control");
+});
+
 // LOGIN
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 
+// Route::get('/acceso/vista_control', [AccesoController::class, 'vista_control']);
 
 // CONFIGURACIÓN
 Route::get('/configuracion/getConfiguracion', [ConfiguracionController::class, 'getConfiguracion']);

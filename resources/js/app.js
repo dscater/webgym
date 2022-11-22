@@ -45,6 +45,7 @@ window.EventBus = EventBus;
 // COMPONENTES
 Vue.component('App', require('./App.vue').default);
 Vue.component('Auth', require('./Auth.vue').default);
+Vue.component('Control', require('./Control.vue').default);
 
 import router from './routes';
 const app = new Vue({

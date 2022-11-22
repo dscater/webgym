@@ -19,6 +19,13 @@ export default new Router({
             component: require('./Auth.vue').default
         },
 
+        // VISTA CONTROL
+        {
+            path: '/acceso/control',
+            name: 'vista_control',
+            component: require('./Control.vue').default
+        },
+
         // USUARIOS
         {
             path: '/usuarios/perfil/:id',

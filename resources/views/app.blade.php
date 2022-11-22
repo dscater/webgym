@@ -33,7 +33,6 @@
                     $("body").addClass("sidebar-close");
                     $("body").removeClass("sidebar-open");
                 }
-
             });
         });
     </script>
