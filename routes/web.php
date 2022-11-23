@@ -95,6 +95,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // INSCRIPCIONES
+    Route::get("inscripcions/getInfoInscripcion", [InscripcionController::class, 'getInfoInscripcion']);
     Route::resource('inscripcions', InscripcionController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);

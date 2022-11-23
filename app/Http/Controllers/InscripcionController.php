@@ -37,6 +37,18 @@ class InscripcionController extends Controller
             return response()->JSON(["sw" => false, "msj" => "El cliente ya cuenta con una inscripción vigente en la sucursal seleccionada dentro de la fecha de inscripción indicada"]);
         }
 
+        $inscripcion_pendiente =  Inscripcion::where("cliente_id", $request->cliente_id)
+            ->where("estado_cobro", "PENDIENTE")
+            ->get();
+        if (count($inscripcion_pendiente) > 0) {
+            $sucursales = "";
+            foreach ($inscripcion_pendiente as $ins) {
+                $sucursales .= $ins->sucursal->nombre . ", ";
+            }
+            return response()->JSON(["sw" => false, "msj" => "El cliente tiene COBROS PENDIENTES en las siguentes sucursales: " . $sucursales . "debe realizar los pagos para realizar una inscripción"]);
+        }
+
+
         $request["fecha_registro"] = date("Y-m-d");
         $request["estado_cobro"] = "PENDIENTE";
         $plan = Plan::find($request->plan_id);
@@ -73,5 +85,21 @@ class InscripcionController extends Controller
     {
         $inscripcion->delete();
         return response()->JSON(["sw" => true, "inscripcion" => $inscripcion, "msj" => "El registro se actualizó correctamente"]);
+    }
+
+    public function getInfoInscripcion(Request $request)
+    {
+        $cliente_id = $request->cliente_id;
+        $sucursal_id = $request->sucursal_id;
+
+        $inscripcion = Inscripcion::with("cliente")->with("sucursal")->with("plan")
+            ->where("cliente_id", $cliente_id)
+            ->where("sucursal_id", $sucursal_id)
+            ->where("estado_cobro", "PENDIENTE")
+            ->orderBy("fecha_inscripcion", "desc")
+            ->get()
+            ->first();
+
+        return response()->JSON($inscripcion);
     }
 }
