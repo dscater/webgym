@@ -38,6 +38,7 @@ class InscripcionController extends Controller
         }
 
         $request["fecha_registro"] = date("Y-m-d");
+        $request["estado_cobro"] = "PENDIENTE";
         $plan = Plan::find($request->plan_id);
         $request["fecha_fin"] = date("Y-m-d", strtotime($request->fecha_inscripcion . " +" . $plan->duracion . "days"));
         Inscripcion::create(array_map("mb_strtoupper", $request->all()));

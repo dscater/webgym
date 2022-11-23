@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Administrar Accesos</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'accesos.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaAcceso();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -94,47 +94,6 @@
                                                         )
                                                     }}
                                                 </template>
-
-                                                <template #cell(accion)="row">
-                                                    <div
-                                                        class="row justify-content-center flex-column"
-                                                    >
-                                                        <b-button
-                                                            size="sm"
-                                                            pill
-                                                            variant="outline-warning"
-                                                            class="btn-flat mb-1"
-                                                            title="Editar registro"
-                                                            @click="
-                                                                editarRegistro(
-                                                                    row.item
-                                                                )
-                                                            "
-                                                        >
-                                                            <i
-                                                                class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
-                                                        <b-button
-                                                            size="sm"
-                                                            pill
-                                                            variant="outline-danger"
-                                                            class="btn-flat"
-                                                            title="Eliminar registro"
-                                                            @click="
-                                                                eliminaSucursal(
-                                                                    row.item.id,
-                                                                    row.item
-                                                                        .nombre
-                                                                )
-                                                            "
-                                                        >
-                                                            <i
-                                                                class="fa fa-trash"
-                                                            ></i>
-                                                        </b-button>
-                                                    </div>
-                                                </template>
                                             </b-table>
                                         </b-overlay>
                                         <div class="row">
@@ -173,22 +132,11 @@
                 </div>
             </div>
         </section>
-        <Nuevo
-            :muestra_modal="muestra_modal"
-            :accion="modal_accion"
-            :sucursal="oSucursal"
-            @close="muestra_modal = false"
-            @envioModal="getSucursals"
-        ></Nuevo>
     </div>
 </template>
 
 <script>
-import Nuevo from "./Nuevo.vue";
 export default {
-    components: {
-        Nuevo,
-    },
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
@@ -197,17 +145,25 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "cliente.nombre",
+                    label: "Nombre Cliente",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                {
+                    key: "sucursal.nombre",
+                    label: "Sucursal",
+                    sortable: true,
+                },
+                {
+                    key: "tipo",
+                    label: "Acceso",
+                    sortable: true,
+                },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
                     sortable: true,
                 },
-                { key: "accion", label: "Acción" },
             ],
             loading: true,
             fullscreenLoading: true,
@@ -216,7 +172,7 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oAcceso: {
                 id: 0,
                 nombre: "",
                 dir: "",
@@ -237,23 +193,23 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getAccesos();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oAcceso.id = item.id;
+            this.oAcceso.nombre = item.nombre ? item.nombre : "";
+            this.oAcceso.dir = item.dir ? item.dir : "";
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Accesos
+        getAccesos() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/accesos";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +219,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.accesos;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaAcceso(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +236,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/accesos/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getAccesos();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +252,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", acceso = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (acceso) {
+                this.oAcceso = acceso;
             }
         },
         onFiltered(filteredItems) {
@@ -308,9 +264,9 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaAcceso() {
+            this.oAcceso.nombre = "";
+            this.oAcceso.dir = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

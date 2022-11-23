@@ -21,6 +21,7 @@ class CreateInscripcionsTable extends Migration
             $table->date("fecha_inscripcion");
             $table->date("fecha_fin");
             $table->string("codigo_rfid")->unique();
+            $table->string("estado_cobro");
             $table->date("fecha_registro");
             $table->timestamps();
 

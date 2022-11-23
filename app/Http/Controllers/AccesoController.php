@@ -11,6 +11,8 @@ class AccesoController extends Controller
 
     public function index()
     {
+        $accesos = Acceso::with("cliente")->with("sucursal")->orderBy("fecha_registro", "desc")->get();
+        return response()->JSON(['accesos' => $accesos, 'total' => count($accesos)], 200);
     }
 
     public function store(Request $request)

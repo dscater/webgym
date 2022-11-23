@@ -16,6 +16,7 @@ class Inscripcion extends Model
         "fecha_inscripcion",
         "fecha_fin",
         "codigo_rfid",
+        "estado_cobro",
         "fecha_registro",
     ];
 
