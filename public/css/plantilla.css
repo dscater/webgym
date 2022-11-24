@@ -56243,9 +56243,9 @@ a.text-muted:hover {
     --secondary: #da1900;
 }
 
-.bg-azul{
+.bg-azul {
     background-color: #2198e7;
-    color:white!important;
+    color: white !important;
 }
 
 .secondary {
@@ -56304,4 +56304,14 @@ input.form-control {
 
 .el-input__inner:read-only {
     cursor: not-allowed;
+}
+
+
+.readonly .el-input__inner {
+    background: rgb(237, 246, 250);
+}
+
+.contenedor_tabla tr.seleccionado {
+    background: rgb(237, 246, 250);
+    border: solid 2px var(--secundario);
 }

@@ -16,6 +16,7 @@ class CreatePerimetriasTable extends Migration
         Schema::create('perimetrias', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("evaluacion_id");
+            $table->date("fecha");
             $table->string("hombros1")->nullable();
             $table->string("hombros2")->nullable();
             $table->string("hombros3")->nullable();

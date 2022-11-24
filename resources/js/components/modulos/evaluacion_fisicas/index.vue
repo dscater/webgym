@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Evaluación física</h1>
                     </div>
                 </div>
             </div>
@@ -17,21 +17,20 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button
+                                        <router-link
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'evaluacion_fisicas.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
-                                            @click="
-                                                abreModal('nuevo');
-                                                limpiaSucursal();
-                                            "
+                                            :to="{
+                                                name: 'evaluacion_fisicas.create',
+                                            }"
                                         >
                                             <i class="fa fa-plus"></i>
                                             Nuevo
-                                        </button>
+                                        </router-link>
                                     </div>
                                 </div>
                             </div>
@@ -84,13 +83,10 @@
                                                 empty-filtered-text="Sin resultados"
                                                 :filter="filter"
                                             >
-                                                <template
-                                                    #cell(fecha_registro)="row"
-                                                >
+                                                <template #cell(fecha)="row">
                                                     {{
                                                         formatoFecha(
-                                                            row.item
-                                                                .fecha_registro
+                                                            row.item.fecha
                                                         )
                                                     }}
                                                 </template>
@@ -113,8 +109,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,10 +118,11 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaEvaluacionFisica(
                                                                     row.item.id,
                                                                     row.item
-                                                                        .nombre
+                                                                        .cliente
+                                                                        .full_name
                                                                 )
                                                             "
                                                         >
@@ -173,22 +170,11 @@
                 </div>
             </div>
         </section>
-        <Nuevo
-            :muestra_modal="muestra_modal"
-            :accion="modal_accion"
-            :sucursal="oSucursal"
-            @close="muestra_modal = false"
-            @envioModal="getSucursals"
-        ></Nuevo>
     </div>
 </template>
 
 <script>
-import Nuevo from "./Nuevo.vue";
 export default {
-    components: {
-        Nuevo,
-    },
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
@@ -197,14 +183,28 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "cliente.full_name",
+                    label: "Cliente",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                { key: "talla", label: "Talla", sortable: true },
+                { key: "tipo_sangre", label: "Tipo de sangre", sortable: true },
                 {
-                    key: "fecha_registro",
-                    label: "Fecha de registro",
+                    key: "persona_referencia",
+                    label: "Persona de referencia",
+                    sortable: true,
+                },
+                { key: "fecha", label: "Fecha", sortable: true },
+                { key: "peso_inicial", label: "Peso inicial", sortable: true },
+                { key: "patologias", label: "Patologías", sortable: true },
+                {
+                    key: "obs_postura",
+                    label: "Observaciones de postura",
+                    sortable: true,
+                },
+                {
+                    key: "recomendaciones",
+                    label: "Recomendaciones",
                     sortable: true,
                 },
                 { key: "accion", label: "Acción" },
@@ -214,13 +214,6 @@ export default {
             loadingWindow: Loading.service({
                 fullscreen: this.fullscreenLoading,
             }),
-            muestra_modal: false,
-            modal_accion: "nuevo",
-            oSucursal: {
-                id: 0,
-                nombre: "",
-                dir: "",
-            },
             currentPage: 1,
             perPage: 5,
             pageOptions: [
@@ -237,23 +230,24 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getEvaluacionFisicas();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
-            this.modal_accion = "edit";
-            this.muestra_modal = true;
+            this.$router.push({
+                name: "evaluacion_fisicas.edit",
+                params: {
+                    id: item.id,
+                },
+            });
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar EvaluacionFisicas
+        getEvaluacionFisicas() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/evaluacion_fisicas";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +257,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.evaluacion_fisicas;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaEvaluacionFisica(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +274,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/evaluacion_fisicas/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getEvaluacionFisicas();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,21 +290,10 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
-            this.muestra_modal = true;
-            this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
-            }
-        },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
-        },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

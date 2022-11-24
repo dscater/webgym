@@ -80,6 +80,17 @@ export default new Router({
             name: 'evaluacion_fisicas.index',
             component: require('./components/modulos/evaluacion_fisicas/index.vue').default,
         },
+        {
+            path: '/evaluacion_fisicas/create',
+            name: 'evaluacion_fisicas.create',
+            component: require('./components/modulos/evaluacion_fisicas/create.vue').default,
+        },
+        {
+            path: '/evaluacion_fisicas/edit/:id',
+            name: 'evaluacion_fisicas.edit',
+            props: true,
+            component: require('./components/modulos/evaluacion_fisicas/edit.vue').default,
+        },
 
         // ingreso productos
         {
@@ -129,7 +140,7 @@ export default new Router({
             name: 'mantenimiento_maquinas.index',
             component: require('./components/modulos/mantenimiento_maquinas/index.vue').default,
         },
-        
+
         // planes
         {
             path: '/plans',

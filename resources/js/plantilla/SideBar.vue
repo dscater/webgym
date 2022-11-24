@@ -124,7 +124,6 @@
                         v-if="permisos.includes('evaluacion_fisicas.index')"
                     >
                         <router-link
-                            exact
                             :to="{ name: 'evaluacion_fisicas.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"
