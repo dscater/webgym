@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Productos</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'productos.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaProducto();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -84,6 +84,15 @@
                                                 empty-filtered-text="Sin resultados"
                                                 :filter="filter"
                                             >
+                                                <template #cell(foto)="row">
+                                                    <b-avatar
+                                                        :src="
+                                                            row.item.path_image
+                                                        "
+                                                        size="3rem"
+                                                    ></b-avatar>
+                                                </template>
+
                                                 <template
                                                     #cell(fecha_registro)="row"
                                                 >
@@ -113,8 +122,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,7 +131,7 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaProducto(
                                                                     row.item.id,
                                                                     row.item
                                                                         .nombre
@@ -176,9 +185,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :sucursal="oSucursal"
+            :producto="oProducto"
             @close="muestra_modal = false"
-            @envioModal="getSucursals"
+            @envioModal="getProductos"
         ></Nuevo>
     </div>
 </template>
@@ -201,7 +210,16 @@ export default {
                     label: "Nombre",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                { key: "categoria.nombre", label: "Categoría", sortable: true },
+                { key: "descripcion", label: "Descripción", sortable: true },
+                { key: "precio", label: "Precio de venta", sortable: true },
+                { key: "sucursal.nombre", label: "Sucursal", sortable: true },
+                { key: "foto", label: "Foto", sortable: true },
+                {
+                    key: "stock_actual",
+                    label: "Stock disponible",
+                    sortable: true,
+                },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -216,10 +234,14 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oProducto: {
                 id: 0,
                 nombre: "",
-                dir: "",
+                categoria_id: "",
+                descripcion: "",
+                precio: "",
+                sucursal_id: "",
+                foto: null,
             },
             currentPage: 1,
             perPage: 5,
@@ -237,23 +259,33 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getProductos();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oProducto.id = item.id;
+            this.oProducto.nombre = item.nombre ? item.nombre : "";
+            this.oProducto.categoria_id = item.categoria_id
+                ? item.categoria_id
+                : "";
+            this.oProducto.descripcion = item.descripcion
+                ? item.descripcion
+                : "";
+            this.oProducto.precio = item.precio ? item.precio : "";
+            this.oProducto.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
+            this.oProducto.foto = item.foto ? item.foto : null;
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Productos
+        getProductos() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/productos";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +295,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.productos;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaProducto(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +312,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/productos/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getProductos();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +328,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", producto = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (producto) {
+                this.oProducto = producto;
             }
         },
         onFiltered(filteredItems) {
@@ -308,9 +340,13 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaProducto() {
+            this.oProducto.nombre = "";
+            this.oProducto.categoria_id = "";
+            this.oProducto.descripcion = "";
+            this.oProducto.precio = "";
+            this.oProducto.sucursal_id = "";
+            this.oProducto.foto = null;
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

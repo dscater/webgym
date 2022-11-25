@@ -223,7 +223,6 @@ export default {
             listFiltro: [
                 "Todos",
                 "Tipo de usuario",
-                "Unidad Organizacional",
                 "Rango de fechas",
             ],
             listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
