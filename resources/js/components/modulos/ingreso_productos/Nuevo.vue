@@ -23,45 +23,106 @@
                 <div class="modal-body">
                     <form>
                         <div class="row">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger': errors.nombre,
+                                        'text-danger': errors.sucursal_id,
                                     }"
-                                    >Nombre*</label
+                                    >Seleccionar sucursal*</label
+                                >
+                                <el-select
+                                    class="w-full d-block"
+                                    :class="{
+                                        'is-invalid': errors.sucursal_id,
+                                    }"
+                                    v-model="ingreso_producto.sucursal_id"
+                                    clearable
+                                    @change="getProductos()"
+                                >
+                                    <el-option
+                                        v-for="item in listSucursales"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.sucursal_id"
+                                    v-text="errors.sucursal_id[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.producto_id,
+                                    }"
+                                    >Seleccionar producto*</label
+                                >
+                                <el-select
+                                    class="w-full d-block"
+                                    :class="{
+                                        'is-invalid': errors.producto_id,
+                                    }"
+                                    v-model="ingreso_producto.producto_id"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="item in listProductos"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.producto_id"
+                                    v-text="errors.producto_id[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.cantidad,
+                                    }"
+                                    >Cantidad de ingreso*</label
                                 >
                                 <el-input
-                                    placeholder="Nombre"
-                                    :class="{ 'is-invalid': errors.nombre }"
-                                    v-model="sucursal.nombre"
-                                    clearable
+                                    type="number"
+                                    placeholder="Cantidad de ingreso"
+                                    :class="{ 'is-invalid': errors.cantidad }"
+                                    v-model="ingreso_producto.cantidad"
                                 >
                                 </el-input>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.nombre"
+                                    v-if="errors.cantidad"
                                     v-text="errors.nombre[0]"
                                 ></span>
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger': errors.dir,
+                                        'text-danger': errors.fecha_ingreso,
                                     }"
-                                    >Dirección</label
+                                    >Fecha de ingreso*</label
                                 >
 
                                 <el-input
-                                    placeholder="Dirección"
-                                    :class="{ 'is-invalid': errors.dir }"
-                                    v-model="sucursal.dir"
-                                    clearable
+                                    type="date"
+                                    :class="{
+                                        'is-invalid': errors.fecha_ingreso,
+                                    }"
+                                    v-model="ingreso_producto.fecha_ingreso"
+                                    readonly
                                 >
                                 </el-input>
                                 <span
                                     class="error invalid-feedback"
-                                    v-if="errors.dir"
-                                    v-text="errors.dir[0]"
+                                    v-if="errors.fecha_ingreso"
+                                    v-text="errors.fecha_ingreso[0]"
                                 ></span>
                             </div>
                         </div>
@@ -100,12 +161,14 @@ export default {
             type: String,
             default: "nuevo",
         },
-        sucursal: {
+        ingreso_producto: {
             type: Object,
             default: {
                 id: 0,
-                nombre: "",
-                dir: "",
+                sucursal_id: "",
+                producto_id: "",
+                cantidad: "",
+                fecha_ingreso: "",
             },
         },
     },
@@ -113,6 +176,7 @@ export default {
         muestra_modal: function (newVal, oldVal) {
             this.errors = [];
             if (newVal) {
+                this.getProductos();
                 this.bModal = true;
             } else {
                 this.bModal = false;
@@ -122,7 +186,7 @@ export default {
     computed: {
         tituloModal() {
             if (this.accion == "nuevo") {
-                return "AGREGAR USUARIO";
+                return "AGREGAR REGISTRO";
             } else {
                 return "MODIFICAR REGISTRO";
             }
@@ -141,17 +205,46 @@ export default {
             bModal: this.muestra_modal,
             enviando: false,
             errors: [],
+            listProductos: [],
+            listSucursales: [],
         };
     },
     mounted() {
+        this.getSucursales();
+        this.getProductos();
         this.bModal = this.muestra_modal;
     },
     methods: {
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
+            });
+        },
+        getProductos() {
+            if (this.ingreso_producto.sucursal_id != "") {
+                axios
+                    .get("/admin/productos/productos_sucursal", {
+                        params: {
+                            id: this.ingreso_producto.sucursal_id,
+                        },
+                    })
+                    .then((response) => {
+                        if (response.data.length > 0) {
+                            this.listProductos = response.data;
+                        } else {
+                            this.listProductos = [];
+                            this.ingreso_producto.producto_id = "";
+                        }
+                    });
+            } else {
+                this.listProductos = [];
+            }
+        },
         setRegistroModal() {
             this.enviando = true;
             try {
                 this.textoBtn = "Enviando...";
-                let url = "/admin/sucursals";
+                let url = "/admin/ingreso_productos";
                 let config = {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -159,15 +252,32 @@ export default {
                 };
                 let formdata = new FormData();
                 formdata.append(
-                    "nombre",
-                    this.sucursal.nombre ? this.sucursal.nombre : ""
+                    "sucursal_id",
+                    this.ingreso_producto.sucursal_id
+                        ? this.ingreso_producto.sucursal_id
+                        : ""
                 );
                 formdata.append(
-                    "dir",
-                    this.sucursal.dir ? this.sucursal.dir : ""
+                    "producto_id",
+                    this.ingreso_producto.producto_id
+                        ? this.ingreso_producto.producto_id
+                        : ""
+                );
+                formdata.append(
+                    "cantidad",
+                    this.ingreso_producto.cantidad
+                        ? this.ingreso_producto.cantidad
+                        : ""
+                );
+                formdata.append(
+                    "fecha_ingreso",
+                    this.ingreso_producto.fecha_ingreso
+                        ? this.ingreso_producto.fecha_ingreso
+                        : ""
                 );
                 if (this.accion == "edit") {
-                    url = "/admin/sucursals/" + this.sucursal.id;
+                    url =
+                        "/admin/ingreso_productos/" + this.ingreso_producto.id;
                     formdata.append("_method", "PUT");
                 }
                 axios
@@ -180,7 +290,7 @@ export default {
                             showConfirmButton: false,
                             timer: 1500,
                         });
-                        this.limpiaSucursal();
+                        this.limpiaIngresoProducto();
                         this.$emit("envioModal");
                         this.errors = [];
                         if (this.accion == "edit") {
@@ -212,10 +322,12 @@ export default {
             this.bModal = false;
             this.$emit("close");
         },
-        limpiaSucursal() {
+        limpiaIngresoProducto() {
             this.errors = [];
-            this.sucursal.nombre = "";
-            this.sucursal.dir = "";
+            this.ingreso_producto.sucursal_id = "";
+            this.ingreso_producto.producto_id = "";
+            this.ingreso_producto.cantidad = "";
+            this.ingreso_producto.fecha_ingreso = "";
         },
     },
 };

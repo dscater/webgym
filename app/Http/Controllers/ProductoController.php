@@ -24,6 +24,12 @@ class ProductoController extends Controller
         return response()->JSON(['productos' => $productos, 'total' => count($productos)], 200);
     }
 
+    public function productos_sucursal(Request $request)
+    {
+        $productos = Producto::with("sucursal")->where("sucursal_id", $request->id)->get();
+        return response()->JSON($productos);
+    }
+
     public function store(Request $request)
     {
         if ($request->hasFile('foto')) {

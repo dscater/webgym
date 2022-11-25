@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Ingreso de Productos</h1>
                     </div>
                 </div>
             </div>
@@ -20,13 +20,13 @@
                                         <button
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'ingreso_productos.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
-                                                limpiaSucursal();
+                                                limpiaIngresoProducto();
                                             "
                                         >
                                             <i class="fa fa-plus"></i>
@@ -85,6 +85,16 @@
                                                 :filter="filter"
                                             >
                                                 <template
+                                                    #cell(fecha_ingreso)="row"
+                                                >
+                                                    {{
+                                                        formatoFecha(
+                                                            row.item
+                                                                .fecha_ingreso
+                                                        )
+                                                    }}
+                                                </template>
+                                                <template
                                                     #cell(fecha_registro)="row"
                                                 >
                                                     {{
@@ -113,8 +123,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,10 +132,15 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaIngresoProducto(
                                                                     row.item.id,
                                                                     row.item
-                                                                        .nombre
+                                                                        .sucursal
+                                                                        .nombre +
+                                                                        ' - ' +
+                                                                        row.item
+                                                                            .producto
+                                                                            .nombre
                                                                 )
                                                             "
                                                         >
@@ -176,9 +191,9 @@
         <Nuevo
             :muestra_modal="muestra_modal"
             :accion="modal_accion"
-            :sucursal="oSucursal"
+            :ingreso_producto="oIngresoProducto"
             @close="muestra_modal = false"
-            @envioModal="getSucursals"
+            @envioModal="getIngresoProductos"
         ></Nuevo>
     </div>
 </template>
@@ -197,11 +212,21 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "sucursal.nombre",
+                    label: "Sucursal",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                {
+                    key: "producto.nombre",
+                    label: "Producto",
+                    sortable: true,
+                },
+                { key: "cantidad", label: "Cantidad", sortable: true },
+                {
+                    key: "fecha_ingreso",
+                    label: "Fecha de ingreso",
+                    sortable: true,
+                },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -216,10 +241,12 @@ export default {
             }),
             muestra_modal: false,
             modal_accion: "nuevo",
-            oSucursal: {
+            oIngresoProducto: {
                 id: 0,
-                nombre: "",
-                dir: "",
+                sucursal_id: "",
+                producto_id: "",
+                cantidad: "",
+                fecha_ingreso: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -237,23 +264,31 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getIngresoProductos();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
+            this.oIngresoProducto.id = item.id;
+            this.oIngresoProducto.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
+            this.oIngresoProducto.producto_id = item.producto_id
+                ? item.producto_id
+                : "";
+            this.oIngresoProducto.cantidad = item.cantidad ? item.cantidad : "";
+            this.oIngresoProducto.fecha_ingreso = item.fecha_ingreso
+                ? item.fecha_ingreso
+                : "";
             this.modal_accion = "edit";
             this.muestra_modal = true;
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar IngresoProductos
+        getIngresoProductos() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/ingreso_productos";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +298,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.ingreso_productos;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaIngresoProducto(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +315,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/ingreso_productos/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getIngresoProductos();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,11 +331,11 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
+        abreModal(tipo_accion = "nuevo", ingreso_producto = null) {
             this.muestra_modal = true;
             this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
+            if (ingreso_producto) {
+                this.oIngresoProducto = ingreso_producto;
             }
         },
         onFiltered(filteredItems) {
@@ -308,12 +343,35 @@ export default {
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
+        limpiaIngresoProducto() {
+            this.oIngresoProducto.sucursal_id = "";
+            this.oIngresoProducto.producto_id = "";
+            this.oIngresoProducto.cantidad = "";
+            this.oIngresoProducto.fecha_ingreso = this.fechaActual();
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
+        },
+        fechaActual() {
+            // crea un nuevo objeto `Date`
+            var today = new Date();
+
+            // `getDate()` devuelve el día del mes (del 1 al 31)
+            var day = today.getDate();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            // `getMonth()` devuelve el mes (de 0 a 11)
+            var month = today.getMonth() + 1;
+            if (month < 10) {
+                month = "0" + month;
+            }
+
+            // `getFullYear()` devuelve el año completo
+            var year = today.getFullYear();
+
+            // muestra la fecha de hoy en formato `MM/DD/YYYY`
+            return `${year}-${month}-${day}`;
         },
     },
 };

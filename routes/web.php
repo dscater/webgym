@@ -117,6 +117,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // PRODUCTOS
+    Route::get("productos/productos_sucursal", [ProductoController::class, 'productos_sucursal']);
     Route::resource('productos', ProductoController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
