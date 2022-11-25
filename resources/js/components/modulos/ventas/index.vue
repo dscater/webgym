@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Sucursales</h1>
+                        <h1>Venta de Productos</h1>
                     </div>
                 </div>
             </div>
@@ -17,21 +17,20 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <button
+                                        <router-link
                                             v-if="
                                                 permisos.includes(
-                                                    'sucursals.create'
+                                                    'ventas.create'
                                                 )
                                             "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
-                                            @click="
-                                                abreModal('nuevo');
-                                                limpiaSucursal();
-                                            "
+                                            :to="{
+                                                name: 'ventas.create',
+                                            }"
                                         >
                                             <i class="fa fa-plus"></i>
                                             Nuevo
-                                        </button>
+                                        </router-link>
                                     </div>
                                 </div>
                             </div>
@@ -84,13 +83,10 @@
                                                 empty-filtered-text="Sin resultados"
                                                 :filter="filter"
                                             >
-                                                <template
-                                                    #cell(fecha_registro)="row"
-                                                >
+                                                <template #cell(fecha)="row">
                                                     {{
                                                         formatoFecha(
-                                                            row.item
-                                                                .fecha_registro
+                                                            row.item.fecha
                                                         )
                                                     }}
                                                 </template>
@@ -99,6 +95,22 @@
                                                     <div
                                                         class="row justify-content-center flex-column"
                                                     >
+                                                        <b-button
+                                                            size="sm"
+                                                            pill
+                                                            variant="outline-primary"
+                                                            class="btn-flat mb-1"
+                                                            title="Pdf"
+                                                            @click="
+                                                                generaReporte(
+                                                                    row.item.id
+                                                                )
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-file-pdf"
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -113,8 +125,9 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
+
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -122,10 +135,20 @@
                                                             class="btn-flat"
                                                             title="Eliminar registro"
                                                             @click="
-                                                                eliminaSucursal(
+                                                                eliminaVenta(
                                                                     row.item.id,
                                                                     row.item
-                                                                        .nombre
+                                                                        .sucursal
+                                                                        .nombre +
+                                                                        ' - ' +
+                                                                        row.item
+                                                                            .cliente.full_name +
+                                                                        ' <br/>Con fecha ' +
+                                                                        formatoFecha(
+                                                                            row
+                                                                                .item
+                                                                                .fecha
+                                                                        )
                                                                 )
                                                             "
                                                         >
@@ -173,22 +196,11 @@
                 </div>
             </div>
         </section>
-        <Nuevo
-            :muestra_modal="muestra_modal"
-            :accion="modal_accion"
-            :sucursal="oSucursal"
-            @close="muestra_modal = false"
-            @envioModal="getSucursals"
-        ></Nuevo>
     </div>
 </template>
 
 <script>
-import Nuevo from "./Nuevo.vue";
 export default {
-    components: {
-        Nuevo,
-    },
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
@@ -197,11 +209,17 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "nombre",
-                    label: "Nombre",
+                    key: "sucursal.nombre",
+                    label: "Sucursal",
                     sortable: true,
                 },
-                { key: "dir", label: "Dirección", sortable: true },
+                {
+                    key: "cliente.full_name",
+                    label: "Cliente",
+                    sortable: true,
+                },
+                { key: "total", label: "Total", sortable: true },
+                { key: "fecha", label: "Fecha", sortable: true },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -214,13 +232,6 @@ export default {
             loadingWindow: Loading.service({
                 fullscreen: this.fullscreenLoading,
             }),
-            muestra_modal: false,
-            modal_accion: "nuevo",
-            oSucursal: {
-                id: 0,
-                nombre: "",
-                dir: "",
-            },
             currentPage: 1,
             perPage: 5,
             pageOptions: [
@@ -237,23 +248,24 @@ export default {
     },
     mounted() {
         this.loadingWindow.close();
-        this.getSucursals();
+        this.getVentas();
     },
     methods: {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
-            this.oSucursal.id = item.id;
-            this.oSucursal.nombre = item.nombre ? item.nombre : "";
-            this.oSucursal.dir = item.dir ? item.dir : "";
-            this.modal_accion = "edit";
-            this.muestra_modal = true;
+            this.$router.push({
+                name: "ventas.edit",
+                params: {
+                    id: item.id,
+                },
+            });
         },
 
-        // Listar Sucursals
-        getSucursals() {
+        // Listar Ventas
+        getVentas() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/sucursals";
+            let url = "/admin/ventas";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -263,11 +275,11 @@ export default {
                 })
                 .then((res) => {
                     this.showOverlay = false;
-                    this.listRegistros = res.data.sucursals;
+                    this.listRegistros = res.data.ventas;
                     this.totalRows = res.data.total;
                 });
         },
-        eliminaSucursal(id, descripcion) {
+        eliminaVenta(id, descripcion) {
             Swal.fire({
                 title: "¿Quierés eliminar este registro?",
                 html: `<strong>${descripcion}</strong>`,
@@ -280,11 +292,11 @@ export default {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                        .post("/admin/sucursals/" + id, {
+                        .post("/admin/ventas/" + id, {
                             _method: "DELETE",
                         })
                         .then((res) => {
-                            this.getSucursals();
+                            this.getVentas();
                             this.filter = "";
                             Swal.fire({
                                 icon: "success",
@@ -296,24 +308,38 @@ export default {
                 }
             });
         },
-        abreModal(tipo_accion = "nuevo", sucursal = null) {
-            this.muestra_modal = true;
-            this.modal_accion = tipo_accion;
-            if (sucursal) {
-                this.oSucursal = sucursal;
-            }
-        },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
         },
-        limpiaSucursal() {
-            this.oSucursal.nombre = "";
-            this.oSucursal.dir = "";
-        },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
+        },
+        generaReporte(id) {
+            let config = {
+                responseType: "blob",
+            };
+            axios
+                .post("/admin/ventas/pdf/" + id, null, config)
+                .then((res) => {
+                    this.errors = [];
+                    this.enviando = false;
+                    let pdfBlob = new Blob([res.data], {
+                        type: "application/pdf",
+                    });
+                    let urlReporte = URL.createObjectURL(pdfBlob);
+                    window.open(urlReporte);
+                })
+                .catch(async (error) => {
+                    let responseObj = await error.response.data.text();
+                    responseObj = JSON.parse(responseObj);
+                    this.enviando = false;
+                    if (error.response) {
+                        if (error.response.status == 422)
+                            this.errors = responseObj.errors;
+                    }
+                });
         },
     },
 };

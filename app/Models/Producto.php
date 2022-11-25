@@ -32,6 +32,12 @@ class Producto extends Model
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
 
+    public function detalle_ventas()
+    {
+        return $this->hasMany(DetalleVenta::class, 'producto_id');
+    }
+
+    // ***************************************************** //
     public function getPathImageAttribute()
     {
         if ($this->foto && trim($this->foto) != "") {

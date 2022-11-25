@@ -103,4 +103,25 @@ class ProductoController extends Controller
             'msj' => 'El registro se eliminó correctamente'
         ], 200);
     }
+
+    public function valida_stock(Request $request)
+    {
+        $cantidad = $request->cantidad;
+        $producto = Producto::find($request->id);
+
+        if ($producto->stock_actual >= $cantidad) {
+            return response()->JSON(
+                [
+                    "sw" => true,
+                    "producto" => $producto,
+                ]
+            );
+        }
+        return response()->JSON(
+            [
+                "sw" => false,
+                "msj" => "La cantidad que desea ingresar supera al stock disponible del producto.<br/> Stock actual: <b>" . $producto->stock_actual . " unidades</b>"
+            ]
+        );
+    }
 }

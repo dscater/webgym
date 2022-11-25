@@ -35,6 +35,7 @@ class IngresoProductoController extends Controller
 
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual + (float)$ingreso_producto->cantidad;
+        $producto->ingresos = (float) $producto->ingresos + (float)$ingreso_producto->cantidad;
         $producto->save();
 
         return response()->JSON(["sw" => true, "msj" => "El registro se almacenó correctamente"]);
@@ -51,12 +52,14 @@ class IngresoProductoController extends Controller
 
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual - (float)$ingreso_producto->cantidad;
+        $producto->ingresos = (float) $producto->ingresos - (float)$ingreso_producto->cantidad;
         $producto->save();
 
         $ingreso_producto->update(array_map("mb_strtoupper", $request->all()));
 
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual + (float)$ingreso_producto->cantidad;
+        $producto->ingresos = (float) $producto->ingresos + (float)$ingreso_producto->cantidad;
         $producto->save();
 
         return response()->JSON(["sw" => true, "ingreso_producto" => $ingreso_producto, "msj" => "El registro se actualizó correctamente"]);
@@ -66,6 +69,7 @@ class IngresoProductoController extends Controller
     {
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual - (float)$ingreso_producto->cantidad;
+        $producto->ingresos = (float) $producto->ingresos - (float)$ingreso_producto->cantidad;
         $producto->save();
 
         $ingreso_producto->delete();

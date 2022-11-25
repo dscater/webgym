@@ -105,6 +105,17 @@ export default new Router({
             name: 'ventas.index',
             component: require('./components/modulos/ventas/index.vue').default,
         },
+        {
+            path: '/ventas/create',
+            name: 'ventas.create',
+            component: require('./components/modulos/ventas/create.vue').default,
+        },
+        {
+            path: '/ventas/edit/:id',
+            name: 'ventas.edit',
+            props: true,
+            component: require('./components/modulos/ventas/edit.vue').default,
+        },
 
         // PRODUCTOS
         {
