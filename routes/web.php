@@ -111,6 +111,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // EVALUACION FISICA
+    Route::post("evaluacion_fisicas/pdf/{evaluacion_fisica}", [EvaluacionFisicaController::class, 'pdf']);
     Route::resource('evaluacion_fisicas', EvaluacionFisicaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);

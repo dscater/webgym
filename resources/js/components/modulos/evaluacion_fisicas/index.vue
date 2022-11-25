@@ -98,6 +98,22 @@
                                                         <b-button
                                                             size="sm"
                                                             pill
+                                                            variant="outline-primary"
+                                                            class="btn-flat mb-1"
+                                                            title="Pdf"
+                                                            @click="
+                                                                generaReporte(
+                                                                    row.item.id
+                                                                )
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-file-pdf"
+                                                            ></i>
+                                                        </b-button>
+                                                        <b-button
+                                                            size="sm"
+                                                            pill
                                                             variant="outline-warning"
                                                             class="btn-flat mb-1"
                                                             title="Editar registro"
@@ -111,6 +127,7 @@
                                                                 class="fa fa-edit"
                                                             ></i>
                                                         </b-button>
+
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -297,6 +314,31 @@ export default {
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
+        },
+        generaReporte(id) {
+            let config = {
+                responseType: "blob",
+            };
+            axios
+                .post("/admin/evaluacion_fisicas/pdf/" + id, null, config)
+                .then((res) => {
+                    this.errors = [];
+                    this.enviando = false;
+                    let pdfBlob = new Blob([res.data], {
+                        type: "application/pdf",
+                    });
+                    let urlReporte = URL.createObjectURL(pdfBlob);
+                    window.open(urlReporte);
+                })
+                .catch(async (error) => {
+                    let responseObj = await error.response.data.text();
+                    responseObj = JSON.parse(responseObj);
+                    this.enviando = false;
+                    if (error.response) {
+                        if (error.response.status == 422)
+                            this.errors = responseObj.errors;
+                    }
+                });
         },
     },
 };

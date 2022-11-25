@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MaestroRegistro;
-use App\Models\SeguimientoAprobado;
-use App\Models\SeguimientoRectificacion;
-use App\Models\SeguimientoTramite;
 use App\Models\User;
 use Illuminate\Http\Request;
 use PDF;

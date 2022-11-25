@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EvaluacionFisica;
 use Illuminate\Http\Request;
+use PDF;
 
 class EvaluacionFisicaController extends Controller
 {
@@ -77,5 +78,19 @@ class EvaluacionFisicaController extends Controller
         $evaluacion_fisica->imcs()->delete();
         $evaluacion_fisica->delete();
         return response()->JSON(["sw" => true, "evaluacion_fisica" => $evaluacion_fisica, "msj" => "El registro se actualizó correctamente"]);
+    }
+
+    public function pdf(EvaluacionFisica $evaluacion_fisica)
+    {
+        $pdf = PDF::loadView('reportes.evaluacion_fisica', compact('evaluacion_fisica'))->setPaper('legal', 'portrait');
+        // ENUMERAR LAS PÁGINAS USANDO CANVAS
+        $pdf->output();
+        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $dom_pdf->get_canvas();
+        $alto = $canvas->get_height();
+        $ancho = $canvas->get_width();
+        $canvas->page_text($ancho - 90, $alto - 25, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->download('evaluacion_fisica.pdf');
     }
 }
