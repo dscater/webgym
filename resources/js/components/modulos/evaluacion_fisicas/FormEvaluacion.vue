@@ -1410,28 +1410,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.peso1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.peso1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.peso2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.peso2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.peso3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.peso3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.peso4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.peso4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1441,28 +1449,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.imc1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.imc1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.imc2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.imc2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.imc3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.imc3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.imc4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.imc4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1472,28 +1488,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.glicemia1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.glicemia1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.glicemia2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.glicemia2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.glicemia3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.glicemia3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.glicemia4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.glicemia4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1503,28 +1527,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.rpm1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.rpm1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.rpm2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.rpm2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.rpm3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.rpm3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.rpm4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.rpm4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1534,28 +1566,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.lpm1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.lpm1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.lpm2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.lpm2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.lpm3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.lpm3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.lpm4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.lpm4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1565,28 +1605,36 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.oxigeno1"
+                                            v-model="
+                                                evaluacion_fisica.imcs.oxigeno1
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.oxigeno2"
+                                            v-model="
+                                                evaluacion_fisica.imcs.oxigeno2
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.oxigeno3"
+                                            v-model="
+                                                evaluacion_fisica.imcs.oxigeno3
+                                            "
                                         />
                                     </td>
                                     <td>
                                         <input
                                             type="text"
                                             class="form-control"
-                                            v-model="evaluacion_fisica.imcs.oxigeno4"
+                                            v-model="
+                                                evaluacion_fisica.imcs.oxigeno4
+                                            "
                                         />
                                     </td>
                                 </tr>
@@ -1672,6 +1720,14 @@
                 @click="enviarFormulario()"
                 v-html="textoBoton"
             ></el-button>
+
+            <el-button
+                v-if="this.evaluacion_fisica.id != 0"
+                type="success"
+                :loading="enviando"
+                @click="generaReporte()"
+                ><i class="fa fa-file-pdf"></i> Exportar</el-button
+            >
         </div>
     </div>
 </template>
@@ -2027,6 +2083,39 @@ export default {
             $(".mediciones").on("focusout", "input", function () {
                 $(this).parents("tr").removeClass("seleccionado");
             });
+        },
+        generaReporte() {
+            this.enviando = true;
+            let config = {
+                responseType: "blob",
+            };
+            axios
+                .post(
+                    "/admin/evaluacion_fisicas/pdf/" +
+                        this.evaluacion_fisica.id,
+                    null,
+                    config
+                )
+                .then((res) => {
+                    this.errors = [];
+                    this.enviando = false;
+                    let pdfBlob = new Blob([res.data], {
+                        type: "application/pdf",
+                    });
+                    let urlReporte = URL.createObjectURL(pdfBlob);
+                    window.open(urlReporte);
+                    this.enviando = false;
+                })
+                .catch(async (error) => {
+                    let responseObj = await error.response.data.text();
+                    responseObj = JSON.parse(responseObj);
+                    this.enviando = false;
+                    if (error.response) {
+                        if (error.response.status == 422)
+                            this.errors = responseObj.errors;
+                    }
+                    this.enviando = false;
+                });
         },
     },
 };
