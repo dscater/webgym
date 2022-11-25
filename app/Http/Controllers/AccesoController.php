@@ -53,7 +53,7 @@ class AccesoController extends Controller
                 return response()->JSON([
                     "sw" => true,
                     "accion" => $accion,
-                    "img" => '<img src="' . $inscripcion->cliente->full_name . '">',
+                    "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
                     "msj" => $inscripcion->cliente->full_name
                 ]);
             } else {
