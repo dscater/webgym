@@ -212,9 +212,18 @@
                 ><i class="fa fa-file-pdf"></i> Exportar</el-button
             >
 
-            <router-link :to="{ name: 'ventas.index' }"
+            <router-link
+                :to="{ name: 'ventas.create' }"
+                v-if="this.venta.id != 0"
+                class="btn btn-danger btn-lg"
+                ><i class="fa fa-plus"></i> Realizar otra venta</router-link
+            >
+
+            <router-link
+                :to="{ name: 'ventas.index' }"
                 class="btn btn-default btn-lg"
-                ><i class="fa fa-cash-register"></i> Volver a ventas</router-link
+                ><i class="fa fa-cash-register"></i> Volver a
+                ventas</router-link
             >
         </div>
     </div>
@@ -477,6 +486,8 @@ export default {
                             producto: response.data.producto,
                         });
                         this.sumaTotalVenta();
+                        this.producto_id = "";
+                        this.cantidad = 1;
                     } else {
                         Swal.fire({
                             icon: "info",

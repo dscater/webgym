@@ -316,7 +316,24 @@
                     </li>
                     <li
                         class="nav-header bg-navy"
-                        v-if="permisos.includes('reportes.usuarios')"
+                        v-if="
+                            permisos.includes('reportes.usuarios') ||
+                            permisos.includes('reportes.clientes') ||
+                            permisos.includes('reportes.empleados') ||
+                            permisos.includes('reportes.maquinas') ||
+                            permisos.includes(
+                                'reportes.mantenimiento_maquinas'
+                            ) ||
+                            permisos.includes('reportes.inscripcions') ||
+                            permisos.includes('reportes.accesos') ||
+                            permisos.includes('reportes.cobros') ||
+                            permisos.includes('reportes.productos') ||
+                            permisos.includes('reportes.ingreso_productos') ||
+                            permisos.includes('reportes.stock_productos') ||
+                            permisos.includes('reportes.venta_productos') ||
+                            permisos.includes('reportes.grafico_ventas') ||
+                            permisos.includes('reportes.grafico_cobros')
+                        "
                     >
                         REPORTES
                     </li>
@@ -330,6 +347,162 @@
                         >
                             <i class="fas fa-file-pdf nav-icon"></i>
                             <p>Lista de Usuarios</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.clientes')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.clientes' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Clientes</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.empleados')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.empleados' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Empleados</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.maquinas')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.maquinas' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Máquinas</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.mantenimiento_maquinas')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.mantenimiento_maquinas' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Mantenimiento de Máquinas</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.inscripcions')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.inscripcions' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Inscripciones</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.accesos')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.accesos' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Control de Acceso</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.cobros')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.cobros' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Cobros</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.productos')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.productos' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Productos</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.ingreso_productos')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.ingreso_productos' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Ingresos de Productos</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.stock_productos')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.stock_productos' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Stock de Productos</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.venta_productos')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.venta_productos' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Lista de Ventas de Productos</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.grafico_ventas')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.grafico_ventas' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Gráfico Ventas</p>
+                        </router-link>
+                    </li>
+                    <li
+                        class="nav-item"
+                        v-if="permisos.includes('reportes.grafico_cobros')"
+                    >
+                        <router-link
+                            :to="{ name: 'reportes.grafico_cobros' }"
+                            class="nav-link"
+                        >
+                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <p>Gráfico Cobros</p>
                         </router-link>
                     </li>
                     <li class="nav-header bg-navy">OTRAS OPCIONES</li>

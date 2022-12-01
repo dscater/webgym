@@ -144,7 +144,7 @@ return [
         'oficina_id' => 'oficina',
         'puerto_destino_id' => 'puerto destino',
         'destino_final_id' => 'destino final',
-        'units_id' => 'units',
+        'sucursal_id' => 'sucursal',
         'units_id' => 'units',
         'socio_proveedor_id' => 'socio proveedor',
         'embarcado_id' => 'embarcado',

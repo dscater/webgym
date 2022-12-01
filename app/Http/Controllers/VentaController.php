@@ -6,6 +6,8 @@ use App\Models\DetalleVenta;
 use App\Models\Producto;
 use App\Models\Venta;
 use Illuminate\Http\Request;
+use PDF;
+use App\library\numero_a_letras\src\NumeroALetras;
 
 class VentaController extends Controller
 {
@@ -101,5 +103,34 @@ class VentaController extends Controller
 
         $venta->delete();
         return response()->JSON(["sw" => true, "venta" => $venta, "msj" => "El registro se actualizó correctamente"]);
+    }
+
+    public function pdf(Venta $venta)
+    {
+
+        $convertir = new NumeroALetras();
+        $array_monto = explode('.', $venta->total);
+        $literal = $convertir->convertir($array_monto[0]);
+        $literal .= " " . $array_monto[1] . "/100." . " BOLIVIANOS";
+
+        $nro_factura = (int)$venta->id;
+        if ($nro_factura < 10) {
+            $nro_factura = '000' . $nro_factura;
+        } else if ($nro_factura < 100) {
+            $nro_factura = '00' . $nro_factura;
+        } else if ($nro_factura < 1000) {
+            $nro_factura = '0' . $nro_factura;
+        }
+
+        $pdf = PDF::loadView('reportes.venta', compact('venta', 'literal', 'nro_factura'))->setPaper('legal', 'landscape');
+        // ENUMERAR LAS PÁGINAS USANDO CANVAS
+        $pdf->output();
+        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $dom_pdf->get_canvas();
+        $alto = $canvas->get_height();
+        $ancho = $canvas->get_width();
+        $canvas->page_text($ancho - 90, $alto - 25, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9, array(0, 0, 0));
+
+        return $pdf->download('Usuarios.pdf');
     }
 }

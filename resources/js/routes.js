@@ -174,6 +174,84 @@ export default new Router({
             component: require('./components/modulos/reportes/usuarios.vue').default,
             props: true
         },
+        {
+            path: '/reportes/clientes',
+            name: 'reportes.clientes',
+            component: require('./components/modulos/reportes/clientes.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/empleados',
+            name: 'reportes.empleados',
+            component: require('./components/modulos/reportes/empleados.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/maquinas',
+            name: 'reportes.maquinas',
+            component: require('./components/modulos/reportes/maquinas.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/mantenimiento_maquinas',
+            name: 'reportes.mantenimiento_maquinas',
+            component: require('./components/modulos/reportes/mantenimiento_maquinas.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/inscripcions',
+            name: 'reportes.inscripcions',
+            component: require('./components/modulos/reportes/inscripcions.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/accesos',
+            name: 'reportes.accesos',
+            component: require('./components/modulos/reportes/accesos.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/cobros',
+            name: 'reportes.cobros',
+            component: require('./components/modulos/reportes/cobros.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/productos',
+            name: 'reportes.productos',
+            component: require('./components/modulos/reportes/productos.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/ingreso_productos',
+            name: 'reportes.ingreso_productos',
+            component: require('./components/modulos/reportes/ingreso_productos.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/stock_productos',
+            name: 'reportes.stock_productos',
+            component: require('./components/modulos/reportes/stock_productos.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/venta_productos',
+            name: 'reportes.venta_productos',
+            component: require('./components/modulos/reportes/venta_productos.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/grafico_ventas',
+            name: 'reportes.grafico_ventas',
+            component: require('./components/modulos/reportes/grafico_ventas.vue').default,
+            props: true
+        },
+        {
+            path: '/reportes/grafico_cobros',
+            name: 'reportes.grafico_cobros',
+            component: require('./components/modulos/reportes/grafico_cobros.vue').default,
+            props: true
+        },
 
         // PÁGINA NO ENCONTRADA
         {

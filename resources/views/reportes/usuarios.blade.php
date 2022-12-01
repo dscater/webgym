@@ -169,13 +169,14 @@
     <table border="1">
         <thead class="green">
             <tr>
+                <th width="3%">N°</th>
                 <th width="5%">Foto</th>
                 <th>NOMBRE USUARIO</th>
                 <th>CÓDIGO DE USUARIO</th>
                 <th>E-MAIL</th>
                 <th>TIPO DE USUARIO</th>
                 <th>SUCURSAL</th>
-                <th>FECHA DE REGISTRO</th>
+                <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
         <tbody>
@@ -184,13 +185,14 @@
             @endphp
             @foreach ($usuarios as $user)
                 <tr>
+                    <td class="centreado">{{ $cont++ }}</td>
                     <td class="img_celda"><img src="{{ asset('imgs/users/' . $user->foto) }}" alt="Foto"></td>
                     <td>{{ $user->usuario }}</td>
-                    <td>{{ $user->codigo }}</td>
-                    <td>{{ $user->correo }}</td>
-                    <td>{{ $user->tipo }}</td>
-                    <td>{{ $user->sucursal->nombre }}</td>
-                    <td>{{ $user->fecha_registro }}</td>
+                    <td class="centreado">{{ $user->codigo }}</td>
+                    <td class="centreado">{{ $user->correo }}</td>
+                    <td class="centreado">{{ $user->tipo }}</td>
+                    <td class="centreado">{{ $user->sucursal->nombre }}</td>
+                    <td class="centreado">{{ $user->fecha_registro }}</td>
                 </tr>
             @endforeach
         </tbody>

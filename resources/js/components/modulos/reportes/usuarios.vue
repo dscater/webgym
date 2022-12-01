@@ -22,6 +22,40 @@
                                                 <label
                                                     :class="{
                                                         'text-danger':
+                                                            errors.sucursal_id,
+                                                    }"
+                                                    >Sucursal*</label
+                                                >
+                                                <el-select
+                                                    v-model="
+                                                        oReporte.sucursal_id
+                                                    "
+                                                    filterable
+                                                    placeholder="Seleccione"
+                                                    class="d-block"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.sucursal_id,
+                                                    }"
+                                                >
+                                                    <el-option
+                                                        v-for="item in listSucursales"
+                                                        :key="item.id"
+                                                        :value="item.id"
+                                                        :label="item.nombre"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.sucursal_id"
+                                                    v-text="errors.sucursal_id[0]"
+                                                ></span>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label
+                                                    :class="{
+                                                        'text-danger':
                                                             errors.filtro,
                                                     }"
                                                     >Seleccione*</label
@@ -86,47 +120,6 @@
                                                     class="error invalid-feedback"
                                                     v-if="errors.tipo"
                                                     v-text="errors.tipo[0]"
-                                                ></span>
-                                            </div>
-                                            <div
-                                                class="form-group col-md-12"
-                                                v-if="
-                                                    oReporte.filtro ==
-                                                    'Unidad Organizacional'
-                                                "
-                                            >
-                                                <label
-                                                    :class="{
-                                                        'text-danger':
-                                                            errors.filtro,
-                                                    }"
-                                                    >Unidad
-                                                    Organizacional*</label
-                                                >
-                                                <el-select
-                                                    v-model="oReporte.unidad_id"
-                                                    filterable
-                                                    placeholder="Seleccione"
-                                                    class="d-block"
-                                                    :class="{
-                                                        'is-invalid':
-                                                            errors.unidad_id,
-                                                    }"
-                                                >
-                                                    <el-option
-                                                        v-for="item in listUnidades"
-                                                        :key="item.id"
-                                                        :label="item.nombre"
-                                                        :value="item.id"
-                                                    >
-                                                    </el-option>
-                                                </el-select>
-                                                <span
-                                                    class="error invalid-feedback"
-                                                    v-if="errors.unidad_id"
-                                                    v-text="
-                                                        errors.unidad_ido[0]
-                                                    "
                                                 ></span>
                                             </div>
                                             <div
@@ -223,20 +216,21 @@ export default {
             listFiltro: [
                 "Todos",
                 "Tipo de usuario",
-                "Rango de fechas",
+                // "Rango de fechas",
             ],
             listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
             errors: [],
-            listUnidades: [],
+            sucursal_id: [],
+            listSucursales: [],
         };
     },
     mounted() {
-        this.getUnidades();
+        this.getSucursales();
     },
     methods: {
-        getUnidades() {
-            axios.get("/admin/unidads").then((response) => {
-                this.listUnidades = response.data.unidads;
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
             });
         },
         limpiarFormulario() {

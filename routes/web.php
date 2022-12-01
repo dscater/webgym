@@ -117,7 +117,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // PRODUCTOS
-    
+
     Route::get("productos/valida_stock", [ProductoController::class, 'valida_stock']);
     Route::get("productos/productos_sucursal", [ProductoController::class, 'productos_sucursal']);
     Route::resource('productos', ProductoController::class)->only([
@@ -130,12 +130,26 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // VENTAS
+    Route::post("ventas/pdf/{venta}", [VentaController::class, 'pdf']);
     Route::resource('ventas', VentaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
 
     // REPORTES
     Route::post('reportes/usuarios', [ReporteController::class, 'usuarios']);
+    Route::post('reportes/clientes', [ReporteController::class, 'clientes']);
+    Route::post('reportes/empleados', [ReporteController::class, 'empleados']);
+    Route::post('reportes/maquinas', [ReporteController::class, 'maquinas']);
+    Route::post('reportes/mantenimiento_maquinas', [ReporteController::class, 'mantenimiento_maquinas']);
+    Route::post('reportes/inscripcions', [ReporteController::class, 'inscripcions']);
+    Route::post('reportes/accesos', [ReporteController::class, 'accesos']);
+    Route::post('reportes/cobros', [ReporteController::class, 'cobros']);
+    Route::post('reportes/productos', [ReporteController::class, 'productos']);
+    Route::post('reportes/ingreso_productos', [ReporteController::class, 'ingreso_productos']);
+    Route::post('reportes/stock_productos', [ReporteController::class, 'stock_productos']);
+    Route::post('reportes/venta_productos', [ReporteController::class, 'venta_productos']);
+    Route::post('reportes/grafico_ventas', [ReporteController::class, 'grafico_ventas']);
+    Route::post('reportes/grafico_cobros', [ReporteController::class, 'grafico_cobros']);
 });
 
 // ---------------------------------------
