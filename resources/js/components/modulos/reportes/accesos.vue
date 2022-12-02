@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Lista de Control de Acceso</h1>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,7 @@
                                                         'is-invalid':
                                                             errors.sucursal_id,
                                                     }"
+                                                    @change="getClientes"
                                                 >
                                                     <el-option
                                                         v-for="item in listSucursales"
@@ -49,7 +50,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -87,8 +90,7 @@
                                             <div
                                                 class="form-group col-md-12"
                                                 v-if="
-                                                    oReporte.filtro ==
-                                                    'Tipo de usuario'
+                                                    oReporte.filtro == 'Cliente'
                                                 "
                                             >
                                                 <label
@@ -99,27 +101,31 @@
                                                     >Seleccione*</label
                                                 >
                                                 <el-select
-                                                    v-model="oReporte.tipo"
+                                                    v-model="
+                                                        oReporte.cliente_id
+                                                    "
                                                     filterable
                                                     placeholder="Seleccione"
                                                     class="d-block"
                                                     :class="{
                                                         'is-invalid':
-                                                            errors.tipo,
+                                                            errors.cliente_id,
                                                     }"
                                                 >
                                                     <el-option
-                                                        v-for="item in listTipos"
-                                                        :key="item"
-                                                        :label="item"
-                                                        :value="item"
+                                                        v-for="item in listClientes"
+                                                        :key="item.id"
+                                                        :label="item.full_name"
+                                                        :value="item.id"
                                                     >
                                                     </el-option>
                                                 </el-select>
                                                 <span
                                                     class="error invalid-feedback"
-                                                    v-if="errors.tipo"
-                                                    v-text="errors.tipo[0]"
+                                                    v-if="errors.cliente_id"
+                                                    v-text="
+                                                        errors.cliente_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div
@@ -206,19 +212,16 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                tipo: "",
+                sucursal_id: "",
+                cliente_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Tipo de usuario",
-                // "Rango de fechas",
-            ],
-            listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
+            listFiltro: ["Todos", "Cliente", "Rango de fechas"],
+            listClientes: [],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
@@ -226,12 +229,25 @@ export default {
     },
     mounted() {
         this.getSucursales();
+        this.getClientes();
     },
     methods: {
         getSucursales() {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
             });
+        },
+        getClientes() {
+            this.oReporte.cliente_id = "";
+            axios
+                .get("/admin/clientes/clientes_sucursal", {
+                    params: {
+                        id: this.oReporte.sucursal_id,
+                    },
+                })
+                .then((response) => {
+                    this.listClientes = response.data;
+                });
         },
         limpiarFormulario() {
             this.oReporte.filtro = "Todos";
@@ -242,7 +258,7 @@ export default {
                 responseType: "blob",
             };
             axios
-                .post("/admin/reportes/usuarios", this.oReporte, config)
+                .post("/admin/reportes/accesos", this.oReporte, config)
                 .then((res) => {
                     this.errors = [];
                     this.enviando = false;

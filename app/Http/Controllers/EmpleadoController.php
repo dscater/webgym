@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Empleado;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoController extends Controller
 {
@@ -123,5 +124,12 @@ class EmpleadoController extends Controller
             'sw' => true,
             'msj' => 'El registro se eliminó correctamente'
         ], 200);
+    }
+
+    public function cargos()
+    {
+        $cargos = DB::select("SELECT cargo FROM empleados WHERE cargo!=''");
+        
+        return $cargos;
     }
 }

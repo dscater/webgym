@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Lista de Empleados</h1>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -87,8 +89,7 @@
                                             <div
                                                 class="form-group col-md-12"
                                                 v-if="
-                                                    oReporte.filtro ==
-                                                    'Tipo de usuario'
+                                                    oReporte.filtro == 'Cargo'
                                                 "
                                             >
                                                 <label
@@ -96,30 +97,31 @@
                                                         'text-danger':
                                                             errors.filtro,
                                                     }"
-                                                    >Seleccione*</label
+                                                    >Cargo*</label
                                                 >
-                                                <el-select
-                                                    v-model="oReporte.tipo"
-                                                    filterable
-                                                    placeholder="Seleccione"
-                                                    class="d-block"
+                                                <input
+                                                    class="form-control"
+                                                    v-model="oReporte.cargo"
                                                     :class="{
                                                         'is-invalid':
-                                                            errors.tipo,
+                                                            errors.cargo,
                                                     }"
-                                                >
-                                                    <el-option
-                                                        v-for="item in listTipos"
-                                                        :key="item"
-                                                        :label="item"
-                                                        :value="item"
-                                                    >
-                                                    </el-option>
-                                                </el-select>
+                                                    list="listCargos"
+                                                />
+                                                <datalist id="listCargos">
+                                                    <option
+                                                        v-for="(
+                                                            item, index
+                                                        ) in listCargos"
+                                                        :keY="index"
+                                                        :value="item.cargo"
+                                                    ></option>
+                                                </datalist>
+
                                                 <span
                                                     class="error invalid-feedback"
-                                                    v-if="errors.tipo"
-                                                    v-text="errors.tipo[0]"
+                                                    v-if="errors.cargo"
+                                                    v-text="errors.cargo[0]"
                                                 ></span>
                                             </div>
                                             <div
@@ -206,31 +208,35 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                tipo: "",
+                sucursal_id: "",
+                cargo: "",
                 fecha_ini: "",
                 fecha_fin: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Tipo de usuario",
-                // "Rango de fechas",
-            ],
+            listFiltro: ["Todos", "Cargo", "Rango de fechas"],
             listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
+            listCargos: [],
         };
     },
     mounted() {
         this.getSucursales();
+        this.getCargos();
     },
     methods: {
         getSucursales() {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
+            });
+        },
+        getCargos() {
+            axios.get("/admin/empleados/cargos").then((response) => {
+                this.listCargos = response.data;
             });
         },
         limpiarFormulario() {
@@ -242,7 +248,7 @@ export default {
                 responseType: "blob",
             };
             axios
-                .post("/admin/reportes/usuarios", this.oReporte, config)
+                .post("/admin/reportes/empleados", this.oReporte, config)
                 .then((res) => {
                     this.errors = [];
                     this.enviando = false;

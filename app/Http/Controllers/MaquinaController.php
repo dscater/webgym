@@ -23,6 +23,12 @@ class MaquinaController extends Controller
         return response()->JSON(['maquinas' => $maquinas, 'total' => count($maquinas)], 200);
     }
 
+    public function maquinas_sucursal(Request $request)
+    {
+        $maquinas = Maquina::with("sucursal")->where("sucursal_id", $request->id)->get();
+        return response()->JSON($maquinas);
+    }
+
     public function store(Request $request)
     {
         if ($request->hasFile('foto')) {

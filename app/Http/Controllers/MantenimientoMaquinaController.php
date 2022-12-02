@@ -9,6 +9,7 @@ class MantenimientoMaquinaController extends Controller
 {
     public $validacion = [
         "maquina_id" => "required",
+        "sucursal_id" => "required",
     ];
 
     public $mensajes = [

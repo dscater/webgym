@@ -265,6 +265,7 @@ export default {
             modal_accion: "nuevo",
             oMantenimientoMaquina: {
                 id: 0,
+                sucursal_id: "",
                 maquina_id: "",
                 fecha_mantenimiento: "",
                 descripcion: "",
@@ -292,6 +293,9 @@ export default {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
             this.oMantenimientoMaquina.id = item.id;
+            this.oMantenimientoMaquina.sucursal_id = item.sucursal_id
+                ? item.sucursal_id
+                : "";
             this.oMantenimientoMaquina.maquina_id = item.maquina_id
                 ? item.maquina_id
                 : "";
@@ -367,6 +371,7 @@ export default {
             this.currentPage = 1;
         },
         limpiaMantenimientoMaquina() {
+            this.oMantenimientoMaquina.sucursal_id = "";
             this.oMantenimientoMaquina.maquina_id = "";
             this.oMantenimientoMaquina.fecha_mantenimiento = "";
             this.oMantenimientoMaquina.descripcion = "";

@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Lista de Inscripciones</h1>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,7 @@
                                                         'is-invalid':
                                                             errors.sucursal_id,
                                                     }"
+                                                    @change="getPlanes"
                                                 >
                                                     <el-option
                                                         v-for="item in listSucursales"
@@ -49,7 +50,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -88,7 +91,7 @@
                                                 class="form-group col-md-12"
                                                 v-if="
                                                     oReporte.filtro ==
-                                                    'Tipo de usuario'
+                                                    'Seleccionar Plan'
                                                 "
                                             >
                                                 <label
@@ -99,27 +102,27 @@
                                                     >Seleccione*</label
                                                 >
                                                 <el-select
-                                                    v-model="oReporte.tipo"
+                                                    v-model="oReporte.plan_id"
                                                     filterable
                                                     placeholder="Seleccione"
                                                     class="d-block"
                                                     :class="{
                                                         'is-invalid':
-                                                            errors.tipo,
+                                                            errors.plan_id,
                                                     }"
                                                 >
                                                     <el-option
-                                                        v-for="item in listTipos"
-                                                        :key="item"
-                                                        :label="item"
-                                                        :value="item"
+                                                        v-for="item in listPlanes"
+                                                        :key="item.id"
+                                                        :label="item.nombre"
+                                                        :value="item.id"
                                                     >
                                                     </el-option>
                                                 </el-select>
                                                 <span
                                                     class="error invalid-feedback"
-                                                    v-if="errors.tipo"
-                                                    v-text="errors.tipo[0]"
+                                                    v-if="errors.plan_id"
+                                                    v-text="errors.plan_id[0]"
                                                 ></span>
                                             </div>
                                             <div
@@ -206,19 +209,16 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                tipo: "",
+                sucursal_id: "",
+                plan_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Tipo de usuario",
-                // "Rango de fechas",
-            ],
-            listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
+            listFiltro: ["Todos", "Seleccionar Plan", "Rango de fechas"],
+            listPlanes: [],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
@@ -226,8 +226,21 @@ export default {
     },
     mounted() {
         this.getSucursales();
+        this.getPlanes();
     },
     methods: {
+        getPlanes() {
+            this.oReporte.plan_id = "";
+            axios
+                .get("/admin/plans/plans_sucursal", {
+                    params: {
+                        id: this.oReporte.sucursal_id,
+                    },
+                })
+                .then((response) => {
+                    this.listPlanes = response.data;
+                });
+        },
         getSucursales() {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
@@ -242,7 +255,7 @@ export default {
                 responseType: "blob",
             };
             axios
-                .post("/admin/reportes/usuarios", this.oReporte, config)
+                .post("/admin/reportes/inscripcions", this.oReporte, config)
                 .then((res) => {
                     this.errors = [];
                     this.enviando = false;

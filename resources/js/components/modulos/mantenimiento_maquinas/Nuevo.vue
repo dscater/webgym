@@ -26,6 +26,36 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
+                                        'text-danger': errors.sucursal_id,
+                                    }"
+                                    >Seleccionar Sucursal*</label
+                                >
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.sucursal_id,
+                                    }"
+                                    v-model="mantenimiento_maquina.sucursal_id"
+                                    @change="getMaquinas"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="item in listSucursales"
+                                        :key="item.id"
+                                        :value="item.id"
+                                        :label="item.nombre"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.sucursal_id"
+                                    v-text="errors.sucursal_id[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
                                         'text-danger': errors.maquina_id,
                                     }"
                                     >Seleccionar Maquina*</label
@@ -82,7 +112,8 @@
                                     :class="{
                                         'text-danger': errors.descripcion,
                                     }"
-                                    >Descripción de Mantenimiento realizado</label
+                                    >Descripción de Mantenimiento
+                                    realizado</label
                                 >
                                 <el-input
                                     type="textarea"
@@ -104,18 +135,17 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger':
-                                            errors.fecha_proximo,
+                                        'text-danger': errors.fecha_proximo,
                                     }"
-                                    >Fecha sugerida para próximo mantenimiento</label
+                                    >Fecha sugerida para próximo
+                                    mantenimiento</label
                                 >
 
                                 <el-input
                                     type="date"
                                     placeholder="Dirección"
                                     :class="{
-                                        'is-invalid':
-                                            errors.fecha_proximo,
+                                        'is-invalid': errors.fecha_proximo,
                                     }"
                                     v-model="
                                         mantenimiento_maquina.fecha_proximo
@@ -169,6 +199,7 @@ export default {
             type: Object,
             default: {
                 id: 0,
+                sucursal_id: "",
                 maquina_id: "",
                 fecha_mantenimiento: "",
                 descripcion: "",
@@ -209,17 +240,30 @@ export default {
             enviando: false,
             errors: [],
             listMaquinas: [],
+            listSucursales: [],
         };
     },
     mounted() {
         this.getMaquinas();
+        this.getSucursales();
         this.bModal = this.muestra_modal;
     },
     methods: {
-        getMaquinas() {
-            axios.get("/admin/maquinas").then((response) => {
-                this.listMaquinas = response.data.maquinas;
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
             });
+        },
+        getMaquinas() {
+            axios
+                .get("/admin/maquinas/maquinas_sucursal", {
+                    params: {
+                        id: this.mantenimiento_maquina.sucursal_id,
+                    },
+                })
+                .then((response) => {
+                    this.listMaquinas = response.data;
+                });
         },
         setRegistroModal() {
             this.enviando = true;
@@ -232,6 +276,12 @@ export default {
                     },
                 };
                 let formdata = new FormData();
+                formdata.append(
+                    "sucursal_id",
+                    this.mantenimiento_maquina.sucursal_id
+                        ? this.mantenimiento_maquina.sucursal_id
+                        : ""
+                );
                 formdata.append(
                     "maquina_id",
                     this.mantenimiento_maquina.maquina_id
@@ -311,6 +361,7 @@ export default {
         },
         limpiaMantenimientoMaquina() {
             this.errors = [];
+            this.mantenimiento_maquina.sucursal_id = "";
             this.mantenimiento_maquina.maquina_id = "";
             this.mantenimiento_maquina.fecha_mantenimiento = "";
             this.mantenimiento_maquina.descripcion = "";

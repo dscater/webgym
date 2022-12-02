@@ -75,16 +75,18 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // EMPLEADOS
+    Route::get("empleados/cargos", [EmpleadoController::class, 'cargos']);
     Route::resource('empleados', EmpleadoController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
-
+    
     // CATEGORIAS
     Route::resource('categorias', CategoriaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
 
     // MAQUINAS
+    Route::get("maquinas/maquinas_sucursal", [MaquinaController::class, 'maquinas_sucursal']);
     Route::resource('maquinas', MaquinaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
