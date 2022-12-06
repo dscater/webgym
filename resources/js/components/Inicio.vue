@@ -15,7 +15,7 @@
                                     SISTEMA {{ configuracion.nombre_sistema }}
                                 </h2>
                                 <h3 style="text-align: center">
-                                    ¡BIENVENIDO {{ user.full_name }}!
+                                    ¡BIENVENID@ {{ user.full_name }}!
                                 </h3>
                             </div>
                         </div>

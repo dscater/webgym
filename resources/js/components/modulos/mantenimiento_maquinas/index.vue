@@ -170,7 +170,8 @@
                                                                 eliminaMantenimientoMaquina(
                                                                     row.item.id,
                                                                     row.item
-                                                                        .maquina.nombre
+                                                                        .maquina
+                                                                        .nombre
                                                                 )
                                                             "
                                                         >
@@ -237,6 +238,7 @@ export default {
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
+            user: JSON.parse(localStorage.getItem("user")),
             search: "",
             listRegistros: [],
             showOverlay: false,
@@ -246,9 +248,17 @@ export default {
                     label: "Maquina",
                     sortable: true,
                 },
-                { key: "fecha_mantenimiento", label: "Fecha de mantenimiento", sortable: true },
+                {
+                    key: "fecha_mantenimiento",
+                    label: "Fecha de mantenimiento",
+                    sortable: true,
+                },
                 { key: "descripcion", label: "Descripción", sortable: true },
-                { key: "fecha_proximo", label: "Fecha sugerida para proximo mantenimiento", sortable: true },
+                {
+                    key: "fecha_proximo",
+                    label: "Fecha sugerida para proximo mantenimiento",
+                    sortable: true,
+                },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -372,6 +382,9 @@ export default {
         },
         limpiaMantenimientoMaquina() {
             this.oMantenimientoMaquina.sucursal_id = "";
+            if (this.user.tipo != "GERENTE") {
+                this.oMantenimientoMaquina.sucursal_id = this.user.sucursal_id;
+            }
             this.oMantenimientoMaquina.maquina_id = "";
             this.oMantenimientoMaquina.fecha_mantenimiento = "";
             this.oMantenimientoMaquina.descripcion = "";

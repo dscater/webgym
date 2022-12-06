@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cobro;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CobroController extends Controller
 {
@@ -26,6 +27,10 @@ class CobroController extends Controller
     public function index()
     {
         $cobros = Cobro::with("sucursal")->with("cliente")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $cobros = Cobro::with("sucursal")->with("cliente")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(["cobros" => $cobros, "total" => count($cobros)]);
     }
 

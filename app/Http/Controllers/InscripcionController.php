@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inscripcion;
 use App\Models\Plan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InscripcionController extends Controller
 {
@@ -22,6 +23,15 @@ class InscripcionController extends Controller
             ->with('plan')
             ->with('sucursal')
             ->get();
+
+        if (Auth::user()->tipo != 'GERENTE') {
+            $inscripcions = Inscripcion::with('cliente')
+                ->with('plan')
+                ->with('sucursal')
+                ->where("sucursal_id", Auth::user()->sucursal_id)
+                ->get();
+        }
+
         return response()->JSON(["inscripcions" => $inscripcions, "total" => count($inscripcions)]);
     }
 

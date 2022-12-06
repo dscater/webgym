@@ -14,15 +14,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">
+                            <div
+                                class="card-header"
+                                v-if="permisos.includes('productos.create')"
+                            >
                                 <div class="row">
                                     <div class="col-md-3">
                                         <button
-                                            v-if="
-                                                permisos.includes(
-                                                    'productos.create'
-                                                )
-                                            "
                                             class="btn btn-outline-primary bg-lightblue btn-flat btn-block"
                                             @click="
                                                 abreModal('nuevo');
@@ -119,6 +117,11 @@
                                                                     row.item
                                                                 )
                                                             "
+                                                            v-if="
+                                                                permisos.includes(
+                                                                    'productos.edit'
+                                                                )
+                                                            "
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
@@ -135,6 +138,11 @@
                                                                     row.item.id,
                                                                     row.item
                                                                         .nombre
+                                                                )
+                                                            "
+                                                            v-if="
+                                                                permisos.includes(
+                                                                    'productos.destroy'
                                                                 )
                                                             "
                                                         >

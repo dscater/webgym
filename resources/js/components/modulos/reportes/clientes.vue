@@ -18,7 +18,10 @@
                                 <div class="ml-auto mr-auto col-md-5">
                                     <form>
                                         <div class="row">
-                                            <div class="form-group col-md-12">
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="user.tipo == 'GERENTE'"
+                                            >
                                                 <label
                                                     :class="{
                                                         'text-danger':
@@ -49,7 +52,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -165,9 +170,11 @@
 export default {
     data() {
         return {
+            user: JSON.parse(localStorage.getItem("user")),
             errors: [],
             oReporte: {
                 filtro: "Todos",
+                sucursal_id: "",
                 tipo: "",
                 fecha_ini: "",
                 fecha_fin: "",
@@ -175,17 +182,18 @@ export default {
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Rango de fechas",
-            ],
+            listFiltro: ["Todos", "Rango de fechas"],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
         };
     },
     mounted() {
-        this.getSucursales();
+        if (this.user.tipo != "GERENTE") {
+            this.oReporte.sucursal_id = this.user.sucursal_id;
+        } else {
+            this.getSucursales();
+        }
     },
     methods: {
         getSucursales() {

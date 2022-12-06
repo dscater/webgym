@@ -138,8 +138,8 @@
                                                         >
                                                             <i
                                                                 class="fa fa-edit"
-                                                            ></i> </b-button
-                                                        >
+                                                            ></i>
+                                                        </b-button>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -217,6 +217,7 @@ export default {
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
+            user: JSON.parse(localStorage.getItem("user")),
             search: "",
             listRegistros: [],
             showOverlay: false,
@@ -388,7 +389,11 @@ export default {
             this.oCliente.fono2 = "";
             this.oCliente.correo = "";
             this.oCliente.foto = null;
-            this.oCliente.sucursal_id = "";
+            if (this.user.tipo != "GERENTE") {
+                this.oCliente.sucursal_id = this.user.sucursal_id;
+            } else {
+                this.oCliente.sucursal_id = "";
+            }
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

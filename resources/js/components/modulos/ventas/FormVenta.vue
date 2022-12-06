@@ -3,7 +3,10 @@
         <div class="col-md-12">
             <form>
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div
+                        class="form-group col-md-6"
+                        v-if="user.tipo == 'GERENTE'"
+                    >
                         <label
                             :class="{
                                 'text-danger': errors.sucursal_id,
@@ -36,7 +39,13 @@
                             v-text="errors.sucursal_id[0]"
                         ></span>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div
+                        class="form-group"
+                        :class="{
+                            'col-md-6': user.tipo == 'GERENTE',
+                            'col-md-12': user.tipo != 'GERENTE',
+                        }"
+                    >
                         <label
                             :class="{
                                 'text-danger': errors.cliente_id,
@@ -284,6 +293,9 @@ export default {
         this.getSucursales();
         if (this.venta.id == 0) {
             this.venta.fecha = this.fechaActual();
+        }
+        if (this.user.tipo != "GERENTE") {
+            this.venta.sucursal_id = this.user.sucursal_id;
         }
         this.getClientes();
         this.getProductos();

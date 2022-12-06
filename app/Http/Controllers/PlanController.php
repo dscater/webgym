@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PlanController extends Controller
 {
@@ -17,6 +18,9 @@ class PlanController extends Controller
     public function index()
     {
         $plans = Plan::with("sucursal")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $plans = Plan::with("sucursal")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
         return response()->JSON(["plans" => $plans, "total" => count($plans)]);
     }
 

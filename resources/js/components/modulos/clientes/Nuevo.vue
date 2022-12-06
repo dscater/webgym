@@ -303,7 +303,10 @@
                                     v-text="errors.foto[0]"
                                 ></span>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div
+                                class="form-group col-md-6"
+                                v-if="user.tipo == 'GERENTE'"
+                            >
                                 <label
                                     :class="{
                                         'text-danger': errors.sucursal_id,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EvaluacionFisica;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class EvaluacionFisicaController extends Controller
@@ -16,6 +17,10 @@ class EvaluacionFisicaController extends Controller
     public function index()
     {
         $evaluacion_fisicas = EvaluacionFisica::with("cliente")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $evaluacion_fisicas = EvaluacionFisica::with("cliente")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(["evaluacion_fisicas" => $evaluacion_fisicas, "total" => count($evaluacion_fisicas)]);
     }
 

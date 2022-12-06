@@ -218,6 +218,7 @@ export default {
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
+            user: JSON.parse(localStorage.getItem("user")),
             search: "",
             listRegistros: [],
             showOverlay: false,
@@ -369,6 +370,9 @@ export default {
             this.oInscripcion.cliente_id = "";
             this.oInscripcion.plan_id = "";
             this.oInscripcion.sucursal_id = "";
+            if (this.user.tipo != "GERENTE") {
+                this.oInscripcion.sucursal_id = this.user.sucursal_id;
+            }
             this.oInscripcion.fecha_inscripcion = this.fechaActual();
             this.oInscripcion.codigo_rfid = "";
         },

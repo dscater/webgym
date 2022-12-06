@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Lista de Stock de Productos</h1>
                     </div>
                 </div>
             </div>
@@ -18,7 +18,10 @@
                                 <div class="ml-auto mr-auto col-md-5">
                                     <form>
                                         <div class="row">
-                                            <div class="form-group col-md-12">
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="user.tipo == 'GERENTE'"
+                                            >
                                                 <label
                                                     :class="{
                                                         'text-danger':
@@ -49,7 +52,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                         </div>
@@ -64,7 +69,10 @@
                                                 >{{ textoBtn }}</el-button
                                             >
                                         </div>
-                                        <div class="col-md-12">
+                                        <div
+                                            class="col-md-12"
+                                            v-if="user.tipo == 'GERENTE'"
+                                        >
                                             <el-button
                                                 type="default"
                                                 class="w-full mt-1"
@@ -87,6 +95,7 @@
 export default {
     data() {
         return {
+            user: JSON.parse(localStorage.getItem("user")),
             errors: [],
             oReporte: {
                 sucursal_id: "",
@@ -99,7 +108,11 @@ export default {
         };
     },
     mounted() {
-        this.getSucursales();
+        if (this.user.tipo != "GERENTE") {
+            this.oReporte.sucursal_id = this.user.sucursal_id;
+        } else {
+            this.getSucursales();
+        }
     },
     methods: {
         getSucursales() {

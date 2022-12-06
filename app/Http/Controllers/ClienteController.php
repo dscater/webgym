@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClienteController extends Controller
 {
@@ -26,6 +27,10 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $clientes = Cliente::with("sucursal")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $clientes = Cliente::with("sucursal")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(['clientes' => $clientes, 'total' => count($clientes)], 200);
     }
 

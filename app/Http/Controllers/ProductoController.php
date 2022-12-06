@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoController extends Controller
 {
@@ -21,6 +22,10 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $productos = Producto::with("categoria")->with("sucursal")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $productos = Producto::with("categoria")->with("sucursal")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(['productos' => $productos, 'total' => count($productos)], 200);
     }
 

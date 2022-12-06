@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Maquina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MaquinaController extends Controller
 {
@@ -20,6 +21,9 @@ class MaquinaController extends Controller
     public function index(Request $request)
     {
         $maquinas = Maquina::with("sucursal")->with("categoria")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $maquinas = Maquina::with("sucursal")->with("categoria")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
         return response()->JSON(['maquinas' => $maquinas, 'total' => count($maquinas)], 200);
     }
 

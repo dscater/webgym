@@ -18,7 +18,10 @@
                                 <div class="ml-auto mr-auto col-md-5">
                                     <form>
                                         <div class="row">
-                                            <div class="form-group col-md-12">
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="user.tipo == 'GERENTE'"
+                                            >
                                                 <label
                                                     :class="{
                                                         'text-danger':
@@ -101,7 +104,9 @@
                                                     >Seleccione*</label
                                                 >
                                                 <el-select
-                                                    v-model="oReporte.categoria_id"
+                                                    v-model="
+                                                        oReporte.categoria_id
+                                                    "
                                                     filterable
                                                     placeholder="Seleccione"
                                                     class="d-block"
@@ -121,7 +126,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.categoria_id"
-                                                    v-text="errors.categoria_id[0]"
+                                                    v-text="
+                                                        errors.categoria_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                         </div>
@@ -159,6 +166,7 @@
 export default {
     data() {
         return {
+            user: JSON.parse(localStorage.getItem("user")),
             errors: [],
             oReporte: {
                 filtro: "Todos",
@@ -176,7 +184,11 @@ export default {
         };
     },
     mounted() {
-        this.getSucursales();
+        if (this.user.tipo != "GERENTE") {
+            this.oReporte.sucursal_id = this.user.sucursal_id;
+        } else {
+            this.getSucursales();
+        }
         this.getCategorias();
     },
     methods: {

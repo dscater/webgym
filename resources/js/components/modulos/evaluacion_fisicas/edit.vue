@@ -37,6 +37,7 @@ export default {
     props: ["id"],
     data() {
         return {
+            user: JSON.parse(localStorage.getItem("user")),
             fullscreenLoading: true,
             loadingWindow: Loading.service({
                 fullscreen: this.fullscreenLoading,
@@ -192,6 +193,9 @@ export default {
     mounted() {
         this.getEvaluacionFisica();
         this.loadingWindow.close();
+        if (this.user.tipo != "GERENTE") {
+            this.oEvaluacionFisica.sucursal_id = this.user.sucursal_id;
+        }
     },
     methods: {
         recargaFormulario() {

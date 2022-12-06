@@ -23,7 +23,10 @@
                 <div class="modal-body">
                     <form>
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <div
+                                class="form-group col-md-6"
+                                v-if="user.tipo == 'GERENTE'"
+                            >
                                 <label
                                     :class="{
                                         'text-danger': errors.sucursal_id,
@@ -206,6 +209,9 @@ export default {
     watch: {
         muestra_modal: function (newVal, oldVal) {
             this.errors = [];
+            this.getClientes();
+            this.getPlanes();
+
             if (newVal) {
                 this.bModal = true;
             } else {

@@ -18,7 +18,10 @@
                                 <div class="ml-auto mr-auto col-md-5">
                                     <form>
                                         <div class="row">
-                                            <div class="form-group col-md-12">
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="user.tipo == 'GERENTE'"
+                                            >
                                                 <label
                                                     :class="{
                                                         'text-danger':
@@ -163,6 +166,7 @@
 export default {
     data() {
         return {
+            user: JSON.parse(localStorage.getItem("user")),
             errors: [],
             oReporte: {
                 filtro: "Todos",
@@ -182,7 +186,11 @@ export default {
         };
     },
     mounted() {
-        this.getSucursales();
+        if (this.user.tipo != "GERENTE") {
+            this.oReporte.sucursal_id = this.user.sucursal_id;
+        } else {
+            this.getSucursales();
+        }
         this.getCategorias();
     },
     methods: {

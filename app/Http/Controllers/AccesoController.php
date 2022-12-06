@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Acceso;
 use App\Models\Inscripcion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccesoController extends Controller
 {
@@ -12,6 +13,10 @@ class AccesoController extends Controller
     public function index()
     {
         $accesos = Acceso::with("cliente")->with("sucursal")->orderBy("fecha_registro", "desc")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $accesos = Acceso::with("cliente")->with("sucursal")->where("sucursal_id", Auth::user()->sucursal_id)->orderBy("fecha_registro", "desc")->get();
+        }
+
         return response()->JSON(['accesos' => $accesos, 'total' => count($accesos)], 200);
     }
 

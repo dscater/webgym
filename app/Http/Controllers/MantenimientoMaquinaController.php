@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MantenimientoMaquina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MantenimientoMaquinaController extends Controller
 {
@@ -19,6 +20,11 @@ class MantenimientoMaquinaController extends Controller
     public function index(Request $request)
     {
         $mantenimiento_maquinas = MantenimientoMaquina::with("maquina")->get();
+
+        if (Auth::user()->tipo != 'GERENTE') {
+            $mantenimiento_maquinas = MantenimientoMaquina::with("maquina")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(['mantenimiento_maquinas' => $mantenimiento_maquinas, 'total' => count($mantenimiento_maquinas)], 200);
     }
 
@@ -41,7 +47,7 @@ class MantenimientoMaquinaController extends Controller
         } else {
             $nuevo_mantenimiento_maquina['fecha_mantenimiento'] = $request->fecha_mantenimiento;
         }
-        
+
         if (!$request->fecha_proximo || $request->fecha_proximo == "") {
             $nuevo_mantenimiento_maquina['fecha_proximo'] = null;
         } else {

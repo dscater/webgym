@@ -146,6 +146,7 @@ return [
         'destino_final_id' => 'destino final',
         'sucursal_id' => 'sucursal',
         'units_id' => 'units',
+        'plan_id' => 'plan',
         'socio_proveedor_id' => 'socio proveedor',
         'embarcado_id' => 'embarcado',
         'contrasenia' => 'contraseña',

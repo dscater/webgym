@@ -8,6 +8,7 @@ use App\Models\Venta;
 use Illuminate\Http\Request;
 use PDF;
 use App\library\numero_a_letras\src\NumeroALetras;
+use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
 {
@@ -21,6 +22,10 @@ class VentaController extends Controller
     public function index()
     {
         $ventas = Venta::with("sucursal")->with("cliente")->get();
+        if (Auth::user()->tipo != 'GERENTE') {
+            $ventas = Venta::with("sucursal")->with("cliente")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+        }
+
         return response()->JSON(["ventas" => $ventas, "total" => count($ventas)]);
     }
 

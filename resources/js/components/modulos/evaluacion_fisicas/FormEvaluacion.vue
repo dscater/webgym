@@ -3,7 +3,10 @@
         <div class="col-md-12">
             <form>
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div
+                        class="form-group col-md-6"
+                        v-if="user.tipo == 'GERENTE'"
+                    >
                         <label
                             :class="{
                                 'text-danger': errors.sucursal_id,
@@ -1896,6 +1899,7 @@ export default {
             if (newVal.id != 0) {
                 this.getClientes();
             }
+            this.getInfoCliente();
         },
     },
     computed: {
@@ -1923,6 +1927,10 @@ export default {
             this.evaluacion_fisica.fecha = this.fechaActual();
         }
         this.getClientes();
+        if (this.user.tipo != "GERENTE") {
+            this.evaluacion_fisica.sucursal_id = this.user.sucursal_id;
+            this.getClientes();
+        }
         this.iniciaSeleccionFilas();
     },
     methods: {

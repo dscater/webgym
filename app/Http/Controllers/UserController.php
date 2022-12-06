@@ -121,10 +121,63 @@ class UserController extends Controller
 
         ],
         'ENCARGADO DE RECEPCIÓN' => [
+            'plans.index',
 
+            'clientes.index',
+            'clientes.create',
+            'clientes.edit',
+            'clientes.destroy',
+
+            'inscripcions.index',
+            'inscripcions.create',
+            'inscripcions.edit',
+            'inscripcions.destroy',
+
+            'accesos.index',
+            'accesos.create',
+            'accesos.edit',
+            'accesos.destroy',
+
+            'cobros.index',
+            'cobros.create',
+            'cobros.edit',
+            'cobros.destroy',
+
+            'productos.index',
+
+            'ventas.index',
+            'ventas.create',
+            'ventas.edit',
+            'ventas.destroy',
+
+            "reportes.clientes",
+            "reportes.accesos",
+            "reportes.cobros",
+            "reportes.productos",
+            "reportes.stock_productos",
+            "reportes.venta_productos",
+            "reportes.grafico_ventas",
+            "reportes.grafico_cobros",
         ],
         'ENTRENADOR' => [
-            
+            'plans.index',
+
+            'maquinas.index',
+
+            'mantenimiento_maquinas.index',
+            'mantenimiento_maquinas.create',
+            'mantenimiento_maquinas.edit',
+            'mantenimiento_maquinas.destroy',
+
+            'evaluacion_fisicas.index',
+            'evaluacion_fisicas.create',
+            'evaluacion_fisicas.edit',
+            'evaluacion_fisicas.destroy',
+
+            "reportes.clientes",
+            "reportes.maquinas",
+            "reportes.mantenimiento_maquinas",
+            "reportes.inscripcions",
         ],
     ];
 
@@ -279,6 +332,30 @@ class UserController extends Controller
                 'cantidad' => count(User::where('id', '!=', 1)->get()),
                 'color' => 'bg-info',
                 'icon' => 'fas fa-users',
+            ];
+        }
+        if (in_array('clientes.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
+            $array_infos[] = [
+                'label' => 'Clientes',
+                'cantidad' => count(User::where('id', '!=', 1)->get()),
+                'color' => 'bg-success',
+                'icon' => 'fas fa-users',
+            ];
+        }
+        if (in_array('empleados.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
+            $array_infos[] = [
+                'label' => 'Empleados',
+                'cantidad' => count(User::where('id', '!=', 1)->get()),
+                'color' => 'bg-primary',
+                'icon' => 'fas fa-users',
+            ];
+        }
+        if (in_array('maquinas.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
+            $array_infos[] = [
+                'label' => 'Máquinas',
+                'cantidad' => count(User::where('id', '!=', 1)->get()),
+                'color' => 'bg-warning',
+                'icon' => 'fas fa-boxes',
             ];
         }
         return response()->JSON($array_infos);

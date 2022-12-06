@@ -193,6 +193,7 @@ export default {
     data() {
         return {
             permisos: localStorage.getItem("permisos"),
+            user: JSON.parse(localStorage.getItem("user")),
             search: "",
             listRegistros: [],
             showOverlay: false,
@@ -321,6 +322,10 @@ export default {
             this.currentPage = 1;
         },
         limpiaCobro() {
+            this.oCobro.sucursal_id = "";
+            if (this.user.tipo != "GERENTE") {
+                this.oCobro.sucursal_id = this.user.sucursal_id;
+            }
             this.oCobro.cliente_id = "";
             this.oCobro.inscripcion_id = "";
             this.oCobro.cobro_id = "";
