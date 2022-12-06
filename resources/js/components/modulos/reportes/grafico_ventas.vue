@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Gráfico Ventas</h1>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -82,44 +84,6 @@
                                                     class="error invalid-feedback"
                                                     v-if="errors.filtro"
                                                     v-text="errors.filtro[0]"
-                                                ></span>
-                                            </div>
-                                            <div
-                                                class="form-group col-md-12"
-                                                v-if="
-                                                    oReporte.filtro ==
-                                                    'Tipo de usuario'
-                                                "
-                                            >
-                                                <label
-                                                    :class="{
-                                                        'text-danger':
-                                                            errors.filtro,
-                                                    }"
-                                                    >Seleccione*</label
-                                                >
-                                                <el-select
-                                                    v-model="oReporte.tipo"
-                                                    filterable
-                                                    placeholder="Seleccione"
-                                                    class="d-block"
-                                                    :class="{
-                                                        'is-invalid':
-                                                            errors.tipo,
-                                                    }"
-                                                >
-                                                    <el-option
-                                                        v-for="item in listTipos"
-                                                        :key="item"
-                                                        :label="item"
-                                                        :value="item"
-                                                    >
-                                                    </el-option>
-                                                </el-select>
-                                                <span
-                                                    class="error invalid-feedback"
-                                                    v-if="errors.tipo"
-                                                    v-text="errors.tipo[0]"
                                                 ></span>
                                             </div>
                                             <div
@@ -194,6 +158,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12" id="container"></div>
+                </div>
             </div>
         </section>
     </div>
@@ -206,21 +173,14 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                tipo: "",
                 fecha_ini: "",
                 fecha_fin: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Tipo de usuario",
-                // "Rango de fechas",
-            ],
-            listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
+            listFiltro: ["Todos", "Rango de fechas"],
             errors: [],
-            sucursal_id: [],
             listSucursales: [],
         };
     },
@@ -238,27 +198,70 @@ export default {
         },
         generaReporte() {
             this.enviando = true;
-            let config = {
-                responseType: "blob",
-            };
             axios
-                .post("/admin/reportes/usuarios", this.oReporte, config)
-                .then((res) => {
+                .post("/admin/reportes/grafico_ventas", this.oReporte)
+                .then((response) => {
                     this.errors = [];
                     this.enviando = false;
-                    let pdfBlob = new Blob([res.data], {
-                        type: "application/pdf",
+                    Highcharts.chart("container", {
+                        chart: {
+                            type: "column",
+                        },
+                        title: {
+                            text: "INGRESOS POR VENTAS",
+                        },
+                        subtitle: {
+                            text: response.data.fecha,
+                        },
+                        xAxis: {
+                            type: "category",
+                            labels: {
+                                rotation: -45,
+                                style: {
+                                    fontSize: "13px",
+                                    fontFamily: "Verdana, sans-serif",
+                                },
+                            },
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: "Monto Bs.",
+                            },
+                        },
+                        legend: {
+                            enabled: false,
+                        },
+                        tooltip: {
+                            pointFormat:
+                                "Ingreso total: <b>{point.y:.2f} Bs.</b>",
+                        },
+                        series: [
+                            {
+                                name: "Cantidad vendida",
+                                colorByPoint:true,
+                                data: response.data.datos,
+                                dataLabels: {
+                                    enabled: true,
+                                    rotation: -90,
+                                    color: "#FFFFFF",
+                                    align: "right",
+                                    format: "{point.y:.2f}", // one decimal
+                                    y: 10, // 10 pixels down from the top
+                                    style: {
+                                        fontSize: "13px",
+                                        fontFamily: "Verdana, sans-serif",
+                                    },
+                                },
+                            },
+                        ],
                     });
-                    let urlReporte = URL.createObjectURL(pdfBlob);
-                    window.open(urlReporte);
                 })
                 .catch(async (error) => {
-                    let responseObj = await error.response.data.text();
-                    responseObj = JSON.parse(responseObj);
                     this.enviando = false;
                     if (error.response) {
                         if (error.response.status == 422)
-                            this.errors = responseObj.errors;
+                            this.errors = error.response.data.errors;
                     }
                 });
         },

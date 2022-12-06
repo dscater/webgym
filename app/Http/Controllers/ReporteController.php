@@ -11,6 +11,7 @@ use App\Models\IngresoProducto;
 use App\Models\Inscripcion;
 use App\Models\MantenimientoMaquina;
 use App\Models\Maquina;
+use App\Models\Plan;
 use App\Models\Producto;
 use App\Models\Sucursal;
 use App\Models\User;
@@ -384,8 +385,69 @@ class ReporteController extends Controller
     }
     public function grafico_ventas(Request $request)
     {
+        $request->validate(['sucursal_id' => 'required']);
+        $sucursal_id =  $request->sucursal_id;
+        $fecha_ini =  $request->fecha_ini;
+        $fecha_fin =  $request->fecha_fin;
+        $filtro =  $request->filtro;
+
+        $productos = Producto::where("sucursal_id", $sucursal_id)->get();
+        $data = [];
+        foreach ($productos as $producto) {
+            $cantidad = 0;
+            if ($filtro == 'Rango de fechas') {
+                $cantidad = DetalleVenta::select("detalle_ventas")
+                    ->join("ventas", "ventas.id", "=", "detalle_ventas.venta_id")
+                    ->where("producto_id", $producto->id)
+                    ->whereBetween("fecha", [$fecha_ini, $fecha_fin])
+                    ->sum("detalle_ventas.subtotal");
+            } else {
+                $cantidad = DetalleVenta::where("producto_id", $producto->id)->sum("subtotal");
+            }
+            $data[] = [$producto->nombre, $cantidad ? (float)$cantidad : 0];
+        }
+
+        $fecha = date("d/m/Y");
+        return response()->JSON([
+            "sw" => true,
+            "datos" => $data,
+            "fecha" => $fecha
+        ]);
     }
     public function grafico_cobros(Request $request)
     {
+        $request->validate(['sucursal_id' => 'required']);
+        $sucursal_id =  $request->sucursal_id;
+        $fecha_ini =  $request->fecha_ini;
+        $fecha_fin =  $request->fecha_fin;
+        $filtro =  $request->filtro;
+
+        $plans = Plan::where("sucursal_id", $sucursal_id)->get();
+        $data = [];
+        foreach ($plans as $plan) {
+            $cantidad = 0;
+            if ($filtro == 'Rango de fechas') {
+                $cantidad = Cobro::select("cobros")
+                    ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
+                    ->join("plans", "plans.id", "=", "inscripcions.plan_id")
+                    ->where("inscripcions.plan_id", $plan->id)
+                    ->whereBetween("fecha_cobro", [$fecha_ini, $fecha_fin])
+                    ->sum("plans.costo");
+            } else {
+                $cantidad = Cobro::select("cobros")
+                    ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
+                    ->join("plans", "plans.id", "=", "inscripcions.plan_id")
+                    ->where("inscripcions.plan_id", $plan->id)
+                    ->sum("plans.costo");
+            }
+            $data[] = [$plan->nombre, $cantidad ? (float)$cantidad : 0];
+        }
+
+        $fecha = date("d/m/Y");
+        return response()->JSON([
+            "sw" => true,
+            "datos" => $data,
+            "fecha" => $fecha
+        ]);
     }
 }

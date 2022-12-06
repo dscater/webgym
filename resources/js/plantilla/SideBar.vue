@@ -489,7 +489,7 @@
                             :to="{ name: 'reportes.grafico_ventas' }"
                             class="nav-link"
                         >
-                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <i class="fas fa-chart-bar nav-icon"></i>
                             <p>Gráfico Ventas</p>
                         </router-link>
                     </li>
@@ -501,7 +501,7 @@
                             :to="{ name: 'reportes.grafico_cobros' }"
                             class="nav-link"
                         >
-                            <i class="fas fa-file-pdf nav-icon"></i>
+                            <i class="fas fa-chart-bar nav-icon"></i>
                             <p>Gráfico Cobros</p>
                         </router-link>
                     </li>

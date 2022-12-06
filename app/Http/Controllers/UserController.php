@@ -120,8 +120,12 @@ class UserController extends Controller
             "reportes.grafico_cobros",
 
         ],
-        'ENCARGADO DE RECEPCIÓN' => [],
-        'ENTRENADOR' => [],
+        'ENCARGADO DE RECEPCIÓN' => [
+
+        ],
+        'ENTRENADOR' => [
+            
+        ],
     ];
 
 
