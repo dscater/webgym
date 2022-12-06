@@ -176,7 +176,7 @@
                 <th>SUCURSAL</th>
                 <th>FECHA DE INCORPORACIÓN</th>
                 <th>CANTIDAD</th>
-                <th>FOTO</th>
+                <th width="5%">FOTO</th>
                 <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
@@ -193,7 +193,7 @@
                     <td>{{ $maquina->sucursal->nombre }}</td>
                     <td>{{ $maquina->fecha_incorporacion }}</td>
                     <td>{{ $maquina->cantidad }}</td>
-                    <td class="img_celda"><img src="{{ asset('imgs/maquinas/' . $maquina->foto) }}" alt="Foto">
+                    <td class="img_celda centreado"><img src="{{ asset('imgs/maquinas/' . $maquina->foto) }}" alt="Foto">
                     </td>
                     <td>{{ $maquina->fecha_registro }}</td>
                 </tr>

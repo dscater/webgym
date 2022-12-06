@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Reportes - Lista de Usuarios</h1>
+                        <h1>Reportes - Lista de Ingreso de Productos</h1>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,7 @@
                                                         'is-invalid':
                                                             errors.sucursal_id,
                                                     }"
+                                                    @change="getProductos"
                                                 >
                                                     <el-option
                                                         v-for="item in listSucursales"
@@ -49,7 +50,9 @@
                                                 <span
                                                     class="error invalid-feedback"
                                                     v-if="errors.sucursal_id"
-                                                    v-text="errors.sucursal_id[0]"
+                                                    v-text="
+                                                        errors.sucursal_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -88,7 +91,7 @@
                                                 class="form-group col-md-12"
                                                 v-if="
                                                     oReporte.filtro ==
-                                                    'Tipo de usuario'
+                                                    'Categoría'
                                                 "
                                             >
                                                 <label
@@ -99,73 +102,73 @@
                                                     >Seleccione*</label
                                                 >
                                                 <el-select
-                                                    v-model="oReporte.tipo"
+                                                    v-model="
+                                                        oReporte.categoria_id
+                                                    "
                                                     filterable
                                                     placeholder="Seleccione"
                                                     class="d-block"
                                                     :class="{
                                                         'is-invalid':
-                                                            errors.tipo,
+                                                            errors.categoria_id,
                                                     }"
                                                 >
                                                     <el-option
-                                                        v-for="item in listTipos"
-                                                        :key="item"
-                                                        :label="item"
-                                                        :value="item"
+                                                        v-for="item in listCategorias"
+                                                        :key="item.id"
+                                                        :label="item.nombre"
+                                                        :value="item.id"
                                                     >
                                                     </el-option>
                                                 </el-select>
                                                 <span
                                                     class="error invalid-feedback"
-                                                    v-if="errors.tipo"
-                                                    v-text="errors.tipo[0]"
+                                                    v-if="errors.categoria_id"
+                                                    v-text="
+                                                        errors.categoria_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                             <div
                                                 class="form-group col-md-12"
                                                 v-if="
                                                     oReporte.filtro ==
-                                                    'Rango de fechas'
+                                                    'Producto'
                                                 "
                                             >
                                                 <label
                                                     :class="{
                                                         'text-danger':
-                                                            errors.fecha_ini,
-                                                        'text-danger':
-                                                            errors.fecha_fin,
+                                                            errors.filtro,
                                                     }"
-                                                    >Indice un rango de
-                                                    fechas*</label
+                                                    >Seleccione*</label
                                                 >
-                                                <el-date-picker
-                                                    class="w-full d-block"
+                                                <el-select
+                                                    v-model="
+                                                        oReporte.producto_id
+                                                    "
+                                                    filterable
+                                                    placeholder="Seleccione"
+                                                    class="d-block"
                                                     :class="{
                                                         'is-invalid':
-                                                            errors.fecha_ini,
-                                                        'is-invalid':
-                                                            errors.fecha_fin,
+                                                            errors.producto_id,
                                                     }"
-                                                    v-model="aFechas"
-                                                    type="daterange"
-                                                    range-separator="a"
-                                                    start-placeholder="Fecha Inicial"
-                                                    end-placeholder="Fecha Final"
-                                                    format="dd/MM/yyyy"
-                                                    value-format="yyyy-MM-dd"
-                                                    @change="obtieneFechas()"
                                                 >
-                                                </el-date-picker>
+                                                    <el-option
+                                                        v-for="item in listProductos"
+                                                        :key="item.id"
+                                                        :label="item.nombre"
+                                                        :value="item.id"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
                                                 <span
                                                     class="error invalid-feedback"
-                                                    v-if="errors.fecha_ini"
-                                                    v-text="errors.fecha_ini[0]"
-                                                ></span>
-                                                <span
-                                                    class="error invalid-feedback"
-                                                    v-if="errors.fecha_fin"
-                                                    v-text="errors.fecha_fin[0]"
+                                                    v-if="errors.producto_id"
+                                                    v-text="
+                                                        errors.producto_id[0]
+                                                    "
                                                 ></span>
                                             </div>
                                         </div>
@@ -206,28 +209,44 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                tipo: "",
-                fecha_ini: "",
-                fecha_fin: "",
+                sucursal_id: "",
+                categoria_id: "",
+                producto_id: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: [
-                "Todos",
-                "Tipo de usuario",
-                // "Rango de fechas",
-            ],
-            listTipos: ["GERENTE", "ENCARGADO DE RECEPCIÓN", "ENTRENADOR"],
+            listFiltro: ["Todos", "Categoría", "Producto"],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
+            listCategorias: [],
+            listProductos: [],
         };
     },
     mounted() {
         this.getSucursales();
+        this.getCategorias();
+        this.getProductos();
     },
     methods: {
+        getProductos() {
+            this.oReporte.producto_id = "";
+            axios
+                .get("/admin/productos/productos_sucursal", {
+                    params: {
+                        id: this.oReporte.sucursal_id,
+                    },
+                })
+                .then((response) => {
+                    this.listProductos = response.data;
+                });
+        },
+        getCategorias() {
+            axios.get("/admin/categorias").then((response) => {
+                this.listCategorias = response.data.categorias;
+            });
+        },
         getSucursales() {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
@@ -242,7 +261,11 @@ export default {
                 responseType: "blob",
             };
             axios
-                .post("/admin/reportes/usuarios", this.oReporte, config)
+                .post(
+                    "/admin/reportes/ingreso_productos",
+                    this.oReporte,
+                    config
+                )
                 .then((res) => {
                     this.errors = [];
                     this.enviando = false;
