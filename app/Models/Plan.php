@@ -11,7 +11,7 @@ class Plan extends Model
 
     protected $fillable = [
         "sucursal_id", "nombre", "costo", "duracion",
-        "descripcion", "fecha_registro",
+        "descripcion", "todos", "fecha_registro",
     ];
 
     public function sucursal()

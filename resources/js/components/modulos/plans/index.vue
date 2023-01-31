@@ -217,6 +217,7 @@ export default {
                 { key: "costo", label: "Costo", sortable: true },
                 { key: "duracion", label: "Duración", sortable: true },
                 { key: "descripcion", label: "Descripción", sortable: true },
+                { key: "todos", label: "Todas las sucursales", sortable: true },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -238,6 +239,7 @@ export default {
                 costo: "",
                 duracion: "",
                 descripcion: "",
+                todos: "NO",
             },
             currentPage: 1,
             perPage: 5,
@@ -266,6 +268,7 @@ export default {
             this.oPlan.costo = item.costo ? item.costo : "";
             this.oPlan.duracion = item.duracion ? item.duracion : "";
             this.oPlan.descripcion = item.descripcion ? item.descripcion : "";
+            this.oPlan.todos = item.todos ? item.todos : "";
 
             this.modal_accion = "edit";
             this.muestra_modal = true;
@@ -336,6 +339,7 @@ export default {
             this.oPlan.costo = "";
             this.oPlan.duracion = "";
             this.oPlan.descripcion = "";
+            this.oPlan.todos = "NO";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

@@ -13,6 +13,7 @@ class PlanController extends Controller
         "nombre" => "required|min:3",
         "costo" => "required|numeric",
         "duracion" => "required|numeric",
+        "todos" => "required"
     ];
 
     public function index()

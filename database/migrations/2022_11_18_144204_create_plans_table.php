@@ -20,6 +20,7 @@ class CreatePlansTable extends Migration
             $table->decimal("costo", 24, 2);
             $table->integer("duracion");
             $table->string("descripcion")->nullable();
+            $table->integer("todos");
             $table->date("fecha_registro");
             $table->timestamps();
 

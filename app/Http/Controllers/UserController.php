@@ -162,8 +162,6 @@ class UserController extends Controller
         'ENTRENADOR' => [
             'plans.index',
 
-            'maquinas.index',
-
             'mantenimiento_maquinas.index',
             'mantenimiento_maquinas.create',
             'mantenimiento_maquinas.edit',

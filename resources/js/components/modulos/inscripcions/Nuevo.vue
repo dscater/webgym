@@ -116,6 +116,26 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
+                                        'text-danger': errors.disciplina,
+                                    }"
+                                    >Disciplina*</label
+                                >
+                                <el-input
+                                    placeholder="Disciplina"
+                                    :class="{ 'is-invalid': errors.disciplina }"
+                                    v-model="inscripcion.disciplina"
+                                    clearable
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.disciplina"
+                                    v-text="errors.disciplina[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
                                         'text-danger': errors.fecha_inscripcion,
                                     }"
                                     >Fecha de inscripción*</label
@@ -200,6 +220,7 @@ export default {
                 id: 0,
                 cliente_id: "",
                 plan_id: "",
+                disciplina: "",
                 sucursal_id: "",
                 fecha_inscripcion: "",
                 codigo_rfid: "",
@@ -310,6 +331,12 @@ export default {
                     this.inscripcion.plan_id ? this.inscripcion.plan_id : ""
                 );
                 formdata.append(
+                    "disciplina",
+                    this.inscripcion.disciplina
+                        ? this.inscripcion.disciplina
+                        : ""
+                );
+                formdata.append(
                     "sucursal_id",
                     this.inscripcion.sucursal_id
                         ? this.inscripcion.sucursal_id
@@ -386,6 +413,7 @@ export default {
             this.errors = [];
             this.inscripcion.cliente_id = "";
             this.inscripcion.plan_id = "";
+            this.inscripcion.disciplina = "";
             this.inscripcion.sucursal_id = "";
             this.inscripcion.fecha_inscripcion = "";
             this.inscripcion.codigo_rfid = "";

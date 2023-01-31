@@ -2,7 +2,7 @@
     <div class="login-page">
         <div class="login-box">
             <!-- /.login-logo -->
-            <div class="card mb-2">
+            <div class="card mb-1">
                 <div class="card-body text-center">
                     <b class="text-xl text-primary" v-text="empresa"></b>
                     <img :src="logo" alt="Logo" class="logo" />
@@ -11,7 +11,13 @@
 
             <div class="card border border-primary">
                 <div class="card-body">
-                    <p class="login-box-msg text-success font-weight-bold">
+                    <p
+                        class="login-box-msg text-success font-weight-bold text-lg mb-1 pb-1"
+                        v-html="nombreSucursal"
+                    ></p>
+                    <p
+                        class="login-box-msg text-success font-weight-bold m-0 text-sm"
+                    >
                         INGRESA TU CÓDIGO RFID
                     </p>
 
@@ -75,6 +81,73 @@
             </div>
             <!-- /.card -->
         </div>
+
+        <div
+            class="modal fade"
+            :class="{ show: bModal }"
+            id="modal-default"
+            aria-modal="true"
+            role="dialog"
+        >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-lightblue">
+                        <h4 class="modal-title">Seleccionar ubicación</h4>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                            @click="confirmarUbicacion"
+                        >
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label
+                                        :class="{
+                                            'text-danger': errors.sucursal_id,
+                                        }"
+                                        >Seleccionar ubicación*</label
+                                    >
+                                    <el-select
+                                        class="w-100 d-block"
+                                        :class="{
+                                            'is-invalid': errors.sucursal_id,
+                                        }"
+                                        v-model="sucursal_id"
+                                    >
+                                        <el-option
+                                            v-for="item in listSucursales"
+                                            :key="item.id"
+                                            :value="item.id"
+                                            :label="item.nombre"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                    <span
+                                        class="error invalid-feedback"
+                                        v-if="errors.sucursal_id"
+                                        v-text="errors.sucursal_id[0]"
+                                    ></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-end">
+                        <el-button
+                            type="primary"
+                            class="bg-lightblue"
+                            @click="confirmarUbicacion"
+                            >Aceptar</el-button
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -97,17 +170,41 @@ export default {
             rfid: "",
             error: false,
             fullscreenLoading: false,
+            listSucursales: [],
+            sucursal_id: "",
+            bModal: false,
+            errors: [],
         };
+    },
+    computed: {
+        nombreSucursal() {
+            if (this.sucursal_id != "") {
+                return this.listSucursales.filter(
+                    (value) => value.id == this.sucursal_id
+                )[0].nombre;
+            }
+            return '<span class="text-red">SIN UBICACIÓN</span>';
+        },
     },
     mounted() {
         this.$refs.input_rfid.focus();
+        this.getSucursales();
+        if (this.sucursal_id == "" || this.sucursal_id == null) {
+            this.bModal = true;
+        }
     },
     methods: {
+        getSucursales() {
+            axios.get("/admin/sucursals").then((response) => {
+                this.listSucursales = response.data.sucursals;
+            });
+        },
         enviaRfid() {
             if (this.rfid != "") {
                 axios
                     .post("/admin/accesos", {
                         rfid: this.rfid,
+                        sucursal_id: this.sucursal_id,
                     })
                     .then((response) => {
                         if (response.data.sw) {
@@ -122,7 +219,7 @@ export default {
                             Swal.fire({
                                 icon: "error",
                                 title: "Error",
-                                text: response.data.msj,
+                                html: response.data.msj,
                                 showConfirmButton: false,
                                 timer: 3500,
                             });
@@ -136,6 +233,19 @@ export default {
         vistaInicio() {
             window.location = "/";
         },
+        confirmarUbicacion() {
+            if (this.sucursal_id != "") {
+                this.bModal = false;
+            } else {
+                Swal.fire({
+                    icon: "info",
+                    title: "Atención",
+                    text: "Selecciona la ubicación",
+                    showConfirmButton: false,
+                    timer: 1800,
+                });
+            }
+        },
     },
 };
 </script>
@@ -147,7 +257,7 @@ export default {
 
 .login-page .card {
     border-radius: 0px;
-    box-shadow: 0px 5px 20px 18px var(--secundario);
+    box-shadow: 0px 5px 10px 10px var(--secundario);
 }
 .login-page .card-header {
     border-bottom: solid 1px var(--principal);

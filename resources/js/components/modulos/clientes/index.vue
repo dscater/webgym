@@ -125,6 +125,30 @@
                                                         class="row justify-content-center flex-column"
                                                     >
                                                         <b-button
+                                                            v-if="
+                                                                row.item
+                                                                    .declaracion_jurada !=
+                                                                    null &&
+                                                                row.item
+                                                                    .declaracion_jurada !=
+                                                                    ''
+                                                            "
+                                                            size="sm"
+                                                            pill
+                                                            variant="outline-success"
+                                                            class="btn-flat mb-1"
+                                                            title="Declaración juarada"
+                                                            @click="
+                                                                descargarArchivo(
+                                                                    row.item.id
+                                                                )
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-download"
+                                                            ></i>
+                                                        </b-button>
+                                                        <b-button
                                                             size="sm"
                                                             pill
                                                             variant="outline-warning"
@@ -269,6 +293,7 @@ export default {
                 fono2: "",
                 correo: "",
                 foto: null,
+                declaracion_jurada: null,
                 sucursal_id: "",
             },
             currentPage: 1,
@@ -308,6 +333,9 @@ export default {
             this.oCliente.fono2 = item.fono2 ? item.fono2 : "";
             this.oCliente.correo = item.correo ? item.correo : "";
             this.oCliente.foto = item.foto ? item.foto : "";
+            this.oCliente.declaracion_jurada = item.declaracion_jurada
+                ? item.declaracion_jurada
+                : "";
             this.oCliente.sucursal_id = item.sucursal_id
                 ? item.sucursal_id
                 : "";
@@ -389,6 +417,7 @@ export default {
             this.oCliente.fono2 = "";
             this.oCliente.correo = "";
             this.oCliente.foto = null;
+            this.oCliente.declaracion_jurada = null;
             if (this.user.tipo != "GERENTE") {
                 this.oCliente.sucursal_id = this.user.sucursal_id;
             } else {
@@ -397,6 +426,39 @@ export default {
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");
+        },
+        descargarArchivo(id) {
+            let config = {
+                responseType: "blob",
+            };
+            axios
+                .post(
+                    "/admin/clientes/descargar_declaracion/" + id,
+                    null,
+                    config
+                )
+                .then((res) => {
+                    console.log(res);
+                    let nom = res.headers["content-disposition"].split("=");
+                    var fileURL = window.URL.createObjectURL(
+                        new Blob([res.data])
+                    );
+                    var fileLink = document.createElement("a");
+
+                    fileLink.href = fileURL;
+                    fileLink.setAttribute("download", nom[1]);
+                    document.body.appendChild(fileLink);
+
+                    fileLink.click();
+                })
+                .catch(async (error) => {
+                    console.log(error);
+                    let responseObj = await error.response.data.text();
+                    responseObj = JSON.parse(responseObj);
+                    this.enviando = false;
+                    if (error.response) {
+                    }
+                });
         },
     },
 };

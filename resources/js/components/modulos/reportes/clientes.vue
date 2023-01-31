@@ -36,6 +36,7 @@
                                                     filterable
                                                     placeholder="Seleccione"
                                                     class="d-block"
+                                                    @change="getPlanes"
                                                     :class="{
                                                         'is-invalid':
                                                             errors.sucursal_id,
@@ -87,6 +88,45 @@
                                                     class="error invalid-feedback"
                                                     v-if="errors.filtro"
                                                     v-text="errors.filtro[0]"
+                                                ></span>
+                                            </div>
+
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="
+                                                    oReporte.filtro ==
+                                                    'Por plan'
+                                                "
+                                            >
+                                                <label
+                                                    :class="{
+                                                        'text-danger':
+                                                            errors.plan_id,
+                                                    }"
+                                                    >Plan*</label
+                                                >
+                                                <el-select
+                                                    v-model="oReporte.plan_id"
+                                                    filterable
+                                                    placeholder="Seleccione"
+                                                    class="d-block"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.plan_id,
+                                                    }"
+                                                >
+                                                    <el-option
+                                                        v-for="item in listPlans"
+                                                        :key="item.id"
+                                                        :value="item.id"
+                                                        :label="item.nombre"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.plan_id"
+                                                    v-text="errors.plan_id[0]"
                                                 ></span>
                                             </div>
                                             <div
@@ -175,22 +215,24 @@ export default {
             oReporte: {
                 filtro: "Todos",
                 sucursal_id: "",
-                tipo: "",
+                plan_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
             },
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: ["Todos", "Rango de fechas"],
+            listFiltro: ["Todos", "Por plan", "Rango de fechas"],
             errors: [],
             sucursal_id: [],
             listSucursales: [],
+            listPlans: [],
         };
     },
     mounted() {
         if (this.user.tipo != "GERENTE") {
             this.oReporte.sucursal_id = this.user.sucursal_id;
+            this.getPlanes();
         } else {
             this.getSucursales();
         }
@@ -200,6 +242,22 @@ export default {
             axios.get("/admin/sucursals").then((response) => {
                 this.listSucursales = response.data.sucursals;
             });
+        },
+        getPlanes() {
+            this.oReporte.plan_id = "";
+            if (this.oReporte.sucursal_id != "") {
+                axios
+                    .get("/admin/plans/plans_sucursal", {
+                        params: {
+                            id: this.oReporte.sucursal_id,
+                        },
+                    })
+                    .then((response) => {
+                        this.listPlans = response.data;
+                    });
+            } else {
+                this.listPlans = [];
+            }
         },
         limpiarFormulario() {
             this.oReporte.filtro = "Todos";

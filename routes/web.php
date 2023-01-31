@@ -70,6 +70,7 @@ Route::prefix('admin')->group(function () {
 
     // CLIENTES
     Route::get("clientes/clientes_sucursal", [ClienteController::class, 'clientes_sucursal']);
+    Route::post("clientes/descargar_declaracion/{cliente}", [ClienteController::class, 'descargar_declaracion']);
     Route::resource('clientes', ClienteController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
@@ -79,7 +80,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('empleados', EmpleadoController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);
-    
+
     // CATEGORIAS
     Route::resource('categorias', CategoriaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
@@ -119,7 +120,6 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // PRODUCTOS
-
     Route::get("productos/valida_stock", [ProductoController::class, 'valida_stock']);
     Route::get("productos/productos_sucursal", [ProductoController::class, 'productos_sucursal']);
     Route::resource('productos', ProductoController::class)->only([

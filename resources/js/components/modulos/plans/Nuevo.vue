@@ -138,6 +138,38 @@
                                     v-text="errors.descripcion[0]"
                                 ></span>
                             </div>
+                            <div
+                                class="form-group col-md-6"
+                                v-if="user.tipo == 'GERENTE'"
+                            >
+                                <label
+                                    :class="{
+                                        'text-danger': errors.todos,
+                                    }"
+                                    >Todas las sucursales*</label
+                                >
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.todos,
+                                    }"
+                                    v-model="plan.todos"
+                                    clearable
+                                >
+                                    <el-option
+                                        v-for="(item, index) in ['NO', 'SI']"
+                                        :key="index"
+                                        :value="item"
+                                        :label="item"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.todos"
+                                    v-text="errors.todos[0]"
+                                ></span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -183,6 +215,7 @@ export default {
                 costo: "",
                 duracion: "",
                 descripcion: "",
+                todos: "NO",
             },
         },
     },
@@ -199,7 +232,7 @@ export default {
     computed: {
         tituloModal() {
             if (this.accion == "nuevo") {
-                return "AGREGAR USUARIO";
+                return "AGREGAR REGISTRO";
             } else {
                 return "MODIFICAR REGISTRO";
             }
@@ -262,6 +295,10 @@ export default {
                     "descripcion",
                     this.plan.descripcion ? this.plan.descripcion : ""
                 );
+                formdata.append(
+                    "todos",
+                    this.plan.todos ? this.plan.todos : ""
+                );
 
                 if (this.accion == "edit") {
                     url = "/admin/plans/" + this.plan.id;
@@ -316,6 +353,7 @@ export default {
             this.plan.costo = "";
             this.plan.duracion = "";
             this.plan.descripcion = "";
+            this.plan.todos = "NO";
         },
     },
 };

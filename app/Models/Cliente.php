@@ -12,7 +12,7 @@ class Cliente extends Model
     protected $fillable = [
         "nombre", "paterno", "materno", "ci", "ci_exp",
         "fecha_nacimiento", "edad", "genero", "dir",
-        "fono", "fono2", "correo", "foto", "sucursal_id",
+        "fono", "fono2", "correo", "foto", "declaracion_jurada", "sucursal_id",
         "fecha_registro",
     ];
     protected $appends = ['full_name', 'full_ci', 'path_image'];

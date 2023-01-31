@@ -42,21 +42,32 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->hasFile('foto')) {
+        if ($request->hasFile('foto') && $request->foto != null && $request->foto != "") {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
+        if ($request->hasFile('declaracion_jurada') && $request->declaracion_jurada != null && $request->declaracion_jurada != "") {
+            $this->validacion['declaracion_jurada'] = 'file|mimes:pdf,doc,docx|max:2048';
+        }
+
 
         $request->validate($this->validacion, $this->mensajes);
         $request['fecha_registro'] = date('Y-m-d');
         // CREAR EL USER
-        $nuevo_cliente = Cliente::create(array_map('mb_strtoupper', $request->except('foto')));
+        $nuevo_cliente = Cliente::create(array_map('mb_strtoupper', $request->except('foto', 'declaracion_jurada')));
 
         $nuevo_cliente->foto = 'default.png';
         if ($request->hasFile('foto')) {
             $file = $request->foto;
-            $nom_foto = time() . '_' . $nuevo_cliente->cliente . '.' . $file->getClientOriginalExtension();
+            $nom_foto = time() . '_' . $nuevo_cliente->id . '.' . $file->getClientOriginalExtension();
             $nuevo_cliente->foto = $nom_foto;
             $file->move(public_path() . '/imgs/clientes/', $nom_foto);
+        }
+        $nuevo_cliente->declaracion_jurada = null;
+        if ($request->hasFile('declaracion_jurada')) {
+            $file = $request->declaracion_jurada;
+            $nom_declaracion_jurada = time() . '_' . $nuevo_cliente->id . '.' . $file->getClientOriginalExtension();
+            $nuevo_cliente->declaracion_jurada = $nom_declaracion_jurada;
+            $file->move(public_path() . '/files/', $nom_declaracion_jurada);
         }
 
         $nuevo_cliente->save();
@@ -70,12 +81,16 @@ class ClienteController extends Controller
     public function update(Request $request, Cliente $cliente)
     {
         $this->validacion['ci'] = 'required|min:4|unique:clientes,ci,' . $cliente->id;
-        if ($request->hasFile('foto')) {
+        if ($request->hasFile('foto') && $request->foto != null && $request->foto != "") {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
+        if ($request->hasFile('declaracion_jurada') && $request->declaracion_jurada != null && $request->declaracion_jurada != "") {
+            $this->validacion['declaracion_jurada'] = 'file|mimes:pdf,doc,docx|max:2048';
+        }
+
 
         $request->validate($this->validacion, $this->mensajes);
-        $cliente->update(array_map('mb_strtoupper', $request->except('foto', 'password')));
+        $cliente->update(array_map('mb_strtoupper', $request->except('foto', 'password', 'declaracion_jurada')));
 
         if ($request->hasFile('foto')) {
             $antiguo = $cliente->foto;
@@ -83,10 +98,23 @@ class ClienteController extends Controller
                 \File::delete(public_path() . '/imgs/clientes/' . $antiguo);
             }
             $file = $request->foto;
-            $nom_foto = time() . '_' . $cliente->cliente . '.' . $file->getClientOriginalExtension();
+            $nom_foto = time() . '_' . $cliente->id . '.' . $file->getClientOriginalExtension();
             $cliente->foto = $nom_foto;
             $file->move(public_path() . '/imgs/clientes/', $nom_foto);
         }
+
+        if ($request->hasFile('declaracion_jurada')) {
+            $antiguo = $cliente->declaracion_jurada;
+            if ($antiguo) {
+                \File::delete(public_path() . '/files/' . $antiguo);
+            }
+
+            $file = $request->declaracion_jurada;
+            $nom_declaracion_jurada = time() . '_' . $cliente->id . '.' . $file->getClientOriginalExtension();
+            $cliente->declaracion_jurada = $nom_declaracion_jurada;
+            $file->move(public_path() . '/files/', $nom_declaracion_jurada);
+        }
+
         $cliente->save();
         return response()->JSON([
             'sw' => true,
@@ -114,5 +142,14 @@ class ClienteController extends Controller
             'sw' => true,
             'msj' => 'El registro se eliminó correctamente'
         ], 200);
+    }
+
+    public function descargar_declaracion(Cliente $cliente)
+    {
+        if ($cliente->declaracion_jurada) {
+            return response()->download(public_path() . "/files/" . $cliente->declaracion_jurada, $cliente->declaracion_jurada);
+        }
+
+        return response()->JSON(["message" => "No se encontró el archivo"], 401);
     }
 }

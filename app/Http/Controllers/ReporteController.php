@@ -26,20 +26,26 @@ class ReporteController extends Controller
 
         $sucursal_id =  $request->sucursal_id;
         $filtro =  $request->filtro;
-        $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)->get();
+        $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)
+            ->orderBy("created_at", "desc")
+            ->get();
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->get();
+            $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])
+                ->orderBy("created_at", "desc")
+                ->get();
         }
 
         if ($filtro == 'Tipo de usuario') {
             $request->validate([
                 'tipo' => 'required',
             ]);
-            $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)->where('tipo', $request->tipo)->get();
+            $usuarios = User::where('id', '!=', 1)->where("sucursal_id", $sucursal_id)->where('tipo', $request->tipo)
+                ->orderBy("created_at", "desc")
+                ->get();
         }
 
         $pdf = PDF::loadView('reportes.usuarios', compact('usuarios'))->setPaper('legal', 'landscape');
@@ -58,14 +64,27 @@ class ReporteController extends Controller
     {
         $request->validate(['sucursal_id' => 'required']);
         $sucursal_id =  $request->sucursal_id;
+        $plan_id =  $request->plan_id;
         $filtro =  $request->filtro;
-        $clientes = Cliente::where("sucursal_id", $sucursal_id)->get();
+        $clientes = Cliente::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $clientes = Cliente::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->get();
+            $clientes = Cliente::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
+        }
+
+        if ($filtro == 'Por plan') {
+            $request->validate([
+                'plan_id' => 'required',
+            ]);
+            $clientes = Cliente::select("clientes.*")
+                ->join("inscripcions", "inscripcions.cliente_id", "=", "clientes.id")
+                ->where("clientes.sucursal_id", $sucursal_id)
+                ->where("inscripcions.plan_id", $plan_id)
+                ->where("inscripcions.fecha_fin", ">=", date("Y-m-d"))
+                ->orderBy("clientes.created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.clientes', compact('clientes'))->setPaper('legal', 'landscape');
@@ -85,18 +104,18 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $cargo =  mb_strtoupper($request->cargo);
         $filtro =  $request->filtro;
-        $empleados = Empleado::where("sucursal_id", $sucursal_id)->get();
+        $empleados = Empleado::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $empleados = Empleado::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->get();
+            $empleados = Empleado::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
         }
 
         if ($filtro == 'Cargo') {
             $request->validate(['cargo' => 'required']);
-            $empleados = Empleado::where("sucursal_id", $sucursal_id)->where('cargo', $cargo)->get();
+            $empleados = Empleado::where("sucursal_id", $sucursal_id)->where('cargo', $cargo)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.empleados', compact('empleados'))->setPaper('legal', 'landscape');
@@ -115,11 +134,11 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $categoria_id =  $request->categoria_id;
         $filtro =  $request->filtro;
-        $maquinas = Maquina::where("sucursal_id", $sucursal_id)->get();
+        $maquinas = Maquina::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Categoría') {
             $request->validate(['categoria_id' => 'required']);
-            $maquinas = Maquina::where("sucursal_id", $sucursal_id)->where('categoria_id', $categoria_id)->get();
+            $maquinas = Maquina::where("sucursal_id", $sucursal_id)->where('categoria_id', $categoria_id)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.maquinas', compact('maquinas'))->setPaper('legal', 'landscape');
@@ -138,11 +157,11 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $maquina_id =  $request->maquina_id;
         $filtro =  $request->filtro;
-        $mantenimiento_maquinas = MantenimientoMaquina::where("sucursal_id", $sucursal_id)->get();
+        $mantenimiento_maquinas = MantenimientoMaquina::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Máquina') {
             $request->validate(['maquina_id' => 'required']);
-            $mantenimiento_maquinas = MantenimientoMaquina::where("sucursal_id", $sucursal_id)->where('maquina_id', $maquina_id)->get();
+            $mantenimiento_maquinas = MantenimientoMaquina::where("sucursal_id", $sucursal_id)->where('maquina_id', $maquina_id)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.mantenimiento_maquinas', compact('mantenimiento_maquinas'))->setPaper('legal', 'landscape');
@@ -161,19 +180,19 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $plan_id =  $request->plan_id;
         $filtro =  $request->filtro;
-        $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->get();
+        $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->whereBetween('fecha_inscripcion', [$request->fecha_ini, $request->fecha_fin])->get();
+            $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->whereBetween('fecha_inscripcion', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
         }
 
         if ($filtro == 'Seleccionar Plan') {
             $request->validate(['plan_id' => 'required']);
-            $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->where('plan_id', $plan_id)->get();
+            $inscripcions = Inscripcion::where("sucursal_id", $sucursal_id)->where('plan_id', $plan_id)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.inscripcions', compact('inscripcions'))->setPaper('legal', 'landscape');
@@ -192,19 +211,19 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $cliente_id =  $request->cliente_id;
         $filtro =  $request->filtro;
-        $accesos = Acceso::where("sucursal_id", $sucursal_id)->get();
+        $accesos = Acceso::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $accesos = Acceso::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->get();
+            $accesos = Acceso::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
         }
 
         if ($filtro == 'Cliente') {
             $request->validate(['cliente_id' => 'required']);
-            $accesos = Acceso::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->get();
+            $accesos = Acceso::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.accesos', compact('accesos'))->setPaper('legal', 'portrait');
@@ -224,19 +243,19 @@ class ReporteController extends Controller
         $plan_id =  $request->plan_id;
         $cliente_id =  $request->cliente_id;
         $filtro =  $request->filtro;
-        $cobros = Cobro::where("sucursal_id", $sucursal_id)->get();
+        $cobros = Cobro::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Rango de fechas') {
             $request->validate([
                 'fecha_ini' => 'required|date',
                 'fecha_fin' => 'required|date',
             ]);
-            $cobros = Cobro::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->get();
+            $cobros = Cobro::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
         }
 
         if ($filtro == 'Cliente') {
             $request->validate(['cliente_id' => 'required']);
-            $cobros = Cobro::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->get();
+            $cobros = Cobro::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->orderBy("created_at", "desc")->get();
         }
 
         if ($filtro == 'Plan') {
@@ -245,7 +264,7 @@ class ReporteController extends Controller
                 ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
                 ->where("cobros.sucursal_id", $sucursal_id)
                 ->where('inscripcions.plan_id', $plan_id)
-                ->get();
+                ->orderBy("cobros.created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.cobros', compact('cobros'))->setPaper('legal', 'portrait');
@@ -264,13 +283,13 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $categoria_id =  $request->categoria_id;
         $filtro =  $request->filtro;
-        $productos = Producto::where("sucursal_id", $sucursal_id)->get();
+        $productos = Producto::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Categoría' && $categoria_id != 'todos') {
             $request->validate(['categoria_id' => 'required']);
             $productos = Producto::where("sucursal_id", $sucursal_id)
                 ->where('categoria_id', $categoria_id)
-                ->get();
+                ->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.productos', compact('productos'))->setPaper('legal', 'portrait');
@@ -290,7 +309,7 @@ class ReporteController extends Controller
         $producto_id =  $request->producto_id;
         $categoria_id =  $request->categoria_id;
         $filtro =  $request->filtro;
-        $ingreso_productos = IngresoProducto::where("sucursal_id", $sucursal_id)->get();
+        $ingreso_productos = IngresoProducto::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Categoría' && $categoria_id != 'todos') {
             $request->validate(['categoria_id' => 'required']);
@@ -298,14 +317,14 @@ class ReporteController extends Controller
                 ->join("productos", "productos.id", "=", "ingreso_productos.producto_id")
                 ->where("ingreso_productos.sucursal_id", $sucursal_id)
                 ->where('productos.categoria_id', $categoria_id)
-                ->get();
+                ->orderBy("ingreso_productos.created_at", "desc")->get();
         }
 
         if ($filtro == 'Producto' && $producto_id != 'todos') {
             $request->validate(['producto_id' => 'required']);
             $ingreso_productos = IngresoProducto::where("sucursal_id", $sucursal_id)
                 ->where('producto_id', $producto_id)
-                ->get();
+                ->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.ingreso_productos', compact('ingreso_productos'))->setPaper('legal', 'portrait');
@@ -322,7 +341,7 @@ class ReporteController extends Controller
     {
         $request->validate(['sucursal_id' => 'required']);
         $sucursal_id =  $request->sucursal_id;
-        $productos = Producto::where("sucursal_id", $sucursal_id)->get();
+        $productos = Producto::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
         $pdf = PDF::loadView('reportes.stock_productos', compact('productos'))->setPaper('legal', 'portrait');
         // ENUMERAR LAS PÁGINAS USANDO CANVAS
@@ -346,7 +365,7 @@ class ReporteController extends Controller
 
         $detalle_ventas = DetalleVenta::select("detalle_ventas.*")
             ->join("ventas", "ventas.id", "=", "detalle_ventas.venta_id")
-            ->where("ventas.sucursal_id", $sucursal_id)->get();
+            ->where("ventas.sucursal_id", $sucursal_id)->orderBy("ventas.created_at", "desc")->get();
 
 
         if ($filtro == 'Categoría' && $categoria_id != 'todos') {
@@ -355,7 +374,7 @@ class ReporteController extends Controller
                 ->join("productos", "productos.id", "=", "detalle_ventas.producto_id")
                 ->where("productos.categoria_id", $categoria_id)
                 ->where("ventas.sucursal_id", $sucursal_id)
-                ->get();
+                ->orderBy("ventas.created_at", "desc")->get();
         }
 
         if ($filtro == 'Producto' && $producto_id != 'todos') {
@@ -363,14 +382,14 @@ class ReporteController extends Controller
                 ->join("ventas", "ventas.id", "=", "detalle_ventas.venta_id")
                 ->where("detalle_ventas.producto_id", $producto_id)
                 ->where("ventas.sucursal_id", $sucursal_id)
-                ->get();
+                ->orderBy("ventas.created_at", "desc")->get();
         }
 
         if ($filtro == 'Rango de fechas') {
             $detalle_ventas = DetalleVenta::select("detalle_ventas.*")
                 ->join("ventas", "ventas.id", "=", "detalle_ventas.venta_id")
                 ->whereBetween("ventas.fecha", [$fecha_ini, $fecha_fin])
-                ->get();
+                ->orderBy("ventas.created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.venta_productos', compact('detalle_ventas'))->setPaper('legal', 'portrait');

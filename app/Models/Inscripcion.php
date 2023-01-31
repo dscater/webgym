@@ -13,6 +13,7 @@ class Inscripcion extends Model
         "cliente_id",
         "plan_id",
         "sucursal_id",
+        "disciplina",
         "fecha_inscripcion",
         "fecha_fin",
         "codigo_rfid",

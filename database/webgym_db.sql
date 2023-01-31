@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-12-2022 a las 19:59:40
+-- Tiempo de generación: 31-01-2023 a las 16:43:55
 -- Versión del servidor: 5.7.33
 -- Versión de PHP: 7.4.19
 
@@ -46,7 +46,9 @@ INSERT INTO `accesos` (`id`, `cliente_id`, `sucursal_id`, `tipo`, `fecha_registr
 (4, 3, 2, 'SALIDA', '2022-11-22', '2022-11-22 19:31:45', '2022-11-22 19:31:45'),
 (5, 3, 2, 'INGRESO', '2022-11-25', '2022-11-25 14:35:24', '2022-11-25 14:35:24'),
 (6, 3, 2, 'SALIDA', '2022-11-25', '2022-11-25 14:35:34', '2022-11-25 14:35:34'),
-(7, 2, 3, 'INGRESO', '2022-12-06', '2022-12-06 19:01:54', '2022-12-06 19:01:54');
+(7, 2, 3, 'INGRESO', '2022-12-06', '2022-12-06 19:01:54', '2022-12-06 19:01:54'),
+(8, 1, 2, 'INGRESO', '2023-01-31', '2023-01-31 16:28:39', '2023-01-31 16:28:39'),
+(9, 1, 2, 'SALIDA', '2023-01-31', '2023-01-31 16:29:22', '2023-01-31 16:29:22');
 
 -- --------------------------------------------------------
 
@@ -88,6 +90,7 @@ CREATE TABLE `clientes` (
   `fono2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `correo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `declaracion_jurada` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sucursal_id` bigint(20) UNSIGNED NOT NULL,
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -98,11 +101,12 @@ CREATE TABLE `clientes` (
 -- Volcado de datos para la tabla `clientes`
 --
 
-INSERT INTO `clientes` (`id`, `nombre`, `paterno`, `materno`, `ci`, `ci_exp`, `fecha_nacimiento`, `edad`, `genero`, `dir`, `fono`, `fono2`, `correo`, `foto`, `sucursal_id`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 'HECTOR', 'CARVAJAL', 'RAMIRES', '3223', 'LP', '1998-12-12', 23, 'MASCULINO', 'LOS OLIVOS', '77777', '666666', 'hector@gmail.com', '1668809453_.jpg', 2, '2022-11-18', '2022-11-18 22:10:20', '2022-11-18 22:11:16'),
-(2, 'CARLOS', 'LIMA', 'LIMA', '43343', 'LP', '2000-01-01', 22, 'MASCULINO', 'LOS OLIVOS', '3223', '2223', '', 'default.png', 3, '2022-11-22', '2022-11-22 14:52:45', '2022-11-22 14:52:45'),
-(3, 'CARLOS', 'MAMANI', '', '43344', 'LP', '2002-03-03', 20, 'MASCULINO', 'LOS OLIVOS', '222222', '3333333', '', 'default.png', 2, '2022-11-22', '2022-11-22 15:39:58', '2022-12-06 19:20:25'),
-(4, 'MARIA', 'CASTRO', 'CASTRO', '2342', 'LP', '2002-01-01', 20, 'FEMENINO', 'LOS OLIVOS', '', '', '', 'default.png', 3, '2022-12-06', '2022-12-06 18:45:40', '2022-12-06 18:46:05');
+INSERT INTO `clientes` (`id`, `nombre`, `paterno`, `materno`, `ci`, `ci_exp`, `fecha_nacimiento`, `edad`, `genero`, `dir`, `fono`, `fono2`, `correo`, `foto`, `declaracion_jurada`, `sucursal_id`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 'HECTOR', 'CARVAJAL', 'RAMIRES', '3223', 'LP', '1998-12-12', 23, 'MASCULINO', 'LOS OLIVOS', '77777', '666666', 'HECTOR@GMAIL.COM', '1668809453_.jpg', '1675179900_1.pdf', 2, '2022-11-18', '2022-11-18 22:10:20', '2023-01-31 15:45:00'),
+(2, 'CARLOS', 'LIMA', 'LIMA', '43343', 'LP', '2000-01-01', 22, 'MASCULINO', 'LOS OLIVOS', '3223', '2223', '', 'default.png', NULL, 3, '2022-11-22', '2022-11-22 14:52:45', '2022-11-22 14:52:45'),
+(3, 'CARLOS', 'MAMANI', '', '43344', 'LP', '2002-03-03', 20, 'MASCULINO', 'LOS OLIVOS', '222222', '3333333', '', 'default.png', NULL, 2, '2022-11-22', '2022-11-22 15:39:58', '2022-12-06 19:20:25'),
+(4, 'MARIA', 'CASTRO', 'CASTRO', '2342', 'LP', '2002-01-01', 20, 'FEMENINO', 'LOS OLIVOS', '', '', '', 'default.png', NULL, 3, '2022-12-06', '2022-12-06 18:45:40', '2022-12-06 18:46:05'),
+(5, 'FREDDY', 'LOZANO', 'QUISPE', '5445', 'TJ', '2000-04-03', 22, 'HOMBRE', '', '', '', '', '1675180347_5.jpg', '1675180347_5.pdf', 3, '2023-01-31', '2023-01-31 15:52:27', '2023-01-31 15:52:27');
 
 -- --------------------------------------------------------
 
@@ -333,6 +337,7 @@ CREATE TABLE `inscripcions` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `cliente_id` bigint(20) UNSIGNED NOT NULL,
   `plan_id` bigint(20) UNSIGNED NOT NULL,
+  `disciplina` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `sucursal_id` bigint(20) UNSIGNED NOT NULL,
   `fecha_inscripcion` date NOT NULL,
   `fecha_fin` date NOT NULL,
@@ -347,11 +352,12 @@ CREATE TABLE `inscripcions` (
 -- Volcado de datos para la tabla `inscripcions`
 --
 
-INSERT INTO `inscripcions` (`id`, `cliente_id`, `plan_id`, `sucursal_id`, `fecha_inscripcion`, `fecha_fin`, `codigo_rfid`, `estado_cobro`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 2, '2022-01-01', '2022-01-31', '1111', 'COMPLETO', '2022-11-22', '2022-11-22 15:28:16', '2022-11-23 14:10:23'),
-(3, 3, 1, 2, '2022-11-22', '2022-12-22', '1212', 'PENDIENTE', '2022-11-22', '2022-11-22 15:40:15', '2022-11-22 15:40:15'),
-(5, 1, 1, 2, '2022-11-23', '2022-12-23', '3333', 'COMPLETO', '2022-11-23', '2022-11-23 14:06:31', '2022-11-23 14:09:33'),
-(6, 2, 3, 3, '2022-12-06', '2023-01-05', '5555', 'COMPLETO', '2022-12-06', '2022-12-06 19:01:00', '2022-12-06 19:12:03');
+INSERT INTO `inscripcions` (`id`, `cliente_id`, `plan_id`, `disciplina`, `sucursal_id`, `fecha_inscripcion`, `fecha_fin`, `codigo_rfid`, `estado_cobro`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'PESAS', 2, '2022-01-01', '2022-01-31', '1111', 'COMPLETO', '2022-11-22', '2022-11-22 15:28:16', '2023-01-31 15:27:50'),
+(3, 3, 1, 'PESAS', 2, '2022-11-22', '2022-12-22', '1212', 'PENDIENTE', '2022-11-22', '2022-11-22 15:40:15', '2023-01-31 15:27:58'),
+(5, 1, 1, 'PESAS', 2, '2022-11-23', '2022-12-23', '3333', 'COMPLETO', '2022-11-23', '2022-11-23 14:06:31', '2023-01-31 15:28:01'),
+(6, 2, 3, 'PESAS', 3, '2022-12-01', '2022-12-31', '5555', 'COMPLETO', '2022-12-06', '2022-12-06 19:01:00', '2023-01-31 16:27:37'),
+(7, 1, 4, 'PESAS', 2, '2023-01-31', '2023-03-02', '555', 'PENDIENTE', '2023-01-31', '2023-01-31 15:08:39', '2023-01-31 15:28:08');
 
 -- --------------------------------------------------------
 
@@ -557,6 +563,7 @@ CREATE TABLE `plans` (
   `costo` decimal(24,2) NOT NULL,
   `duracion` int(11) NOT NULL,
   `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `todos` varchar(155) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NO',
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -566,10 +573,11 @@ CREATE TABLE `plans` (
 -- Volcado de datos para la tabla `plans`
 --
 
-INSERT INTO `plans` (`id`, `sucursal_id`, `nombre`, `costo`, `duracion`, `descripcion`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 2, 'PLAN 1', '120.00', 30, 'DESCRIPCION DE PRUEBA', '2022-11-18', '2022-11-18 21:48:12', '2022-11-18 21:48:21'),
-(2, 2, 'PLAN 2', '90.00', 25, '', '2022-11-23', '2022-11-23 14:19:18', '2022-11-23 14:19:18'),
-(3, 3, 'PLAN 1 SUC. 2', '190.00', 30, '', '2022-12-06', '2022-12-06 19:00:50', '2022-12-06 19:00:50');
+INSERT INTO `plans` (`id`, `sucursal_id`, `nombre`, `costo`, `duracion`, `descripcion`, `todos`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 2, 'PLAN 1', '120.00', 30, 'DESCRIPCION DE PRUEBA', 'NO', '2022-11-18', '2022-11-18 21:48:12', '2022-11-18 21:48:21'),
+(2, 2, 'PLAN 2', '90.00', 25, '', 'NO', '2022-11-23', '2022-11-23 14:19:18', '2022-11-23 14:19:18'),
+(3, 3, 'PLAN 1 SUC. 2', '190.00', 30, '', 'NO', '2022-12-06', '2022-12-06 19:00:50', '2022-12-06 19:00:50'),
+(4, 2, 'PLAN PRUEBA TODOS', '120.00', 30, '', 'SI', '2023-01-31', '2023-01-31 15:07:12', '2023-01-31 15:07:12');
 
 -- --------------------------------------------------------
 
@@ -915,7 +923,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `accesos`
 --
 ALTER TABLE `accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -927,7 +935,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `cobros`
@@ -975,7 +983,7 @@ ALTER TABLE `ingreso_productos`
 -- AUTO_INCREMENT de la tabla `inscripcions`
 --
 ALTER TABLE `inscripcions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento_maquinas`
@@ -1011,7 +1019,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT de la tabla `plans`
 --
 ALTER TABLE `plans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `pliegues`

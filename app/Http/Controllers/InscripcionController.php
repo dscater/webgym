@@ -12,6 +12,7 @@ class InscripcionController extends Controller
     public $validacion = [
         "cliente_id" => "required",
         "plan_id" => "required",
+        "disciplina" => "required",
         "sucursal_id" => "required",
         "fecha_inscripcion" => "required",
         "codigo_rfid" => "required|unique:inscripcions,codigo_rfid",
@@ -82,7 +83,7 @@ class InscripcionController extends Controller
             ->where("id", "!=", $inscripcion->id)
             ->get()
             ->first();
-        if ($inscripcion_vigente) {
+        if ($inscripcion_vigente && $inscripcion->fecha_inscripcion != $request->fecha_inscripcion) {
             return response()->JSON(["sw" => false, "msj" => "El cliente ya cuenta con una inscripción vigente en la sucursal seleccionada dentro de la fecha de inscripción indicada"]);
         }
         $plan = Plan::find($request->plan_id);

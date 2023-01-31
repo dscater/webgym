@@ -228,7 +228,9 @@ export default {
                     label: "Cliente",
                     sortable: true,
                 },
+                { key: "sucursal.nombre", label: "Sucursal", sortable: true },
                 { key: "plan.nombre", label: "Plan", sortable: true },
+                { key: "disciplina", label: "Disciplina", sortable: true },
                 { key: "sucursal.nombre", label: "Sucursal", sortable: true },
                 {
                     key: "fecha_inscripcion",
@@ -263,6 +265,7 @@ export default {
                 id: 0,
                 cliente_id: "",
                 plan_id: "",
+                disciplina: "",
                 sucursal_id: "",
                 fecha_inscripcion: "",
                 codigo_rfid: "",
@@ -293,6 +296,9 @@ export default {
                 ? item.cliente_id
                 : "";
             this.oInscripcion.plan_id = item.plan_id ? item.plan_id : "";
+            this.oInscripcion.disciplina = item.disciplina
+                ? item.disciplina
+                : "";
             this.oInscripcion.sucursal_id = item.sucursal_id
                 ? item.sucursal_id
                 : "";
@@ -369,6 +375,7 @@ export default {
         limpiaInscripcion() {
             this.oInscripcion.cliente_id = "";
             this.oInscripcion.plan_id = "";
+            this.oInscripcion.disciplina = "";
             this.oInscripcion.sucursal_id = "";
             if (this.user.tipo != "GERENTE") {
                 this.oInscripcion.sucursal_id = this.user.sucursal_id;

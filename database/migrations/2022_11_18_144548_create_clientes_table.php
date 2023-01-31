@@ -28,6 +28,7 @@ class CreateClientesTable extends Migration
             $table->string("fono2", 255)->nullable();
             $table->string("correo", 255)->nullable();
             $table->string("foto", 255)->nullable();
+            $table->string("declaracion_jurada", 255)->nullable();
             $table->unsignedBigInteger("sucursal_id");
             $table->date("fecha_registro");
             $table->timestamps();

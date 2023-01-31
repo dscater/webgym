@@ -185,13 +185,25 @@
                                     }"
                                     >Género*</label
                                 >
-                                <el-input
-                                    placeholder="Género"
-                                    :class="{ 'is-invalid': errors.genero }"
+                                <el-select
+                                    class="w-100 d-block"
+                                    :class="{
+                                        'is-invalid': errors.genero,
+                                    }"
                                     v-model="cliente.genero"
                                     clearable
                                 >
-                                </el-input>
+                                    <el-option
+                                        v-for="(item, index) in [
+                                            'HOMBRE',
+                                            'MUJER',
+                                        ]"
+                                        :key="index"
+                                        :value="item"
+                                        :label="item"
+                                    >
+                                    </el-option>
+                                </el-select>
                                 <span
                                     class="error invalid-feedback"
                                     v-if="errors.genero"
@@ -335,6 +347,29 @@
                                     v-text="errors.sucursal_id[0]"
                                 ></span>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger':
+                                            errors.declaracion_jurada,
+                                    }"
+                                    >Declaración jurada</label
+                                >
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    :class="{
+                                        'is-invalid': errors.declaracion_jurada,
+                                    }"
+                                    ref="input_file_declaracion_jurada"
+                                    @change="cargaArchivo"
+                                />
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.declaracion_jurada"
+                                    v-text="errors.declaracion_jurada[0]"
+                                ></span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -388,6 +423,7 @@ export default {
                 fono2: "",
                 correo: "",
                 foto: null,
+                declaracion_jurada: null,
                 sucursal_id: "",
             },
         },
@@ -397,6 +433,7 @@ export default {
             this.errors = [];
             if (newVal) {
                 this.$refs.input_file.value = null;
+                this.$refs.input_file_declaracion_jurada.value = null;
                 this.bModal = true;
             } else {
                 this.bModal = false;
@@ -512,6 +549,12 @@ export default {
                     this.cliente.foto ? this.cliente.foto : ""
                 );
                 formdata.append(
+                    "declaracion_jurada",
+                    this.cliente.declaracion_jurada
+                        ? this.cliente.declaracion_jurada
+                        : ""
+                );
+                formdata.append(
                     "sucursal_id",
                     this.cliente.sucursal_id ? this.cliente.sucursal_id : ""
                 );
@@ -560,6 +603,9 @@ export default {
         cargaImagen(e) {
             this.cliente.foto = e.target.files[0];
         },
+        cargaArchivo(e) {
+            this.cliente.declaracion_jurada = e.target.files[0];
+        },
         // Dialog/modal
         cierraModal() {
             this.bModal = false;
@@ -580,6 +626,7 @@ export default {
             this.cliente.fono2 = "";
             this.cliente.correo = "";
             this.cliente.foto = null;
+            this.cliente.declaracion_jurada = null;
             this.cliente.sucursal_id = "";
             this.$refs.input_file.value = null;
         },

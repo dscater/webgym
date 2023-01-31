@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Acceso;
 use App\Models\Inscripcion;
+use App\Models\Sucursal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +27,15 @@ class AccesoController extends Controller
         $fecha = date("Y-m-d");
         $accion = "";
         $inscripcion = Inscripcion::where("codigo_rfid", $rfid)->get()->first();
+        $sucursal = Sucursal::find($request->sucursal_id);
+        if ($inscripcion->plan->todos == 'NO') {
+            if ($inscripcion->sucursal_id != $request->sucursal_id) {
+                return response()->JSON([
+                    "sw" => false,
+                    "msj" => "El código que ingreso no pertenece a la sucursal " . $sucursal->nombre
+                ]);
+            }
+        }
         if ($inscripcion) {
             if ($inscripcion->fecha_fin >= $fecha) {
                 $existe_ingreso = Acceso::where("cliente_id", $inscripcion->cliente_id)->where("fecha_registro", $fecha)->where("tipo", "INGRESO")->get()->first();
@@ -51,7 +61,7 @@ class AccesoController extends Controller
                         "sw" => true,
                         "accion" => "",
                         "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                        "msj" => $inscripcion->cliente->full_name . "<br>Ya registró su Ingreso y Salida el día de hoy"
+                        "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br><i class="text-md">Ya registró su Ingreso y Salida el día de hoy</i>'
                     ]);
                 }
 
@@ -59,7 +69,7 @@ class AccesoController extends Controller
                     "sw" => true,
                     "accion" => $accion,
                     "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                    "msj" => $inscripcion->cliente->full_name
+                    "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name
                 ]);
             } else {
                 return response()->JSON([

@@ -17,6 +17,7 @@ class CreateInscripcionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger("cliente_id");
             $table->unsignedBigInteger("plan_id");
+            $table->string("disciplina", 255);
             $table->unsignedBigInteger("sucursal_id");
             $table->date("fecha_inscripcion");
             $table->date("fecha_fin");
