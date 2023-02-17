@@ -175,6 +175,7 @@
                 <th>SUCURSAL</th>
                 <th>FECHA DE INSCRIPCIÓN</th>
                 <th>FECHA FINALIZACIÓN</th>
+                <th>ESTADO</th>
                 <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
@@ -190,6 +191,7 @@
                     <td>{{ $inscripcion->sucursal->nombre }}</td>
                     <td>{{ $inscripcion->fecha_inscripcion }}</td>
                     <td>{{ $inscripcion->fecha_fin }}</td>
+                    <td>{{ $inscripcion->estado }}</td>
                     <td>{{ $inscripcion->fecha_registro }}</td>
                 </tr>
             @endforeach

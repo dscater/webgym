@@ -68,13 +68,13 @@ export default {
         };
     },
     mounted() {
-        this.loadingWindow.close();
         this.getInfoBox();
     },
     methods: {
         getInfoBox() {
             axios.get("/admin/usuarios/getInfoBox").then((res) => {
                 this.listInfoBox = res.data;
+                this.loadingWindow.close();
             });
         },
     },

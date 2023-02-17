@@ -170,6 +170,7 @@
         <thead class="green">
             <tr>
                 <th width="3%">N°</th>
+                <th width="7%">CÓDIGO</th>
                 <th>NOMBRE</th>
                 <th>CATEGORÍA</th>
                 <th>DESCRIPCIÓN</th>
@@ -177,6 +178,7 @@
                 <th>FECHA DE INCORPORACIÓN</th>
                 <th>CANTIDAD</th>
                 <th width="5%">FOTO</th>
+                <th>ESTADO</th>
                 <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
@@ -187,14 +189,16 @@
             @foreach ($maquinas as $maquina)
                 <tr>
                     <td class="centreado">{{ $cont++ }}</td>
+                    <td>{{ $maquina->codigo }}</td>
                     <td>{{ $maquina->nombre }}</td>
                     <td>{{ $maquina->categoria->nombre }}</td>
                     <td>{{ $maquina->descripcion }}</td>
                     <td>{{ $maquina->sucursal->nombre }}</td>
                     <td>{{ $maquina->fecha_incorporacion }}</td>
-                    <td>{{ $maquina->cantidad }}</td>
+                    <td class="centreado">{{ $maquina->cantidad }}</td>
                     <td class="img_celda centreado"><img src="{{ asset('imgs/maquinas/' . $maquina->foto) }}" alt="Foto">
                     </td>
+                    <td>{{ $maquina->estado }}</td>
                     <td>{{ $maquina->fecha_registro }}</td>
                 </tr>
             @endforeach

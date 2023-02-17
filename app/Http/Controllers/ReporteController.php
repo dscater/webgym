@@ -65,6 +65,7 @@ class ReporteController extends Controller
         $request->validate(['sucursal_id' => 'required']);
         $sucursal_id =  $request->sucursal_id;
         $plan_id =  $request->plan_id;
+        $disciplina =  $request->disciplina;
         $filtro =  $request->filtro;
         $clientes = Cliente::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
         if ($filtro == 'Rango de fechas') {
@@ -75,11 +76,23 @@ class ReporteController extends Controller
             $clientes = Cliente::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
         }
 
+        if ($filtro == 'Por disciplina') {
+            $request->validate([
+                'disciplina' => 'required',
+            ]);
+            $clientes = Cliente::select("clientes.*", "inscripcions.disciplina")
+                ->join("inscripcions", "inscripcions.cliente_id", "=", "clientes.id")
+                ->where("clientes.sucursal_id", $sucursal_id)
+                ->where("inscripcions.disciplina", $disciplina)
+                ->where("inscripcions.fecha_fin", ">=", date("Y-m-d"))
+                ->orderBy("clientes.created_at", "desc")->get();
+        }
+
         if ($filtro == 'Por plan') {
             $request->validate([
                 'plan_id' => 'required',
             ]);
-            $clientes = Cliente::select("clientes.*")
+            $clientes = Cliente::select("clientes.*", "inscripcions.disciplina")
                 ->join("inscripcions", "inscripcions.cliente_id", "=", "clientes.id")
                 ->where("clientes.sucursal_id", $sucursal_id)
                 ->where("inscripcions.plan_id", $plan_id)

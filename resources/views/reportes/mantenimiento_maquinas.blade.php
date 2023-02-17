@@ -171,7 +171,9 @@
             <tr>
                 <th width="3%">N°</th>
                 <th>SUCURSAL</th>
+                <th width="7%">CÓDIGO</th>
                 <th>MÁQUINA</th>
+                <th>ESTADO</th>
                 <th>FECHA DE MANTENIMIENTO</th>
                 <th>DESCRIPCIÓN DE MANTENIMIENTO REALIZADO</th>
                 <th>FECHA SUGERIDA PARA PRÓXIMO MANTENIMIENTO</th>
@@ -186,7 +188,9 @@
                 <tr>
                     <td class="centreado">{{ $cont++ }}</td>
                     <td>{{ $mantenimiento_maquina->sucursal->nombre }}</td>
+                    <td>{{ $mantenimiento_maquina->maquina->codigo }}</td>
                     <td>{{ $mantenimiento_maquina->maquina->nombre }}</td>
+                    <td>{{ $mantenimiento_maquina->maquina->estado }}</td>
                     <td>{{ $mantenimiento_maquina->fecha_mantenimiento }}</td>
                     <td>{{ $mantenimiento_maquina->descripcion }}</td>
                     <td>{{ $mantenimiento_maquina->fecha_proximo }}</td>

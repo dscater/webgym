@@ -22,7 +22,12 @@
                     </p>
 
                     <div>
-                        <div class="input-group mb-3">
+                        <div
+                            class="input-group mb-0"
+                            :class="{
+                                'is-invalid': errors.rfid,
+                            }"
+                        >
                             <input
                                 type="password"
                                 class="form-control"
@@ -38,7 +43,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" v-if="error">
+                        <span
+                            class="error invalid-feedback"
+                            v-if="errors.rfid"
+                            v-text="errors.rfid[0]"
+                        ></span>
+                        <div class="row mt-2" v-if="error">
                             <div class="col-12">
                                 <div class="callout callout-danger">
                                     <h5>¡Error!</h5>
@@ -49,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-2">
                             <!-- /.col -->
                             <div class="col-12">
                                 <button
@@ -213,7 +223,7 @@ export default {
                                 title: response.data.accion,
                                 html: `${response.data.img} <br/> ${response.data.msj}`,
                                 showConfirmButton: false,
-                                timer: 2500,
+                                timer: 10000,
                             });
                         } else {
                             Swal.fire({
@@ -221,11 +231,39 @@ export default {
                                 title: "Error",
                                 html: response.data.msj,
                                 showConfirmButton: false,
-                                timer: 3500,
+                                timer: 10000,
                             });
                         }
                         this.rfid = "";
                         this.$refs.input_rfid.focus();
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            if (error.response.status === 422) {
+                                this.errors = error.response.data.errors;
+                                if (this.errors.rfid) {
+                                    // this.rfid = "";
+                                    this.$refs.input_rfid.focus();
+                                    this.$refs.input_rfid.select();
+                                }
+                            }
+                            if (
+                                error.response.status === 420 ||
+                                error.response.status === 419 ||
+                                error.response.status === 401
+                            ) {
+                                window.location = "/";
+                            }
+                            if (error.response.status === 500) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    html: error.response.data.message,
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                });
+                            }
+                        }
                     });
             } else {
             }
@@ -236,6 +274,7 @@ export default {
         confirmarUbicacion() {
             if (this.sucursal_id != "") {
                 this.bModal = false;
+                this.$refs.input_rfid.focus();
             } else {
                 Swal.fire({
                     icon: "info",

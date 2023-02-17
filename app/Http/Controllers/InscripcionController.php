@@ -23,6 +23,7 @@ class InscripcionController extends Controller
         $inscripcions = Inscripcion::with('cliente')
             ->with('plan')
             ->with('sucursal')
+            ->orderBy("created_at", "desc")
             ->get();
 
         if (Auth::user()->tipo != 'GERENTE') {
@@ -30,6 +31,7 @@ class InscripcionController extends Controller
                 ->with('plan')
                 ->with('sucursal')
                 ->where("sucursal_id", Auth::user()->sucursal_id)
+                ->orderBy("created_at", "desc")
                 ->get();
         }
 
@@ -59,10 +61,14 @@ class InscripcionController extends Controller
             return response()->JSON(["sw" => false, "msj" => "El cliente tiene COBROS PENDIENTES en las siguentes sucursales: " . $sucursales . "debe realizar los pagos para realizar una inscripción"]);
         }
 
-
-        $request["fecha_registro"] = date("Y-m-d");
-        $request["estado_cobro"] = "PENDIENTE";
         $plan = Plan::find($request->plan_id);
+        $request["conteo"] = 0;
+        $request["restante"] = $plan->duracion;
+        $request["pausa"] = 0;
+        $request["fecha_registro"] = date("Y-m-d");
+        $request["fecha_pivote"] = $request->fecha_inscripcion;
+        $request["estado"] = "VIGENTE";
+        $request["estado_cobro"] = "PENDIENTE";
         $request["fecha_fin"] = date("Y-m-d", strtotime($request->fecha_inscripcion . " +" . $plan->duracion . "days"));
         Inscripcion::create(array_map("mb_strtoupper", $request->all()));
         return response()->JSON(["sw" => true, "msj" => "El registro se almacenó correctamente"]);
@@ -89,6 +95,20 @@ class InscripcionController extends Controller
         $plan = Plan::find($request->plan_id);
         $request["fecha_fin"] = date("Y-m-d", strtotime($request->fecha_inscripcion . " +" . $plan->duracion . "days"));
         $inscripcion->update(array_map("mb_strtoupper", $request->all()));
+        return response()->JSON(["sw" => true, "inscripcion" => $inscripcion, "msj" => "El registro se actualizó correctamente"]);
+    }
+
+    public function pausar_plan(Inscripcion $inscripcion, Request $request)
+    {
+        $inscripcion->pausa = $request->pausa;
+        if ($request->pausa == 1) {
+            $inscripcion->fecha_pausa = date("Y-m-d");
+            $inscripcion->justificacion = mb_strtoupper($request->justificacion);
+        } else {
+            $inscripcion->fecha_pivote = date("Y-m-d");
+        }
+        $inscripcion->save();
+
         return response()->JSON(["sw" => true, "inscripcion" => $inscripcion, "msj" => "El registro se actualizó correctamente"]);
     }
 

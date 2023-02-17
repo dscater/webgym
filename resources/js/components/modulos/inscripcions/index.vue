@@ -114,6 +114,32 @@
                                                     }}
                                                 </template>
 
+                                                <template #cell(estado)="row">
+                                                    <span
+                                                        v-if="
+                                                            row.item.pausa ==
+                                                                1 &&
+                                                            row.item.estado ==
+                                                                'VIGENTE'
+                                                        "
+                                                    >
+                                                        PAUSADO <br />{{
+                                                            formatoFecha(
+                                                                row.item
+                                                                    .fecha_pausa
+                                                            )
+                                                        }}
+                                                        <br />
+                                                        {{
+                                                            row.item
+                                                                .justificacion
+                                                        }}
+                                                    </span>
+                                                    <span v-else>{{
+                                                        row.item.estado
+                                                    }}</span>
+                                                </template>
+
                                                 <template #cell(accion)="row">
                                                     <div
                                                         class="row justify-content-center flex-column"
@@ -134,6 +160,72 @@
                                                                 class="fa fa-edit"
                                                             ></i>
                                                         </b-button>
+                                                        <template
+                                                            v-if="
+                                                                row.item
+                                                                    .estado ==
+                                                                'VIGENTE'
+                                                            "
+                                                        >
+                                                            <b-button
+                                                                v-if="
+                                                                    row.item
+                                                                        .pausa ==
+                                                                    0
+                                                                "
+                                                                size="sm"
+                                                                pill
+                                                                variant="outline-primary"
+                                                                class="btn-flat mb-1"
+                                                                title="Pausar plan"
+                                                                @click="
+                                                                    pausarPlan(
+                                                                        row.item
+                                                                            .id,
+                                                                        row.item
+                                                                            .cliente
+                                                                            .full_name +
+                                                                            ' con fecha de inscripcion ' +
+                                                                            formatoFecha(
+                                                                                row
+                                                                                    .item
+                                                                                    .fecha_inscripcion
+                                                                            )
+                                                                    )
+                                                                "
+                                                            >
+                                                                <i
+                                                                    class="fa fa-ban"
+                                                                ></i>
+                                                            </b-button>
+                                                            <b-button
+                                                                v-else
+                                                                size="sm"
+                                                                pill
+                                                                variant="outline-success"
+                                                                class="btn-flat mb-1"
+                                                                title="Pausar plan"
+                                                                @click="
+                                                                    reactivarPlan(
+                                                                        row.item
+                                                                            .id,
+                                                                        row.item
+                                                                            .cliente
+                                                                            .full_name +
+                                                                            ' con fecha de inscripcion ' +
+                                                                            formatoFecha(
+                                                                                row
+                                                                                    .item
+                                                                                    .fecha_inscripcion
+                                                                            )
+                                                                    )
+                                                                "
+                                                            >
+                                                                <i
+                                                                    class="fa fa-play"
+                                                                ></i>
+                                                            </b-button>
+                                                        </template>
                                                         <b-button
                                                             size="sm"
                                                             pill
@@ -243,6 +335,11 @@ export default {
                     sortable: true,
                 },
                 {
+                    key: "estado",
+                    label: "Estado",
+                    sortable: true,
+                },
+                {
                     key: "codigo_rfid",
                     label: "Código RFID",
                     sortable: true,
@@ -346,6 +443,83 @@ export default {
                     axios
                         .post("/admin/inscripcions/" + id, {
                             _method: "DELETE",
+                        })
+                        .then((res) => {
+                            this.getInscripcions();
+                            this.filter = "";
+                            Swal.fire({
+                                icon: "success",
+                                title: res.data.msj,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        });
+                }
+            });
+        },
+        pausarPlan(id, descripcion) {
+            let txt_justificacion = "";
+            Swal.fire({
+                title: "¿Quierés pausar este plan?",
+                html: `<strong>${descripcion}</strong>`,
+                showCancelButton: true,
+                confirmButtonColor: "#05568e",
+                confirmButtonText: "Si, pausar",
+                cancelButtonText: "No, cancelar",
+                denyButtonText: `No, cancelar`,
+                input: "textarea",
+                inputAttributes: {
+                    rows: "3",
+                    placeholder: "Justificación",
+                },
+                preConfirm: (justificacion) => {
+                    if (justificacion.trim() != "") {
+                        txt_justificacion = justificacion.trim()
+                        return true;
+                    }
+                    Swal.showValidationMessage(
+                        `Debes ingresar la justificación`
+                    );
+                    return false;
+                },
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed && txt_justificacion != "") {
+                    axios
+                        .post("/admin/inscripcions/pausar_plan/" + id, {
+                            _method: "PUT",
+                            pausa: 1,
+                            justificacion: txt_justificacion,
+                        })
+                        .then((res) => {
+                            this.getInscripcions();
+                            this.filter = "";
+                            Swal.fire({
+                                icon: "success",
+                                title: res.data.msj,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        });
+                }
+            });
+        },
+        reactivarPlan(id, descripcion) {
+            Swal.fire({
+                title: "¿Quierés reanudar este plan?",
+                html: `<strong>${descripcion}</strong>`,
+                showCancelButton: true,
+                confirmButtonColor: "#05568e",
+                confirmButtonText: "Si, reanudar",
+                cancelButtonText: "No, cancelar",
+                denyButtonText: `No, cancelar`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    axios
+                        .post("/admin/inscripcions/pausar_plan/" + id, {
+                            _method: "PUT",
+                            pausa: 0,
                         })
                         .then((res) => {
                             this.getInscripcions();

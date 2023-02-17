@@ -231,6 +231,11 @@ export default {
             showOverlay: false,
             fields: [
                 {
+                    key: "codigo",
+                    label: "Código",
+                    sortable: true,
+                },
+                {
                     key: "nombre",
                     label: "Nombre",
                     sortable: true,
@@ -245,6 +250,7 @@ export default {
                 },
                 { key: "cantidad", label: "Cantidad", sortable: true },
                 { key: "foto", label: "Foto", sortable: true },
+                { key: "estado", label: "Estado", sortable: true },
                 {
                     key: "fecha_registro",
                     label: "Fecha de registro",
@@ -261,6 +267,7 @@ export default {
             modal_accion: "nuevo",
             oMaquina: {
                 id: 0,
+                codigo: "",
                 nombre: "",
                 categoria_id: "",
                 descripcion: "",
@@ -268,6 +275,7 @@ export default {
                 fecha_incorporacion: "",
                 cantidad: "",
                 foto: null,
+                estado: "INACTIVO",
             },
             currentPage: 1,
             perPage: 5,
@@ -291,6 +299,7 @@ export default {
         // Seleccionar Opciones de Tabla
         editarRegistro(item) {
             this.oMaquina.id = item.id;
+            this.oMaquina.codigo = item.codigo ? item.codigo : "";
             this.oMaquina.nombre = item.nombre ? item.nombre : "";
             this.oMaquina.categoria_id = item.categoria_id
                 ? item.categoria_id
@@ -306,6 +315,7 @@ export default {
                 : "";
             this.oMaquina.cantidad = item.cantidad ? item.cantidad : "";
             this.oMaquina.foto = item.foto ? item.foto : "";
+            this.oMaquina.estado = item.estado ? item.estado : "";
 
             this.modal_accion = "edit";
             this.muestra_modal = true;
@@ -371,6 +381,7 @@ export default {
             this.currentPage = 1;
         },
         limpiaMaquina() {
+            this.oMaquina.codigo = "";
             this.oMaquina.nombre = "";
             this.oMaquina.categoria_id = "";
             this.oMaquina.descripcion = "";
@@ -378,6 +389,7 @@ export default {
             this.oMaquina.fecha_incorporacion = "";
             this.oMaquina.cantidad = "";
             this.oMaquina.foto = null;
+            this.oMaquina.estado = "INACTIVO";
         },
         formatoFecha(date) {
             return this.$moment(String(date)).format("DD/MM/YYYY");

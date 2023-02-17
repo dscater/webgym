@@ -95,6 +95,41 @@
                                                 class="form-group col-md-12"
                                                 v-if="
                                                     oReporte.filtro ==
+                                                    'Por disciplina'
+                                                "
+                                            >
+                                                <label
+                                                    :class="{
+                                                        'text-danger':
+                                                            errors.disciplina,
+                                                    }"
+                                                    >Disciplina*</label
+                                                >
+                                                <el-input
+                                                    v-model="
+                                                        oReporte.disciplina
+                                                    "
+                                                    placeholder="Seleccione"
+                                                    class="d-block"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.disciplina,
+                                                    }"
+                                                >
+                                                </el-input>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.disciplina"
+                                                    v-text="
+                                                        errors.disciplina[0]
+                                                    "
+                                                ></span>
+                                            </div>
+
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="
+                                                    oReporte.filtro ==
                                                     'Por plan'
                                                 "
                                             >
@@ -215,6 +250,7 @@ export default {
             oReporte: {
                 filtro: "Todos",
                 sucursal_id: "",
+                disciplina: "",
                 plan_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
@@ -222,7 +258,12 @@ export default {
             aFechas: [],
             enviando: false,
             textoBtn: "Generar Reporte",
-            listFiltro: ["Todos", "Por plan", "Rango de fechas"],
+            listFiltro: [
+                "Todos",
+                "Por disciplina",
+                "Por plan",
+                "Rango de fechas",
+            ],
             errors: [],
             sucursal_id: [],
             listSucursales: [],

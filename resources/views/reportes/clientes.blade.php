@@ -182,6 +182,7 @@
                 <th>TELÉFONO</th>
                 <th>TELÉFONO</th>
                 <th>CORREO</th>
+                <th>DISCIPLINA</th>
                 <th>SUCURSAL</th>
                 <th width="9%">FECHA DE REGISTRO</th>
             </tr>
@@ -205,6 +206,8 @@
                     <td>{{ $cliente->fono }}</td>
                     <td>{{ $cliente->fono2 }}</td>
                     <td>{{ $cliente->correo }}</td>
+                    <td>{{ isset($cliente->disciplina)? $cliente->disciplina: ($cliente->inscripcions()->get()->last()? $cliente->inscripcions()->get()->last()->disciplina: '') }}
+                    </td>
                     <td>{{ $cliente->sucursal->nombre }}</td>
                     <td>{{ $cliente->fecha_registro }}</td>
                 </tr>

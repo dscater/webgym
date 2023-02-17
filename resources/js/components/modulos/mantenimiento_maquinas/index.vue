@@ -249,6 +249,11 @@ export default {
                     sortable: true,
                 },
                 {
+                    key: "maquina.sucursal.nombre",
+                    label: "Sucursal",
+                    sortable: true,
+                },
+                {
                     key: "fecha_mantenimiento",
                     label: "Fecha de mantenimiento",
                     sortable: true,

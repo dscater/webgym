@@ -19,10 +19,10 @@ class MantenimientoMaquinaController extends Controller
 
     public function index(Request $request)
     {
-        $mantenimiento_maquinas = MantenimientoMaquina::with("maquina")->get();
+        $mantenimiento_maquinas = MantenimientoMaquina::with("maquina.sucursal")->get();
 
         if (Auth::user()->tipo != 'GERENTE') {
-            $mantenimiento_maquinas = MantenimientoMaquina::with("maquina")->where("sucursal_id", Auth::user()->sucursal_id)->get();
+            $mantenimiento_maquinas = MantenimientoMaquina::with("maquina.sucursal")->where("sucursal_id", Auth::user()->sucursal_id)->get();
         }
 
         return response()->JSON(['mantenimiento_maquinas' => $mantenimiento_maquinas, 'total' => count($mantenimiento_maquinas)], 200);

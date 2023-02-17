@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Empleado;
+use App\Models\Inscripcion;
+use App\Models\Maquina;
 use App\Models\Tcont;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -332,30 +335,52 @@ class UserController extends Controller
                 'icon' => 'fas fa-users',
             ];
         }
-        if (in_array('clientes.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
-            $array_infos[] = [
-                'label' => 'Clientes',
-                'cantidad' => count(User::where('id', '!=', 1)->get()),
-                'color' => 'bg-success',
-                'icon' => 'fas fa-users',
-            ];
+        if (in_array('clientes.index', $this->permisos[$tipo])) {
+            if (Auth::user()->tipo == 'GERENTE') {
+                $array_infos[] = [
+                    'label' => 'Clientes',
+                    'cantidad' => count(Cliente::all()),
+                    'color' => 'bg-success',
+                    'icon' => 'fas fa-users',
+                ];
+            } else {
+                $array_infos[] = [
+                    'label' => 'Clientes',
+                    'cantidad' => count(Cliente::where("sucursal_id", Auth::user()->sucursal_id)->get()),
+                    'color' => 'bg-success',
+                    'icon' => 'fas fa-users',
+                ];
+            }
         }
-        if (in_array('empleados.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
+        if (in_array('empleados.index', $this->permisos[$tipo])) {
             $array_infos[] = [
                 'label' => 'Empleados',
-                'cantidad' => count(User::where('id', '!=', 1)->get()),
+                'cantidad' => count(Empleado::all()),
                 'color' => 'bg-primary',
                 'icon' => 'fas fa-users',
             ];
         }
-        if (in_array('maquinas.index', $this->permisos[$tipo]) && Auth::user()->tipo == 'GERENTE') {
+        if (in_array('maquinas.index', $this->permisos[$tipo])) {
             $array_infos[] = [
                 'label' => 'Máquinas',
-                'cantidad' => count(User::where('id', '!=', 1)->get()),
+                'cantidad' => count(Maquina::all()),
                 'color' => 'bg-warning',
                 'icon' => 'fas fa-boxes',
             ];
         }
+
+        if (Auth::user()->tipo == 'GERENTE') {
+            Inscripcion::actualizaInscripciones();
+        }
+
+        if (Auth::user()->tipo == 'ENCARGADO DE RECEPCIÓN') {
+            Inscripcion::actualizaInscripcionesPorSucursal(Auth::user()->sucursal_id);
+        }
+
+        if (Auth::user()->tipo == 'ENCARGADO DE RECEPCIÓN') {
+            Inscripcion::actualizaInscripcionesPorSucursal(Auth::user()->sucursal_id);
+        }
+
         return response()->JSON($array_infos);
     }
 

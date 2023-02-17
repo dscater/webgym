@@ -26,6 +26,26 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
+                                        'text-danger': errors.codigo,
+                                    }"
+                                    >Código*</label
+                                >
+                                <el-input
+                                    placeholder="Código"
+                                    :class="{ 'is-invalid': errors.codigo }"
+                                    v-model="maquina.codigo"
+                                    clearable
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.codigo"
+                                    v-text="errors.codigo[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
                                         'text-danger': errors.nombre,
                                     }"
                                     >Nombre*</label
@@ -84,7 +104,9 @@
                                     type="textarea"
                                     autosize
                                     placeholder="Dirección"
-                                    :class="{ 'is-invalid': errors.descripcion }"
+                                    :class="{
+                                        'is-invalid': errors.descripcion,
+                                    }"
                                     v-model="maquina.descripcion"
                                     clearable
                                 >
@@ -127,7 +149,8 @@
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
-                                        'text-danger': errors.fecha_incorporacion,
+                                        'text-danger':
+                                            errors.fecha_incorporacion,
                                     }"
                                     >Fecha de Incorporación</label
                                 >
@@ -135,7 +158,10 @@
                                 <el-input
                                     type="date"
                                     placeholder="Dirección"
-                                    :class="{ 'is-invalid': errors.fecha_incorporacion }"
+                                    :class="{
+                                        'is-invalid':
+                                            errors.fecha_incorporacion,
+                                    }"
                                     v-model="maquina.fecha_incorporacion"
                                     clearable
                                 >
@@ -189,6 +215,33 @@
                                     v-text="errors.foto[0]"
                                 ></span>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.estado,
+                                    }"
+                                    >Estado*</label
+                                >
+                                <el-switch
+                                    :class="{
+                                        'is-invalid': errors.estado,
+                                    }"
+                                    style="display: block"
+                                    v-model="maquina.estado"
+                                    active-color="#13ce66"
+                                    inactive-color="#ff4949"
+                                    active-text="ACTIVO"
+                                    inactive-text="INACTIVO"
+                                    active-value="ACTIVO"
+                                    inactive-value="INACTIVO"
+                                >
+                                </el-switch>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.estado"
+                                    v-text="errors.estado[0]"
+                                ></span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -229,6 +282,7 @@ export default {
             type: Object,
             default: {
                 id: 0,
+                codigo: "",
                 nombre: "",
                 categoria_id: "",
                 descripcion: "",
@@ -236,6 +290,7 @@ export default {
                 fecha_incorporacion: "",
                 cantidad: "",
                 foto: null,
+                estado: "INACTIVO",
             },
         },
     },
@@ -304,6 +359,10 @@ export default {
                 };
                 let formdata = new FormData();
                 formdata.append(
+                    "codigo",
+                    this.maquina.codigo ? this.maquina.codigo : ""
+                );
+                formdata.append(
                     "nombre",
                     this.maquina.nombre ? this.maquina.nombre : ""
                 );
@@ -333,6 +392,11 @@ export default {
                     "foto",
                     this.maquina.foto ? this.maquina.foto : ""
                 );
+                formdata.append(
+                    "estado",
+                    this.maquina.estado ? this.maquina.estado : ""
+                );
+
                 if (this.accion == "edit") {
                     url = "/admin/maquinas/" + this.maquina.id;
                     formdata.append("_method", "PUT");
@@ -384,6 +448,7 @@ export default {
         },
         limpiaMaquina() {
             this.errors = [];
+            this.maquina.codigo = "";
             this.maquina.nombre = "";
             this.maquina.categoria_id = "";
             this.maquina.descripcion = "";
@@ -391,6 +456,7 @@ export default {
             this.maquina.fecha_incorporacion = "";
             this.maquina.cantidad = "";
             this.maquina.foto = null;
+            this.maquina.estado = "INACTIVO";
             this.$refs.input_file.value = null;
         },
     },

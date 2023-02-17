@@ -22,6 +22,11 @@ class Cliente extends Model
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
 
+    public function inscripcions()
+    {
+        return $this->hasMany(Inscripcion::class, 'cliente_id');
+    }
+
     // APPENDS
     public function getFullNameAttribute()
     {

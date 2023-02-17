@@ -27,6 +27,18 @@ class AccesoController extends Controller
         $fecha = date("Y-m-d");
         $accion = "";
         $inscripcion = Inscripcion::where("codigo_rfid", $rfid)->get()->first();
+
+        if (!$inscripcion) {
+            return response()->JSON([
+                "sw" => false,
+                "message" => "No existe ningún registro con ese RFID",
+                "msj" => "No se encontró ninguna inscripción con ese código, intente nuevamente por favor",
+                "errors" => [
+                    "rfid" => ["No existe ningún registro con ese código"]
+                ]
+            ], 422);
+        }
+
         $sucursal = Sucursal::find($request->sucursal_id);
         if ($inscripcion->plan->todos == 'NO') {
             if ($inscripcion->sucursal_id != $request->sucursal_id) {
@@ -38,40 +50,50 @@ class AccesoController extends Controller
         }
         if ($inscripcion) {
             if ($inscripcion->fecha_fin >= $fecha) {
-                $existe_ingreso = Acceso::where("cliente_id", $inscripcion->cliente_id)->where("fecha_registro", $fecha)->where("tipo", "INGRESO")->get()->first();
-                $existe_salida = Acceso::where("cliente_id", $inscripcion->cliente_id)->where("fecha_registro", $fecha)->where("tipo", "SALIDA")->get()->first();
-                if (!$existe_ingreso && !$existe_salida) {
-                    Acceso::create([
-                        "cliente_id" => $inscripcion->cliente_id,
-                        "sucursal_id" => $inscripcion->sucursal_id,
-                        "tipo" => "INGRESO",
-                        "fecha_registro" => $fecha
-                    ]);
-                    $accion = "INGRESO";
-                } elseif ($existe_ingreso && !$existe_salida) {
-                    Acceso::create([
-                        "cliente_id" => $inscripcion->cliente_id,
-                        "sucursal_id" => $inscripcion->sucursal_id,
-                        "tipo" => "SALIDA",
-                        "fecha_registro" => $fecha
-                    ]);
-                    $accion = "SALIDA";
-                } elseif ($existe_ingreso && $existe_salida) {
+                if ($inscripcion->pausa == 0) {
+                    // COMPROBAR INGRESO/SALIDA
+                    $existe_ingreso = Acceso::where("cliente_id", $inscripcion->cliente_id)->where("fecha_registro", $fecha)->where("tipo", "INGRESO")->get()->first();
+                    $existe_salida = Acceso::where("cliente_id", $inscripcion->cliente_id)->where("fecha_registro", $fecha)->where("tipo", "SALIDA")->get()->first();
+                    if (!$existe_ingreso && !$existe_salida) {
+                        Acceso::create([
+                            "cliente_id" => $inscripcion->cliente_id,
+                            "sucursal_id" => $inscripcion->sucursal_id,
+                            "tipo" => "INGRESO",
+                            "fecha_registro" => $fecha
+                        ]);
+                        $accion = "INGRESO";
+                    } elseif ($existe_ingreso && !$existe_salida) {
+                        Acceso::create([
+                            "cliente_id" => $inscripcion->cliente_id,
+                            "sucursal_id" => $inscripcion->sucursal_id,
+                            "tipo" => "SALIDA",
+                            "fecha_registro" => $fecha
+                        ]);
+                        $accion = "SALIDA";
+                    } elseif ($existe_ingreso && $existe_salida) {
+                        return response()->JSON([
+                            "sw" => true,
+                            "accion" => "",
+                            "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
+                            "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $inscripcion->sucursal->nombre . '<br><strong><i class="text-md">Ya registró su Ingreso y Salida el día de hoy</i></strong>'
+                        ]);
+                    }
+
                     return response()->JSON([
                         "sw" => true,
-                        "accion" => "",
+                        "accion" => $accion,
                         "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                        "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br><i class="text-md">Ya registró su Ingreso y Salida el día de hoy</i>'
+                        "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $inscripcion->sucursal->nombre
+                    ]);
+                } else {
+                    // INSCRIPCIÓN PAUSADA
+                    return response()->JSON([
+                        "sw" => false,
+                        "msj" => "La inscripción se pauso el " . date("d/m/Y", strtotime($inscripcion->fecha_pausa))
                     ]);
                 }
-
-                return response()->JSON([
-                    "sw" => true,
-                    "accion" => $accion,
-                    "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                    "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name
-                ]);
             } else {
+                // INSCRIPCION TERMINADA/CADUCADA
                 return response()->JSON([
                     "sw" => false,
                     "msj" => "La inscripción del código que ingreso caducó el " . date("d/m/Y", strtotime($inscripcion->fecha_fin))

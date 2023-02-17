@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class MaquinaController extends Controller
 {
     public $validacion = [
+        "codigo" => "required",
         "nombre" => "required",
         "categoria_id" => "required",
         "sucursal_id" => "required",
+        "estado" => "required",
     ];
 
     public $mensajes = [

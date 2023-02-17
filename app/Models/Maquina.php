@@ -9,10 +9,10 @@ class Maquina extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "nombre", "categoria_id", "descripcion", "sucursal_id",
-        "fecha_incorporacion", "cantidad", "foto", "fecha_registro",
+        "codigo", "nombre", "categoria_id", "descripcion", "sucursal_id",
+        "fecha_incorporacion", "cantidad", "foto", "estado", "fecha_registro",
     ];
-    
+
     protected $appends = ['path_image'];
 
     public function sucursal()
