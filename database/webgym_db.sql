@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 31-01-2023 a las 16:43:55
+-- Tiempo de generación: 17-02-2023 a las 16:52:30
 -- Versión del servidor: 5.7.33
 -- Versión de PHP: 7.4.19
 
@@ -340,9 +340,16 @@ CREATE TABLE `inscripcions` (
   `disciplina` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `sucursal_id` bigint(20) UNSIGNED NOT NULL,
   `fecha_inscripcion` date NOT NULL,
+  `fecha_pivote` date DEFAULT NULL,
+  `conteo` int(11) NOT NULL,
+  `restante` int(11) NOT NULL,
+  `pausa` int(11) NOT NULL,
+  `fecha_pausa` date DEFAULT NULL,
   `fecha_fin` date NOT NULL,
   `codigo_rfid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` varchar(155) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'VIGENTE',
   `estado_cobro` varchar(155) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `justificacion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -352,12 +359,12 @@ CREATE TABLE `inscripcions` (
 -- Volcado de datos para la tabla `inscripcions`
 --
 
-INSERT INTO `inscripcions` (`id`, `cliente_id`, `plan_id`, `disciplina`, `sucursal_id`, `fecha_inscripcion`, `fecha_fin`, `codigo_rfid`, `estado_cobro`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'PESAS', 2, '2022-01-01', '2022-01-31', '1111', 'COMPLETO', '2022-11-22', '2022-11-22 15:28:16', '2023-01-31 15:27:50'),
-(3, 3, 1, 'PESAS', 2, '2022-11-22', '2022-12-22', '1212', 'PENDIENTE', '2022-11-22', '2022-11-22 15:40:15', '2023-01-31 15:27:58'),
-(5, 1, 1, 'PESAS', 2, '2022-11-23', '2022-12-23', '3333', 'COMPLETO', '2022-11-23', '2022-11-23 14:06:31', '2023-01-31 15:28:01'),
-(6, 2, 3, 'PESAS', 3, '2022-12-01', '2022-12-31', '5555', 'COMPLETO', '2022-12-06', '2022-12-06 19:01:00', '2023-01-31 16:27:37'),
-(7, 1, 4, 'PESAS', 2, '2023-01-31', '2023-03-02', '555', 'PENDIENTE', '2023-01-31', '2023-01-31 15:08:39', '2023-01-31 15:28:08');
+INSERT INTO `inscripcions` (`id`, `cliente_id`, `plan_id`, `disciplina`, `sucursal_id`, `fecha_inscripcion`, `fecha_pivote`, `conteo`, `restante`, `pausa`, `fecha_pausa`, `fecha_fin`, `codigo_rfid`, `estado`, `estado_cobro`, `justificacion`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'PESAS', 2, '2022-01-01', '2022-01-01', 30, 0, 0, NULL, '2022-01-31', '1111', 'CONCLUIDO', 'COMPLETO', NULL, '2022-11-22', '2022-11-22 15:28:16', '2023-02-17 16:12:27'),
+(3, 3, 1, 'PESAS', 2, '2022-11-22', '2022-11-22', 30, 0, 0, NULL, '2022-12-22', '1212', 'CONCLUIDO', 'PENDIENTE', NULL, '2022-11-22', '2022-11-22 15:40:15', '2023-02-17 16:12:27'),
+(5, 1, 1, 'PESAS', 2, '2022-11-23', '2022-11-23', 30, 0, 0, NULL, '2022-12-23', '3333', 'CONCLUIDO', 'COMPLETO', NULL, '2022-11-23', '2022-11-23 14:06:31', '2023-02-17 16:12:27'),
+(6, 2, 3, 'PESAS', 3, '2022-12-01', '2022-12-01', 30, 0, 0, NULL, '2022-12-31', '5555', 'CONCLUIDO', 'COMPLETO', NULL, '2022-12-06', '2022-12-06 19:01:00', '2023-02-17 16:12:27'),
+(7, 1, 4, 'PESAS', 2, '2023-01-31', '2023-02-17', 17, 13, 1, '2023-02-17', '2023-03-02', '555', 'VIGENTE', 'PENDIENTE', 'JUSTIFICACION DE PAUSA', '2023-01-31', '2023-01-31 15:08:39', '2023-02-17 16:51:33');
 
 -- --------------------------------------------------------
 
@@ -394,6 +401,7 @@ INSERT INTO `mantenimiento_maquinas` (`id`, `sucursal_id`, `maquina_id`, `fecha_
 
 CREATE TABLE `maquinas` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `codigo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `categoria_id` bigint(20) UNSIGNED NOT NULL,
   `descripcion` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -401,6 +409,7 @@ CREATE TABLE `maquinas` (
   `fecha_incorporacion` date DEFAULT NULL,
   `cantidad` int(11) DEFAULT '0',
   `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estado` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -410,11 +419,12 @@ CREATE TABLE `maquinas` (
 -- Volcado de datos para la tabla `maquinas`
 --
 
-INSERT INTO `maquinas` (`id`, `nombre`, `categoria_id`, `descripcion`, `sucursal_id`, `fecha_incorporacion`, `cantidad`, `foto`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 'MAQUINA 1', 1, 'DESCRIPCION DE LA MAQUINA 1', 2, '2022-11-01', 1, '1669045475_.jpg', '2022-11-21', '2022-11-21 15:43:14', '2022-11-21 15:45:49'),
-(2, 'MAQUINA 2', 1, 'DESCRIPCION MAQUINA 2', 3, '2022-11-01', 2, '1669045598_.jpg', '2022-11-21', '2022-11-21 15:46:38', '2022-12-06 19:42:06'),
-(3, 'MAQUINA 3', 4, '', 2, NULL, NULL, 'default.png', '2022-12-02', '2022-12-02 13:55:14', '2022-12-02 13:55:15'),
-(4, 'MAQUINA PRUEBA SUC. 2', 4, '', 3, '2022-12-06', 1, 'default.png', '2022-12-06', '2022-12-06 18:48:51', '2022-12-06 18:48:51');
+INSERT INTO `maquinas` (`id`, `codigo`, `nombre`, `categoria_id`, `descripcion`, `sucursal_id`, `fecha_incorporacion`, `cantidad`, `foto`, `estado`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 'M01', 'MAQUINA 1', 1, 'DESCRIPCION DE LA MAQUINA 1', 2, '2022-11-01', 1, '1669045475_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:43:14', '2023-02-17 14:49:45'),
+(2, 'M02', 'MAQUINA 2', 1, 'DESCRIPCION MAQUINA 2', 3, '2022-11-01', 2, '1669045598_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:46:38', '2023-02-17 14:49:53'),
+(3, 'M03', 'MAQUINA 3', 4, '', 2, NULL, NULL, 'default.png', 'ACTIVO', '2022-12-02', '2022-12-02 13:55:14', '2023-02-17 14:49:59'),
+(4, 'M04', 'MAQUINA PRUEBA SUC. 2', 4, '', 3, '2022-12-06', 1, 'default.png', 'INACTIVO', '2022-12-06', '2022-12-06 18:48:51', '2023-02-17 14:52:31'),
+(5, 'M05', 'MAQUINA 5', 1, '', 3, NULL, NULL, 'default.png', 'INACTIVO', '2023-02-17', '2023-02-17 14:52:42', '2023-02-17 14:52:42');
 
 -- --------------------------------------------------------
 
@@ -923,7 +933,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `accesos`
 --
 ALTER TABLE `accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -995,7 +1005,7 @@ ALTER TABLE `mantenimiento_maquinas`
 -- AUTO_INCREMENT de la tabla `maquinas`
 --
 ALTER TABLE `maquinas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
