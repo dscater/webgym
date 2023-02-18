@@ -8,6 +8,7 @@ use App\Models\Venta;
 use Illuminate\Http\Request;
 use PDF;
 use App\library\numero_a_letras\src\NumeroALetras;
+use App\Models\Configuracion;
 use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller
@@ -54,6 +55,25 @@ class VentaController extends Controller
             $producto->salidas = (float) $producto->salidas + (float)$dv->cantidad;
             $producto->save();
         }
+
+        // QR
+        $nro_factura = (int)$venta->id;
+        if ($nro_factura < 10) {
+            $nro_factura = '000' . $nro_factura;
+        } else if ($nro_factura < 100) {
+            $nro_factura = '00' . $nro_factura;
+        } else if ($nro_factura < 1000) {
+            $nro_factura = '0' . $nro_factura;
+        }
+        $codigo_qr = 'v' . $venta->id . time() . '.png'; //NOMBRE DE LA IMAGEN QR
+        $configuracion = Configuracion::first();
+        $qr = $configuracion->nit . '|' . $nro_factura . '|' . $venta->cliente->ci . '|' . $venta->cliente->paterno . '|' . $venta->total . '|' . $venta->fecha;
+        $base_64 = base64_encode(\QrCode::format('png')->size(400)->generate($qr));
+        $imagen_codigo_qr = base64_decode($base_64);
+        file_put_contents(public_path() . '/imgs/qr/' . $codigo_qr, $imagen_codigo_qr);
+        $venta->qr = $codigo_qr;
+        $venta->save();
+        // fin qr
 
         return response()->JSON(["sw" => true, "venta" => $venta, "id" => $venta->id, "msj" => "El registro se almacenó correctamente"]);
     }
@@ -112,7 +132,6 @@ class VentaController extends Controller
 
     public function pdf(Venta $venta)
     {
-
         $convertir = new NumeroALetras();
         $array_monto = explode('.', $venta->total);
         $literal = $convertir->convertir($array_monto[0]);
@@ -127,6 +146,19 @@ class VentaController extends Controller
             $nro_factura = '0' . $nro_factura;
         }
 
+        if ($venta->qr == '' || $venta->qr == NULL) {
+            // QR
+            $codigo_qr = 'v' . $venta->id . time() . '.png'; //NOMBRE DE LA IMAGEN QR
+            $configuracion = Configuracion::first();
+            $qr = $configuracion->nit . '|' . $nro_factura . '|' . $venta->cliente->ci . '|' . $venta->cliente->paterno . '|' . $venta->total . '|' . $venta->fecha;
+            $base_64 = base64_encode(\QrCode::format('png')->size(400)->generate($qr));
+            $imagen_codigo_qr = base64_decode($base_64);
+            file_put_contents(public_path() . '/imgs/qr/' . $codigo_qr, $imagen_codigo_qr);
+            $venta->qr = $codigo_qr;
+            $venta->save();
+            // fin qr
+        }
+
         $pdf = PDF::loadView('reportes.venta', compact('venta', 'literal', 'nro_factura'))->setPaper('legal', 'landscape');
         // ENUMERAR LAS PÁGINAS USANDO CANVAS
         $pdf->output();
@@ -136,6 +168,6 @@ class VentaController extends Controller
         $ancho = $canvas->get_width();
         $canvas->page_text($ancho - 90, $alto - 25, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9, array(0, 0, 0));
 
-        return $pdf->download('Usuarios.pdf');
+        return $pdf->download('FacturaVenta.pdf');
     }
 }

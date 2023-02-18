@@ -171,6 +171,7 @@
             <tr>
                 <th width="3%">N°</th>
                 <th>PRODUCTO</th>
+                <th>SUCURSAL</th>
                 <th>INGRESOS</th>
                 <th>SALIDAS</th>
                 <th>STOCK DISPONIBLE</th>
@@ -184,6 +185,7 @@
                 <tr>
                     <td class="centreado">{{ $cont++ }}</td>
                     <td class="centreado">{{ $producto->nombre }}</td>
+                    <td class="centreado">{{ $producto->sucursal->nombre }}</td>
                     <td class="centreado">{{ $producto->ingresos }}</td>
                     <td class="centreado">{{ $producto->salidas }}</td>
                     <td class="centreado">{{ $producto->stock_actual }}</td>

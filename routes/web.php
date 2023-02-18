@@ -110,6 +110,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // COBROS
+    Route::post("cobros/pdf/{cobro}", [CobroController::class, 'factura']);
     Route::resource('cobros', CobroController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);

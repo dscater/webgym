@@ -256,29 +256,36 @@ class ReporteController extends Controller
         $plan_id =  $request->plan_id;
         $cliente_id =  $request->cliente_id;
         $filtro =  $request->filtro;
-        $cobros = Cobro::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
 
-        if ($filtro == 'Rango de fechas') {
-            $request->validate([
-                'fecha_ini' => 'required|date',
-                'fecha_fin' => 'required|date',
-            ]);
-            $cobros = Cobro::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
+        if ($sucursal_id != 'TODOS') {
+            // POR SUCURSAL
+            $cobros = Cobro::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
+            if ($filtro == 'Rango de fechas') {
+                $request->validate([
+                    'fecha_ini' => 'required|date',
+                    'fecha_fin' => 'required|date',
+                ]);
+                $cobros = Cobro::where("sucursal_id", $sucursal_id)->whereBetween('fecha_registro', [$request->fecha_ini, $request->fecha_fin])->orderBy("created_at", "desc")->get();
+            }
+
+            if ($filtro == 'Cliente') {
+                $request->validate(['cliente_id' => 'required']);
+                $cobros = Cobro::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->orderBy("created_at", "desc")->get();
+            }
+
+            if ($filtro == 'Plan') {
+                $request->validate(['plan_id' => 'required']);
+                $cobros = Cobro::select("cobros.*")
+                    ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
+                    ->where("cobros.sucursal_id", $sucursal_id)
+                    ->where('inscripcions.plan_id', $plan_id)
+                    ->orderBy("cobros.created_at", "desc")->get();
+            }
+        } else {
+            // TODOS
+            $cobros = Cobro::orderBy("created_at", "desc")->get();
         }
 
-        if ($filtro == 'Cliente') {
-            $request->validate(['cliente_id' => 'required']);
-            $cobros = Cobro::where("sucursal_id", $sucursal_id)->where('cliente_id', $cliente_id)->orderBy("created_at", "desc")->get();
-        }
-
-        if ($filtro == 'Plan') {
-            $request->validate(['plan_id' => 'required']);
-            $cobros = Cobro::select("cobros.*")
-                ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
-                ->where("cobros.sucursal_id", $sucursal_id)
-                ->where('inscripcions.plan_id', $plan_id)
-                ->orderBy("cobros.created_at", "desc")->get();
-        }
 
         $pdf = PDF::loadView('reportes.cobros', compact('cobros'))->setPaper('legal', 'portrait');
         // ENUMERAR LAS PÁGINAS USANDO CANVAS

@@ -13,6 +13,7 @@ class Cobro extends Model
         "cliente_id",
         "inscripcion_id",
         "sucursal_id",
+        "qr",
         "fecha_cobro",
         "fecha_registro",
     ];

@@ -174,6 +174,7 @@
                 <th width="3%">N°</th>
                 <th>FECHA DE VENTA</th>
                 <th>PRODUCTO</th>
+                <th>SUCURSAL</th>
                 <th>CATEGORÍA</th>
                 <th>CANTIDAD VENDIDA</th>
                 <th>PRECIO UNITARIO</th>
@@ -190,6 +191,7 @@
                     <td class="centreado">{{ $cont++ }}</td>
                     <td class="centreado">{{ $detalle_venta->venta->fecha }}</td>
                     <td class="centreado">{{ $detalle_venta->producto->nombre }}</td>
+                    <td class="centreado">{{ $detalle_venta->venta->sucursal->nombre }}</td>
                     <td class="centreado">{{ $detalle_venta->producto->categoria->nombre }}</td>
                     <td class="centreado">{{ $detalle_venta->cantidad }}</td>
                     <td class="centreado">{{ $detalle_venta->precio }}</td>
@@ -200,7 +202,7 @@
                 @endphp
             @endforeach
             <tr>
-                <td colspan="6" class="total">TOTAL</td>
+                <td colspan="7" class="total">TOTAL</td>
                 <td class="centreado bold">{{ number_format($total, 2) }}</td>
             </tr>
         </tbody>

@@ -112,6 +112,23 @@
                                                         <b-button
                                                             size="sm"
                                                             pill
+                                                            variant="outline-primary"
+                                                            class="btn-flat mb-1"
+                                                            title="Pdf"
+                                                            @click="
+                                                                generaReporte(
+                                                                    row.item.id
+                                                                )
+                                                            "
+                                                        >
+                                                            <i
+                                                                class="fa fa-file-pdf"
+                                                            ></i>
+                                                        </b-button>
+
+                                                        <b-button
+                                                            size="sm"
+                                                            pill
                                                             variant="outline-danger"
                                                             class="btn-flat"
                                                             title="Eliminar registro"
@@ -206,6 +223,11 @@ export default {
                 {
                     key: "sucursal.nombre",
                     label: "Sucursal",
+                    sortable: true,
+                },
+                {
+                    key: "inscripcion.plan.costo",
+                    label: "Monto",
                     sortable: true,
                 },
                 { key: "fecha_cobro", label: "Fecha de cobro", sortable: true },
@@ -354,6 +376,31 @@ export default {
 
             // muestra la fecha de hoy en formato `MM/DD/YYYY`
             return `${year}-${month}-${day}`;
+        },
+        generaReporte(id) {
+            let config = {
+                responseType: "blob",
+            };
+            axios
+                .post("/admin/cobros/pdf/" + id, null, config)
+                .then((res) => {
+                    this.errors = [];
+                    this.enviando = false;
+                    let pdfBlob = new Blob([res.data], {
+                        type: "application/pdf",
+                    });
+                    let urlReporte = URL.createObjectURL(pdfBlob);
+                    window.open(urlReporte);
+                })
+                .catch(async (error) => {
+                    let responseObj = await error.response.data.text();
+                    responseObj = JSON.parse(responseObj);
+                    this.enviando = false;
+                    if (error.response) {
+                        if (error.response.status == 422)
+                            this.errors = responseObj.errors;
+                    }
+                });
         },
     },
 };

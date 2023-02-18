@@ -13,6 +13,7 @@ class Venta extends Model
         "sucursal_id",
         "cliente_id",
         "total",
+        "qr",
         "fecha",
         "fecha_registro",
     ];

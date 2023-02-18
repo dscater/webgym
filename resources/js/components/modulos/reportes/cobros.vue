@@ -46,6 +46,12 @@
                                                     "
                                                 >
                                                     <el-option
+                                                        :key="'Todos'"
+                                                        :value="'TODOS'"
+                                                        :label="'TODOS'"
+                                                    >
+                                                    </el-option>
+                                                    <el-option
                                                         v-for="item in listSucursales"
                                                         :key="item.id"
                                                         :value="item.id"
@@ -61,7 +67,13 @@
                                                     "
                                                 ></span>
                                             </div>
-                                            <div class="form-group col-md-12">
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="
+                                                    oReporte.sucursal_id !=
+                                                    'TODOS'
+                                                "
+                                            >
                                                 <label
                                                     :class="{
                                                         'text-danger':
@@ -254,7 +266,7 @@ export default {
             errors: [],
             oReporte: {
                 filtro: "Todos",
-                sucursal_id: "",
+                sucursal_id: "TODOS",
                 plan_id: "",
                 cliente_id: "",
                 fecha_ini: "",
@@ -311,6 +323,9 @@ export default {
                 });
         },
         limpiarFormulario() {
+            if (this.user.tipo == "GERENTE") {
+                this.oReporte.sucursal_id = "TODOS";
+            }
             this.oReporte.filtro = "Todos";
         },
         generaReporte() {

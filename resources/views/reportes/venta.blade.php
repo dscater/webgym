@@ -164,8 +164,9 @@
         }
 
         .qr {
-            width: 120px;
-            height: 120px;
+            margin-top:-40px;
+            width: 150px;
+            height: 150px;
         }
 
         .qr img {
@@ -264,6 +265,9 @@
     <div class="info2">
         Ley Nº 453: El proveedor debe exhibir certificaciones de habilitación o documentos que acrediten las capacidades
         u ofertas de servicios.
+    </div>
+    <div class="qr">
+        <img src="{{ asset('imgs/qr/' . $venta->qr) }}" alt="">
     </div>
 </body>
 

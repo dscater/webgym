@@ -164,7 +164,7 @@
                                                                 class="fa fa-edit"
                                                             ></i>
                                                         </b-button>
-                                                        <b-button
+                                                        <!-- <b-button
                                                             size="sm"
                                                             pill
                                                             variant="outline-danger"
@@ -181,7 +181,7 @@
                                                             <i
                                                                 class="fa fa-trash"
                                                             ></i>
-                                                        </b-button>
+                                                        </b-button> -->
                                                     </div>
                                                 </template>
                                             </b-table>
