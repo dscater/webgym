@@ -70,6 +70,7 @@ Route::prefix('admin')->group(function () {
 
     // CLIENTES
     Route::get("clientes/clientes_sucursal", [ClienteController::class, 'clientes_sucursal']);
+    Route::get("clientes/todos_clientes", [ClienteController::class, 'todos_clientes']);
     Route::post("clientes/descargar_declaracion/{cliente}", [ClienteController::class, 'descargar_declaracion']);
     Route::resource('clientes', ClienteController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'

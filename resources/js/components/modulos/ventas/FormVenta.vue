@@ -390,6 +390,14 @@ export default {
                             this.textoBtn = "Registrar";
                         }
                         if (error.response) {
+                            if (
+                                error.response.status === 420 ||
+                                error.response.status === 419 ||
+                                error.response.status === 401
+                            ) {
+                                window.location = "/";
+                            }
+
                             if (error.response.status === 422) {
                                 this.errors = error.response.data.errors;
                                 Swal.fire({
@@ -400,13 +408,23 @@ export default {
                                     timer: 2000,
                                 });
                             } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error",
-                                    text: "Ocurrió un error durante el registro intenté nuevamente por favor",
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                });
+                                if (error.response.status === 500) {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        html: error.response.data.message,
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: "Ocurrió un error durante el registro intenté nuevamente por favor",
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                    });
+                                }
                             }
                         }
                     });

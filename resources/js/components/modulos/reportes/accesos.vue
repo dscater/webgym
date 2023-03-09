@@ -248,13 +248,13 @@ export default {
         getClientes() {
             this.oReporte.cliente_id = "";
             axios
-                .get("/admin/clientes/clientes_sucursal", {
+                .get("/admin/clientes/todos_clientes", {
                     params: {
                         id: this.oReporte.sucursal_id,
                     },
                 })
                 .then((response) => {
-                    this.listClientes = response.data;
+                    this.listClientes = response.data.clientes;
                 });
         },
         limpiarFormulario() {

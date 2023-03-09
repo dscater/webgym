@@ -23,7 +23,7 @@
                 <div class="modal-body">
                     <form>
                         <div class="row">
-                            <div class="form-group col-md-6">
+                            <!-- <div class="form-group col-md-6">
                                 <label
                                     :class="{
                                         'text-danger': errors.codigo,
@@ -42,7 +42,7 @@
                                     v-if="errors.codigo"
                                     v-text="errors.codigo[0]"
                                 ></span>
-                            </div>
+                            </div> -->
                             <div class="form-group col-md-6">
                                 <label
                                     :class="{
@@ -92,7 +92,7 @@
                                     v-text="errors.categoria_id[0]"
                                 ></span>
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label
                                     :class="{
                                         'text-danger': errors.descripcion,

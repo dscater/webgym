@@ -34,6 +34,12 @@ class ClienteController extends Controller
         return response()->JSON(['clientes' => $clientes, 'total' => count($clientes)], 200);
     }
 
+    public function todos_clientes()
+    {
+        $clientes = Cliente::with("sucursal")->get();
+        return response()->JSON(['clientes' => $clientes, 'total' => count($clientes)], 200);
+    }
+
     public function clientes_sucursal(Request $request)
     {
         $clientes = Cliente::with("sucursal")->where("sucursal_id", $request->id)->get();

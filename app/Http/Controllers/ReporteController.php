@@ -274,11 +274,16 @@ class ReporteController extends Controller
             }
 
             if ($filtro == 'Plan') {
-                $request->validate(['plan_id' => 'required']);
+                $request->validate([
+                    'plan_id' => 'required',
+                    'fecha_ini2' => 'required|date',
+                    'fecha_fin2' => 'required|date',
+                ]);
                 $cobros = Cobro::select("cobros.*")
                     ->join("inscripcions", "inscripcions.id", "=", "cobros.inscripcion_id")
                     ->where("cobros.sucursal_id", $sucursal_id)
                     ->where('inscripcions.plan_id', $plan_id)
+                    ->whereBetween('cobros.fecha_registro', [$request->fecha_ini2, $request->fecha_fin2])
                     ->orderBy("cobros.created_at", "desc")->get();
             }
         } else {

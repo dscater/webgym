@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use PDF;
 use App\library\numero_a_letras\src\NumeroALetras;
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\DB;
 
 class CobroController extends Controller
 {
@@ -54,34 +55,44 @@ class CobroController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate($this->validacion, $this->messages);
-        $request["fecha_registro"] = date("Y-m-d");
+        DB::beginTransaction();
+        try {
+            $request->validate($this->validacion, $this->messages);
+            $request["fecha_registro"] = date("Y-m-d");
 
-        $inscripcion = Inscripcion::find($request->inscripcion_id);
-        $cobro = Cobro::create(array_map("mb_strtoupper", $request->all()));
-        $inscripcion->estado_cobro = "COMPLETO";
-        $inscripcion->save();
+            $inscripcion = Inscripcion::find($request->inscripcion_id);
+            $cobro = Cobro::create(array_map("mb_strtoupper", $request->all()));
+            $inscripcion->estado_cobro = "COMPLETO";
+            $inscripcion->save();
 
-        // QR
-        $nro_factura = (int)$cobro->id;
-        if ($nro_factura < 10) {
-            $nro_factura = '000' . $nro_factura;
-        } else if ($nro_factura < 100) {
-            $nro_factura = '00' . $nro_factura;
-        } else if ($nro_factura < 1000) {
-            $nro_factura = '0' . $nro_factura;
+            // QR
+            $nro_factura = (int)$cobro->id;
+            if ($nro_factura < 10) {
+                $nro_factura = '000' . $nro_factura;
+            } else if ($nro_factura < 100) {
+                $nro_factura = '00' . $nro_factura;
+            } else if ($nro_factura < 1000) {
+                $nro_factura = '0' . $nro_factura;
+            }
+            $codigo_qr = 'v' . $cobro->id . time() . '.png'; //NOMBRE DE LA IMAGEN QR
+            $configuracion = Configuracion::first();
+            $qr = $configuracion->nit . '|' . $nro_factura . '|' . $cobro->inscripcion->cliente->ci . '|' . $cobro->inscripcion->cliente->paterno . '|' . $cobro->inscripcion->plan->costo . '|' . $cobro->fecha_cobro;
+            $base_64 = base64_encode(\QrCode::format('png')->size(400)->generate($qr));
+            $imagen_codigo_qr = base64_decode($base_64);
+            file_put_contents(public_path() . '/imgs/qr/' . $codigo_qr, $imagen_codigo_qr);
+            $cobro->qr = $codigo_qr;
+            $cobro->save();
+            // fin qr
+
+            DB::commit();
+            return response()->JSON(["sw" => true, "msj" => "El registro se almacenó correctamente"]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->JSON([
+                'sw' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-        $codigo_qr = 'v' . $cobro->id . time() . '.png'; //NOMBRE DE LA IMAGEN QR
-        $configuracion = Configuracion::first();
-        $qr = $configuracion->nit . '|' . $nro_factura . '|' . $cobro->inscripcion->cliente->ci . '|' . $cobro->inscripcion->cliente->paterno . '|' . $cobro->inscripcion->plan->costo . '|' . $cobro->fecha_cobro;
-        $base_64 = base64_encode(\QrCode::format('png')->size(400)->generate($qr));
-        $imagen_codigo_qr = base64_decode($base_64);
-        file_put_contents(public_path() . '/imgs/qr/' . $codigo_qr, $imagen_codigo_qr);
-        $cobro->qr = $codigo_qr;
-        $cobro->save();
-        // fin qr
-
-        return response()->JSON(["sw" => true, "msj" => "El registro se almacenó correctamente"]);
     }
 
     public function show(Cobro $cobro)
@@ -98,10 +109,20 @@ class CobroController extends Controller
 
     public function destroy(Cobro $cobro)
     {
-        $cobro->inscripcion->estado_cobro = "PENDIENTE";
-        $cobro->inscripcion->save();
-        $cobro->delete();
-        return response()->JSON(["sw" => true, "cobro" => $cobro, "msj" => "El registro se actualizó correctamente"]);
+        DB::beginTransaction();
+        try {
+            $cobro->inscripcion->estado_cobro = "PENDIENTE";
+            $cobro->inscripcion->save();
+            $cobro->delete();
+            DB::commit();
+            return response()->JSON(["sw" => true, "cobro" => $cobro, "msj" => "El registro se actualizó correctamente"]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->JSON([
+                'sw' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function factura(Cobro $cobro)

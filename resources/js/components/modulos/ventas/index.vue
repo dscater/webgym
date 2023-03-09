@@ -142,7 +142,8 @@
                                                                         .nombre +
                                                                         ' - ' +
                                                                         row.item
-                                                                            .cliente.full_name +
+                                                                            .cliente
+                                                                            .full_name +
                                                                         ' <br/>Con fecha ' +
                                                                         formatoFecha(
                                                                             row
@@ -304,6 +305,29 @@ export default {
                                 showConfirmButton: false,
                                 timer: 1500,
                             });
+                        })
+                        .catch((error) => {
+                            if (error.response) {
+                                if (error.response.status === 422) {
+                                    this.errors = error.response.data.errors;
+                                }
+                                if (
+                                    error.response.status === 420 ||
+                                    error.response.status === 419 ||
+                                    error.response.status === 401
+                                ) {
+                                    window.location = "/";
+                                }
+                                if (error.response.status === 500) {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        html: error.response.data.message,
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                    });
+                                }
+                            }
                         });
                 }
             });
@@ -338,6 +362,29 @@ export default {
                     if (error.response) {
                         if (error.response.status == 422)
                             this.errors = responseObj.errors;
+                        if (
+                            error.response.status === 420 ||
+                            error.response.status === 419 ||
+                            error.response.status === 401
+                        ) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                html: responseObj.message,
+                                showConfirmButton: false,
+                                timer: 2000,
+                            });
+                            window.location = "/";
+                        }
+                        if (error.response.status === 500) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                html: responseObj.message,
+                                showConfirmButton: false,
+                                timer: 3000,
+                            });
+                        }
                     }
                 });
         },

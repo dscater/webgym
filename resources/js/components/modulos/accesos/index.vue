@@ -145,8 +145,13 @@ export default {
             showOverlay: false,
             fields: [
                 {
-                    key: "cliente.nombre",
+                    key: "cliente.full_name",
                     label: "Nombre Cliente",
+                    sortable: true,
+                },
+                {
+                    key: "cliente.full_ci",
+                    label: "C.I.",
                     sortable: true,
                 },
                 {

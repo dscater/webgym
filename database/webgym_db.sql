@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 17-02-2023 a las 16:52:30
+-- Tiempo de generación: 09-03-2023 a las 13:59:40
 -- Versión del servidor: 5.7.33
 -- Versión de PHP: 7.4.19
 
@@ -48,7 +48,10 @@ INSERT INTO `accesos` (`id`, `cliente_id`, `sucursal_id`, `tipo`, `fecha_registr
 (6, 3, 2, 'SALIDA', '2022-11-25', '2022-11-25 14:35:34', '2022-11-25 14:35:34'),
 (7, 2, 3, 'INGRESO', '2022-12-06', '2022-12-06 19:01:54', '2022-12-06 19:01:54'),
 (8, 1, 2, 'INGRESO', '2023-01-31', '2023-01-31 16:28:39', '2023-01-31 16:28:39'),
-(9, 1, 2, 'SALIDA', '2023-01-31', '2023-01-31 16:29:22', '2023-01-31 16:29:22');
+(9, 1, 2, 'SALIDA', '2023-01-31', '2023-01-31 16:29:22', '2023-01-31 16:29:22'),
+(10, 3, 2, 'INGRESO', '2023-02-17', '2023-02-18 01:57:47', '2023-02-18 01:57:47'),
+(11, 3, 2, 'SALIDA', '2023-02-17', '2023-02-18 01:58:01', '2023-02-18 01:58:01'),
+(13, 1, 3, 'INGRESO', '2023-03-09', '2023-03-09 12:58:00', '2023-03-09 12:58:00');
 
 -- --------------------------------------------------------
 
@@ -119,6 +122,7 @@ CREATE TABLE `cobros` (
   `cliente_id` bigint(20) UNSIGNED NOT NULL,
   `sucursal_id` bigint(20) UNSIGNED NOT NULL,
   `inscripcion_id` bigint(20) UNSIGNED NOT NULL,
+  `qr` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_cobro` date NOT NULL,
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -129,10 +133,12 @@ CREATE TABLE `cobros` (
 -- Volcado de datos para la tabla `cobros`
 --
 
-INSERT INTO `cobros` (`id`, `cliente_id`, `sucursal_id`, `inscripcion_id`, `fecha_cobro`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(2, 1, 2, 5, '2022-11-23', '2022-11-23', '2022-11-23 14:09:33', '2022-11-23 14:09:33'),
-(3, 1, 2, 1, '2022-11-23', '2022-11-23', '2022-11-23 14:10:23', '2022-11-23 14:10:23'),
-(4, 2, 3, 6, '2022-12-06', '2022-12-06', '2022-12-06 19:12:03', '2022-12-06 19:12:03');
+INSERT INTO `cobros` (`id`, `cliente_id`, `sucursal_id`, `inscripcion_id`, `qr`, `fecha_cobro`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(2, 1, 2, 5, '', '2022-11-23', '2022-11-23', '2022-11-23 14:09:33', '2022-11-23 14:09:33'),
+(3, 1, 2, 1, 'c31676684893.png', '2022-11-23', '2022-11-23', '2022-11-23 14:10:23', '2023-02-18 01:48:13'),
+(4, 2, 3, 6, '', '2022-12-06', '2022-12-06', '2022-12-06 19:12:03', '2022-12-06 19:12:03'),
+(5, 3, 2, 3, 'v51676684974.png', '2023-02-17', '2023-02-17', '2023-02-18 01:49:34', '2023-02-18 01:49:34'),
+(8, 1, 2, 7, 'v81678369204.png', '2023-03-09', '2023-03-09', '2023-03-09 13:40:04', '2023-03-09 13:40:04');
 
 -- --------------------------------------------------------
 
@@ -189,7 +195,10 @@ INSERT INTO `detalle_ventas` (`id`, `venta_id`, `producto_id`, `cantidad`, `prec
 (1, 1, 1, 3, '25.00', '75.00', '2022-12-01 00:28:26', '2022-12-01 00:28:26'),
 (2, 1, 2, 4, '35.00', '140.00', '2022-12-01 00:28:26', '2022-12-01 00:28:26'),
 (3, 2, 1, 4, '25.00', '100.00', '2022-12-06 15:21:52', '2022-12-06 15:21:52'),
-(4, 3, 3, 2, '40.00', '80.00', '2022-12-06 19:37:09', '2022-12-06 19:37:09');
+(4, 3, 3, 2, '40.00', '80.00', '2022-12-06 19:37:09', '2022-12-06 19:37:09'),
+(5, 4, 3, 2, '40.00', '80.00', '2023-02-18 01:50:14', '2023-02-18 01:50:14'),
+(7, 6, 1, 1, '25.00', '25.00', '2023-03-09 13:40:44', '2023-03-09 13:40:44'),
+(8, 6, 2, 1, '35.00', '35.00', '2023-03-09 13:41:19', '2023-03-09 13:41:19');
 
 -- --------------------------------------------------------
 
@@ -361,10 +370,11 @@ CREATE TABLE `inscripcions` (
 
 INSERT INTO `inscripcions` (`id`, `cliente_id`, `plan_id`, `disciplina`, `sucursal_id`, `fecha_inscripcion`, `fecha_pivote`, `conteo`, `restante`, `pausa`, `fecha_pausa`, `fecha_fin`, `codigo_rfid`, `estado`, `estado_cobro`, `justificacion`, `fecha_registro`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 'PESAS', 2, '2022-01-01', '2022-01-01', 30, 0, 0, NULL, '2022-01-31', '1111', 'CONCLUIDO', 'COMPLETO', NULL, '2022-11-22', '2022-11-22 15:28:16', '2023-02-17 16:12:27'),
-(3, 3, 1, 'PESAS', 2, '2022-11-22', '2022-11-22', 30, 0, 0, NULL, '2022-12-22', '1212', 'CONCLUIDO', 'PENDIENTE', NULL, '2022-11-22', '2022-11-22 15:40:15', '2023-02-17 16:12:27'),
+(3, 3, 1, 'PESAS', 2, '2022-11-22', '2022-11-22', 30, 0, 0, NULL, '2022-12-22', '1212', 'CONCLUIDO', 'COMPLETO', NULL, '2022-11-22', '2022-11-22 15:40:15', '2023-02-18 01:49:34'),
 (5, 1, 1, 'PESAS', 2, '2022-11-23', '2022-11-23', 30, 0, 0, NULL, '2022-12-23', '3333', 'CONCLUIDO', 'COMPLETO', NULL, '2022-11-23', '2022-11-23 14:06:31', '2023-02-17 16:12:27'),
 (6, 2, 3, 'PESAS', 3, '2022-12-01', '2022-12-01', 30, 0, 0, NULL, '2022-12-31', '5555', 'CONCLUIDO', 'COMPLETO', NULL, '2022-12-06', '2022-12-06 19:01:00', '2023-02-17 16:12:27'),
-(7, 1, 4, 'PESAS', 2, '2023-01-31', '2023-02-17', 17, 13, 1, '2023-02-17', '2023-03-02', '555', 'VIGENTE', 'PENDIENTE', 'JUSTIFICACION DE PAUSA', '2023-01-31', '2023-01-31 15:08:39', '2023-02-17 16:51:33');
+(7, 1, 4, 'PESAS', 2, '2023-01-31', '2023-03-09', 0, 30, 0, '2023-02-17', '2023-03-22', '555', 'VIGENTE', 'COMPLETO', 'JUSTIFICACION DE PAUSA', '2023-01-31', '2023-01-31 15:08:39', '2023-03-09 13:40:04'),
+(8, 3, 2, 'AEROBICOS', 2, '2023-02-17', '2023-02-17', 20, 5, 0, NULL, '2023-03-14', '777', 'VIGENTE', 'PENDIENTE', NULL, '2023-02-17', '2023-02-18 01:57:38', '2023-03-09 12:49:59');
 
 -- --------------------------------------------------------
 
@@ -420,11 +430,12 @@ CREATE TABLE `maquinas` (
 --
 
 INSERT INTO `maquinas` (`id`, `codigo`, `nombre`, `categoria_id`, `descripcion`, `sucursal_id`, `fecha_incorporacion`, `cantidad`, `foto`, `estado`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 'M01', 'MAQUINA 1', 1, 'DESCRIPCION DE LA MAQUINA 1', 2, '2022-11-01', 1, '1669045475_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:43:14', '2023-02-17 14:49:45'),
-(2, 'M02', 'MAQUINA 2', 1, 'DESCRIPCION MAQUINA 2', 3, '2022-11-01', 2, '1669045598_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:46:38', '2023-02-17 14:49:53'),
-(3, 'M03', 'MAQUINA 3', 4, '', 2, NULL, NULL, 'default.png', 'ACTIVO', '2022-12-02', '2022-12-02 13:55:14', '2023-02-17 14:49:59'),
-(4, 'M04', 'MAQUINA PRUEBA SUC. 2', 4, '', 3, '2022-12-06', 1, 'default.png', 'INACTIVO', '2022-12-06', '2022-12-06 18:48:51', '2023-02-17 14:52:31'),
-(5, 'M05', 'MAQUINA 5', 1, '', 3, NULL, NULL, 'default.png', 'INACTIVO', '2023-02-17', '2023-02-17 14:52:42', '2023-02-17 14:52:42');
+(1, '1', 'MAQUINA 1', 1, 'DESCRIPCION DE LA MAQUINA 1', 2, '2022-11-01', 1, '1669045475_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:43:14', '2023-03-09 13:06:19'),
+(2, '2', 'MAQUINA 2', 1, 'DESCRIPCION MAQUINA 2', 3, '2022-11-01', 2, '1669045598_.jpg', 'ACTIVO', '2022-11-21', '2022-11-21 15:46:38', '2023-03-09 13:06:21'),
+(3, '3', 'MAQUINA 3', 4, '', 2, NULL, NULL, 'default.png', 'ACTIVO', '2022-12-02', '2022-12-02 13:55:14', '2023-03-09 13:06:23'),
+(4, '4', 'MAQUINA PRUEBA SUC. 2', 4, '', 3, '2022-12-06', 1, 'default.png', 'INACTIVO', '2022-12-06', '2022-12-06 18:48:51', '2023-03-09 13:06:25'),
+(5, '5', 'MAQUINA 5', 1, '', 3, NULL, NULL, 'default.png', 'INACTIVO', '2023-02-17', '2023-02-17 14:52:42', '2023-03-09 13:06:26'),
+(6, '6', 'MAQUINA 6', 1, 'DESC', 2, NULL, NULL, 'default.png', 'ACTIVO', '2023-03-09', '2023-03-09 13:06:43', '2023-03-09 13:06:43');
 
 -- --------------------------------------------------------
 
@@ -677,9 +688,9 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `categoria_id`, `descripcion`, `precio`, `sucursal_id`, `foto`, `stock_actual`, `ingresos`, `salidas`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 'PRODUCTO 1', 1, 'DESCRIPCION DEL NUEVO PRODUCTO', '25.00', 2, '1669388507_PRODUCTO_1.jpg', 113, 120, 7, '2022-11-25', '2022-11-25 15:01:03', '2022-12-06 15:21:52'),
-(2, 'PRODUCTO 2', 4, 'DESC PROD. 2', '35.00', 2, '1669388523_PRODUCTO_2.jpg', 16, 20, 4, '2022-11-25', '2022-11-25 15:02:03', '2022-12-01 00:28:26'),
-(3, 'PRODUCTO 3', 4, '', '40.00', 3, 'default.png', 18, 20, 2, '2022-12-06', '2022-12-06 14:35:47', '2022-12-06 19:37:09');
+(1, 'PRODUCTO 1', 1, 'DESCRIPCION DEL NUEVO PRODUCTO', '25.00', 2, '1669388507_PRODUCTO_1.jpg', 112, 120, 8, '2022-11-25', '2022-11-25 15:01:03', '2023-03-09 13:40:44'),
+(2, 'PRODUCTO 2', 4, 'DESC PROD. 2', '35.00', 2, '1669388523_PRODUCTO_2.jpg', 15, 20, 5, '2022-11-25', '2022-11-25 15:02:03', '2023-03-09 13:41:19'),
+(3, 'PRODUCTO 3', 4, '', '40.00', 3, 'default.png', 16, 20, 4, '2022-12-06', '2022-12-06 14:35:47', '2023-02-18 01:50:14');
 
 -- --------------------------------------------------------
 
@@ -749,6 +760,7 @@ CREATE TABLE `ventas` (
   `sucursal_id` bigint(20) UNSIGNED NOT NULL,
   `cliente_id` bigint(20) UNSIGNED NOT NULL,
   `total` decimal(24,2) NOT NULL,
+  `qr` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha` date NOT NULL,
   `fecha_registro` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -759,10 +771,12 @@ CREATE TABLE `ventas` (
 -- Volcado de datos para la tabla `ventas`
 --
 
-INSERT INTO `ventas` (`id`, `sucursal_id`, `cliente_id`, `total`, `fecha`, `fecha_registro`, `created_at`, `updated_at`) VALUES
-(1, 2, 1, '215.00', '2022-11-30', '2022-11-30', '2022-12-01 00:28:25', '2022-12-01 00:28:25'),
-(2, 2, 3, '100.00', '2022-12-06', '2022-12-06', '2022-12-06 15:21:52', '2022-12-06 15:21:52'),
-(3, 3, 2, '80.00', '2022-12-06', '2022-12-06', '2022-12-06 19:37:09', '2022-12-06 19:37:09');
+INSERT INTO `ventas` (`id`, `sucursal_id`, `cliente_id`, `total`, `qr`, `fecha`, `fecha_registro`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, '215.00', 'v11676684602.png', '2022-11-30', '2022-11-30', '2022-12-01 00:28:25', '2023-02-18 01:43:22'),
+(2, 2, 3, '100.00', '', '2022-12-06', '2022-12-06', '2022-12-06 15:21:52', '2022-12-06 15:21:52'),
+(3, 3, 2, '80.00', '', '2022-12-06', '2022-12-06', '2022-12-06 19:37:09', '2022-12-06 19:37:09'),
+(4, 3, 4, '80.00', 'v41676685014.png', '2023-02-17', '2023-02-17', '2023-02-18 01:50:14', '2023-02-18 01:50:14'),
+(6, 2, 1, '60.00', 'v61678369279.png', '2023-03-09', '2023-03-09', '2023-03-09 13:40:44', '2023-03-09 13:41:19');
 
 --
 -- Índices para tablas volcadas
@@ -951,7 +965,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `cobros`
 --
 ALTER TABLE `cobros`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracions`
@@ -963,7 +977,7 @@ ALTER TABLE `configuracions`
 -- AUTO_INCREMENT de la tabla `detalle_ventas`
 --
 ALTER TABLE `detalle_ventas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
@@ -993,7 +1007,7 @@ ALTER TABLE `ingreso_productos`
 -- AUTO_INCREMENT de la tabla `inscripcions`
 --
 ALTER TABLE `inscripcions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento_maquinas`
@@ -1005,7 +1019,7 @@ ALTER TABLE `mantenimiento_maquinas`
 -- AUTO_INCREMENT de la tabla `maquinas`
 --
 ALTER TABLE `maquinas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
@@ -1059,7 +1073,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

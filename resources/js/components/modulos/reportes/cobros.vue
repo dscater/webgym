@@ -112,6 +112,53 @@
                                                 <label
                                                     :class="{
                                                         'text-danger':
+                                                            errors.fecha_ini2,
+                                                        'text-danger':
+                                                            errors.fecha_fin2,
+                                                    }"
+                                                    >Indice un rango de
+                                                    fechas*</label
+                                                >
+                                                <el-date-picker
+                                                    class="w-full d-block"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.fecha_ini2,
+                                                        'is-invalid':
+                                                            errors.fecha_fin2,
+                                                    }"
+                                                    v-model="aFechas2"
+                                                    type="daterange"
+                                                    range-separator="a"
+                                                    start-placeholder="Fecha Inicial"
+                                                    end-placeholder="Fecha Final"
+                                                    format="dd/MM/yyyy"
+                                                    value-format="yyyy-MM-dd"
+                                                    @change="obtieneFechas2()"
+                                                >
+                                                </el-date-picker>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.fecha_ini2"
+                                                    v-text="
+                                                        errors.fecha_ini2[0]
+                                                    "
+                                                ></span>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.fecha_fin2"
+                                                    v-text="
+                                                        errors.fecha_fin2[0]
+                                                    "
+                                                ></span>
+                                            </div>
+                                            <div
+                                                class="form-group col-md-12"
+                                                v-if="oReporte.filtro == 'Plan'"
+                                            >
+                                                <label
+                                                    :class="{
+                                                        'text-danger':
                                                             errors.filtro,
                                                     }"
                                                     >Seleccione*</label
@@ -271,8 +318,11 @@ export default {
                 cliente_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
+                fecha_ini2: "",
+                fecha_fin2: "",
             },
             aFechas: [],
+            aFechas2: [],
             enviando: false,
             textoBtn: "Generar Reporte",
             listFiltro: ["Todos", "Plan", "Cliente", "Rango de fechas"],
@@ -357,6 +407,10 @@ export default {
         obtieneFechas() {
             this.oReporte.fecha_ini = this.aFechas[0];
             this.oReporte.fecha_fin = this.aFechas[1];
+        },
+        obtieneFechas2() {
+            this.oReporte.fecha_ini2 = this.aFechas2[0];
+            this.oReporte.fecha_fin2 = this.aFechas2[1];
         },
     },
 };

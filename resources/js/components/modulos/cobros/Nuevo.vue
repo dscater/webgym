@@ -394,6 +394,22 @@ export default {
                             if (error.response.status === 422) {
                                 this.errors = error.response.data.errors;
                             }
+                            if (
+                                error.response.status === 420 ||
+                                error.response.status === 419 ||
+                                error.response.status === 401
+                            ) {
+                                window.location = "/";
+                            }
+                            if (error.response.status === 500) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    html: error.response.data.message,
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                });
+                            }
                         }
                     });
             } catch (e) {

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 class MaquinaController extends Controller
 {
     public $validacion = [
-        "codigo" => "required",
         "nombre" => "required",
         "categoria_id" => "required",
         "sucursal_id" => "required",
@@ -50,32 +49,34 @@ class MaquinaController extends Controller
 
         $request->validate($this->validacion, $this->mensajes);
         $request['fecha_registro'] = date('Y-m-d');
+        $request['codigo'] = "0";
         // CREAR EL USER
-        $nuevo_maquina = Maquina::create(array_map('mb_strtoupper', $request->except('foto', "fecha_incorporacion", "cantidad")));
+        $nueva_maquina = Maquina::create(array_map('mb_strtoupper', $request->except('foto', "fecha_incorporacion", "cantidad")));
+        $nueva_maquina->codigo = $nueva_maquina->id;
 
         if (!$request->fecha_incorporacion || $request->fecha_incorporacion == "") {
-            $nuevo_maquina['fecha_incorporacion'] = null;
+            $nueva_maquina['fecha_incorporacion'] = null;
         } else {
-            $nuevo_maquina['fecha_incorporacion'] = $request->fecha_incorporacion;
+            $nueva_maquina['fecha_incorporacion'] = $request->fecha_incorporacion;
         }
         if (!$request->cantidad || $request->cantidad == "") {
-            $nuevo_maquina['cantidad'] = null;
+            $nueva_maquina['cantidad'] = null;
         } else {
-            $nuevo_maquina['cantidad'] = $request->cantidad;
+            $nueva_maquina['cantidad'] = $request->cantidad;
         }
 
-        $nuevo_maquina->foto = 'default.png';
+        $nueva_maquina->foto = 'default.png';
         if ($request->hasFile('foto')) {
             $file = $request->foto;
-            $nom_foto = time() . '_' . $nuevo_maquina->maquina . '.' . $file->getClientOriginalExtension();
-            $nuevo_maquina->foto = $nom_foto;
+            $nom_foto = time() . '_' . $nueva_maquina->maquina . '.' . $file->getClientOriginalExtension();
+            $nueva_maquina->foto = $nom_foto;
             $file->move(public_path() . '/imgs/maquinas/', $nom_foto);
         }
 
-        $nuevo_maquina->save();
+        $nueva_maquina->save();
         return response()->JSON([
             'sw' => true,
-            'maquina' => $nuevo_maquina,
+            'maquina' => $nueva_maquina,
             'msj' => 'El registro se realizó de forma correcta',
         ], 200);
     }
@@ -93,6 +94,7 @@ class MaquinaController extends Controller
         }
 
         $request->validate($this->validacion, $this->mensajes);
+        $request["codigo"] = $maquina->id;
         $maquina->update(array_map('mb_strtoupper', $request->except('foto', 'fecha_incorporacion', "cantidad")));
 
         if (!$request->fecha_incorporacion || $request->fecha_incorporacion == "") {

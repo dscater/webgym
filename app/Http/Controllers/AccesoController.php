@@ -57,7 +57,7 @@ class AccesoController extends Controller
                     if (!$existe_ingreso && !$existe_salida) {
                         Acceso::create([
                             "cliente_id" => $inscripcion->cliente_id,
-                            "sucursal_id" => $inscripcion->sucursal_id,
+                            "sucursal_id" => $sucursal->id,
                             "tipo" => "INGRESO",
                             "fecha_registro" => $fecha
                         ]);
@@ -65,7 +65,7 @@ class AccesoController extends Controller
                     } elseif ($existe_ingreso && !$existe_salida) {
                         Acceso::create([
                             "cliente_id" => $inscripcion->cliente_id,
-                            "sucursal_id" => $inscripcion->sucursal_id,
+                            "sucursal_id" => $sucursal->id,
                             "tipo" => "SALIDA",
                             "fecha_registro" => $fecha
                         ]);
@@ -75,7 +75,7 @@ class AccesoController extends Controller
                             "sw" => true,
                             "accion" => "",
                             "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                            "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $inscripcion->sucursal->nombre . '<br><strong><i class="text-md">Ya registró su Ingreso y Salida el día de hoy</i></strong>'
+                            "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $sucursal->nombre . '<br><strong><i class="text-md">Ya registró su Ingreso y Salida el día de hoy</i></strong>'
                         ]);
                     }
 
@@ -83,7 +83,7 @@ class AccesoController extends Controller
                         "sw" => true,
                         "accion" => $accion,
                         "img" => '<img src="' . $inscripcion->cliente->path_image . '">',
-                        "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $inscripcion->sucursal->nombre
+                        "msj" => '<strong class="text-xl">' . $inscripcion->disciplina . '</strong><br/>' . $inscripcion->cliente->full_name . '<br/>' . $inscripcion->cliente->full_ci . '<br/><strong>Fecha vencimiento: </strong>' . date("d/m/Y", strtotime($inscripcion->fecha_fin)) . '<br/>' . $sucursal->nombre
                     ]);
                 } else {
                     // INSCRIPCIÓN PAUSADA
