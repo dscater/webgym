@@ -99,7 +99,7 @@
                                 <span
                                     class="error invalid-feedback"
                                     v-if="errors.cantidad"
-                                    v-text="errors.nombre[0]"
+                                    v-text="errors.cantidad[0]"
                                 ></span>
                             </div>
                             <div class="form-group col-md-6">
@@ -123,6 +123,28 @@
                                     class="error invalid-feedback"
                                     v-if="errors.fecha_ingreso"
                                     v-text="errors.fecha_ingreso[0]"
+                                ></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    :class="{
+                                        'text-danger': errors.fecha_vencimiento,
+                                    }"
+                                    >Fecha de vencimiento*</label
+                                >
+
+                                <el-input
+                                    type="date"
+                                    :class="{
+                                        'is-invalid': errors.fecha_vencimiento,
+                                    }"
+                                    v-model="ingreso_producto.fecha_vencimiento"
+                                >
+                                </el-input>
+                                <span
+                                    class="error invalid-feedback"
+                                    v-if="errors.fecha_vencimiento"
+                                    v-text="errors.fecha_vencimiento[0]"
                                 ></span>
                             </div>
                         </div>
@@ -169,6 +191,7 @@ export default {
                 producto_id: "",
                 cantidad: "",
                 fecha_ingreso: "",
+                fecha_vencimiento: "",
             },
         },
     },
@@ -275,6 +298,12 @@ export default {
                         ? this.ingreso_producto.fecha_ingreso
                         : ""
                 );
+                formdata.append(
+                    "fecha_vencimiento",
+                    this.ingreso_producto.fecha_vencimiento
+                        ? this.ingreso_producto.fecha_vencimiento
+                        : ""
+                );
                 if (this.accion == "edit") {
                     url =
                         "/admin/ingreso_productos/" + this.ingreso_producto.id;
@@ -328,6 +357,7 @@ export default {
             this.ingreso_producto.producto_id = "";
             this.ingreso_producto.cantidad = "";
             this.ingreso_producto.fecha_ingreso = "";
+            this.ingreso_producto.fecha_vencimiento = "";
         },
     },
 };

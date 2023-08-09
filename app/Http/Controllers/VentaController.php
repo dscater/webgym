@@ -113,6 +113,21 @@ class VentaController extends Controller
                     $producto->stock_actual = (float) $producto->stock_actual - (float)$dv->cantidad;
                     $producto->salidas = (float) $producto->salidas + (float)$dv->cantidad;
                     $producto->save();
+                } else {
+                    $dv = DetalleVenta::find($value["id"]);
+                    if ((float)$dv->cantidad != (float)$value["cantidad"]) {
+                        $dif = (float)$value["cantidad"] - (float)$dv->cantidad;
+                        $producto = Producto::find($dv->producto_id);
+                        $producto->stock_actual = (float) $producto->stock_actual - (float)$dif;
+                        $producto->salidas = (float) $producto->salidas + (float)$dif;
+                        $producto->save();
+                        $dv->update([
+                            "producto_id" => $value["producto_id"],
+                            "cantidad" => $value["cantidad"],
+                            "precio" => $value["precio"],
+                            "subtotal" => $value["subtotal"],
+                        ]);
+                    }
                 }
             }
 

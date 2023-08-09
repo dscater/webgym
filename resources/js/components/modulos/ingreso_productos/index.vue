@@ -95,6 +95,24 @@
                                                     }}
                                                 </template>
                                                 <template
+                                                    #cell(fecha_vencimiento)="row"
+                                                >
+                                                    <span
+                                                        v-if="
+                                                            row.item
+                                                                .fecha_vencimiento
+                                                        "
+                                                    >
+                                                        {{
+                                                            formatoFecha(
+                                                                row.item
+                                                                    .fecha_vencimiento
+                                                            )
+                                                        }}</span
+                                                    >
+                                                    <span v-else>-</span>
+                                                </template>
+                                                <template
                                                     #cell(fecha_registro)="row"
                                                 >
                                                     {{
@@ -228,6 +246,11 @@ export default {
                     sortable: true,
                 },
                 {
+                    key: "fecha_vencimiento",
+                    label: "Fecha de vencimiento",
+                    sortable: true,
+                },
+                {
                     key: "fecha_registro",
                     label: "Fecha de registro",
                     sortable: true,
@@ -247,6 +270,7 @@ export default {
                 producto_id: "",
                 cantidad: "",
                 fecha_ingreso: "",
+                fecha_vencimiento: "",
             },
             currentPage: 1,
             perPage: 5,
@@ -279,6 +303,9 @@ export default {
             this.oIngresoProducto.cantidad = item.cantidad ? item.cantidad : "";
             this.oIngresoProducto.fecha_ingreso = item.fecha_ingreso
                 ? item.fecha_ingreso
+                : "";
+            this.oIngresoProducto.fecha_vencimiento = item.fecha_vencimiento
+                ? item.fecha_vencimiento
                 : "";
             this.modal_accion = "edit";
             this.muestra_modal = true;
@@ -347,6 +374,7 @@ export default {
             this.oIngresoProducto.sucursal_id = "";
             this.oIngresoProducto.producto_id = "";
             this.oIngresoProducto.cantidad = "";
+            this.oIngresoProducto.fecha_vencimiento = "";
             this.oIngresoProducto.fecha_ingreso = this.fechaActual();
         },
         formatoFecha(date) {

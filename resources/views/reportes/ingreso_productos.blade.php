@@ -176,6 +176,7 @@
                 <th>CATEGORÍA</th>
                 <th>SUCURSAL</th>
                 <th>CANTIDAD</th>
+                <th width="9%">FECHA DE VENCIMIENTO</th>
                 <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
@@ -190,6 +191,7 @@
                     <td class="centreado">{{ $ingreso_producto->producto->categoria->nombre }}</td>
                     <td class="centreado">{{ $ingreso_producto->sucursal->nombre }}</td>
                     <td class="centreado">{{ $ingreso_producto->cantidad }}</td>
+                    <td class="centreado">{{ $ingreso_producto->fecha_vencimiento }}</td>
                     <td class="centreado">{{ $ingreso_producto->fecha_registro }}</td>
                 </tr>
                 @php
@@ -199,6 +201,7 @@
             <tr>
                 <td colspan="4" class="total">TOTAL</td>
                 <td class="bold centreado">{{ $total }}</td>
+                <td></td>
                 <td></td>
             </tr>
         </tbody>

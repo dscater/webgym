@@ -51,10 +51,14 @@ class ClienteController extends Controller
         if ($request->hasFile('foto') && $request->foto != null && $request->foto != "") {
             $this->validacion['foto'] = 'image|mimes:jpeg,jpg,png|max:2048';
         }
+
+        if ((float)$request->edad < 18) {
+            $this->validacion['declaracion_jurada'] = 'required|file|mimes:pdf,doc,docx|max:2048';
+        }
+
         if ($request->hasFile('declaracion_jurada') && $request->declaracion_jurada != null && $request->declaracion_jurada != "") {
             $this->validacion['declaracion_jurada'] = 'file|mimes:pdf,doc,docx|max:2048';
         }
-
 
         $request->validate($this->validacion, $this->mensajes);
         $request['fecha_registro'] = date('Y-m-d');

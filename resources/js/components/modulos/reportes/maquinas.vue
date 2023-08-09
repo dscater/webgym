@@ -131,6 +131,38 @@
                                                     "
                                                 ></span>
                                             </div>
+                                            <div class="form-group col-md-12">
+                                                <label
+                                                    :class="{
+                                                        'text-danger':
+                                                            errors.filtro,
+                                                    }"
+                                                    >Estado*</label
+                                                >
+                                                <el-select
+                                                    v-model="oReporte.estado"
+                                                    filterable
+                                                    placeholder="Seleccione"
+                                                    class="d-block"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.estado,
+                                                    }"
+                                                >
+                                                    <el-option
+                                                        v-for="item in listEstados"
+                                                        :key="item"
+                                                        :label="item"
+                                                        :value="item"
+                                                    >
+                                                    </el-option>
+                                                </el-select>
+                                                <span
+                                                    class="error invalid-feedback"
+                                                    v-if="errors.estado"
+                                                    v-text="errors.estado[0]"
+                                                ></span>
+                                            </div>
                                         </div>
                                     </form>
                                     <div class="row">
@@ -174,6 +206,7 @@ export default {
                 categoria_id: "",
                 fecha_ini: "",
                 fecha_fin: "",
+                estado:"ACTIVOS"
             },
             aFechas: [],
             enviando: false,
@@ -183,6 +216,7 @@ export default {
             errors: [],
             sucursal_id: [],
             listSucursales: [],
+            listEstados: ["ACTIVOS", "INACTIVOS"],
         };
     },
     mounted() {

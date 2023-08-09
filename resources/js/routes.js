@@ -151,6 +151,11 @@ export default new Router({
             name: 'mantenimiento_maquinas.index',
             component: require('./components/modulos/mantenimiento_maquinas/index.vue').default,
         },
+        {
+            path: '/mantenimiento_maquinas/calendario',
+            name: 'mantenimiento_maquinas.calendario',
+            component: require('./components/modulos/mantenimiento_maquinas/calendario.vue').default,
+        },
 
         // planes
         {

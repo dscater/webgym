@@ -237,7 +237,6 @@
                         v-if="permisos.includes('mantenimiento_maquinas.index')"
                     >
                         <router-link
-                            exact
                             :to="{ name: 'mantenimiento_maquinas.index' }"
                             class="nav-link"
                             v-loading.fullscreen.lock="fullscreenLoading"

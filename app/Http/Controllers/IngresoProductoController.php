@@ -13,6 +13,7 @@ class IngresoProductoController extends Controller
         "producto_id" => "required",
         "cantidad" => "required|numeric",
         "fecha_ingreso" => "required|date",
+        "fecha_vencimiento" => "required|date",
     ];
 
     public function index()

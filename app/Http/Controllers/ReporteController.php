@@ -147,11 +147,22 @@ class ReporteController extends Controller
         $sucursal_id =  $request->sucursal_id;
         $categoria_id =  $request->categoria_id;
         $filtro =  $request->filtro;
-        $maquinas = Maquina::where("sucursal_id", $sucursal_id)->orderBy("created_at", "desc")->get();
+        $estado =  $request->estado;
+        $estados = [
+            "ACTIVOS" => "ACTIVO",
+            "INACTIVOS" => "INACTIVO"
+        ];
+        $txt_estado = $estados[$estado];
+
+        $maquinas = Maquina::where("sucursal_id", $sucursal_id)
+            ->where("estado", $txt_estado)
+            ->orderBy("created_at", "desc")->get();
 
         if ($filtro == 'Categoría') {
             $request->validate(['categoria_id' => 'required']);
-            $maquinas = Maquina::where("sucursal_id", $sucursal_id)->where('categoria_id', $categoria_id)->orderBy("created_at", "desc")->get();
+            $maquinas = Maquina::where("sucursal_id", $sucursal_id)
+                ->where("estado", $txt_estado)
+                ->where('categoria_id', $categoria_id)->orderBy("created_at", "desc")->get();
         }
 
         $pdf = PDF::loadView('reportes.maquinas', compact('maquinas'))->setPaper('legal', 'landscape');

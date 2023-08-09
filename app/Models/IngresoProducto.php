@@ -14,6 +14,7 @@ class IngresoProducto extends Model
         "producto_id",
         "cantidad",
         "fecha_ingreso",
+        "fecha_vencimiento",
         "fecha_registro",
     ];
 

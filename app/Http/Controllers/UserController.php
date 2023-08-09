@@ -6,7 +6,6 @@ use App\Models\Cliente;
 use App\Models\Empleado;
 use App\Models\Inscripcion;
 use App\Models\Maquina;
-use App\Models\Tcont;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -377,26 +376,12 @@ class UserController extends Controller
             Inscripcion::actualizaInscripcionesPorSucursal(Auth::user()->sucursal_id);
         }
 
-        if (Auth::user()->tipo == 'ENCARGADO DE RECEPCIÓN') {
-            Inscripcion::actualizaInscripcionesPorSucursal(Auth::user()->sucursal_id);
-        }
-
         return response()->JSON($array_infos);
     }
 
     public function userActual()
     {
         return response()->JSON(Auth::user());
-    }
-
-    public function getEstudiantes()
-    {
-        return response()->JSON(User::where('tipo', 'ESTUDIANTE')->get());
-    }
-
-    public function getDocentes()
-    {
-        return response()->JSON(User::where('tipo', 'DOCENTE')->get());
     }
 
     public function getUsuario(User $usuario)

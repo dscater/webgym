@@ -33,6 +33,17 @@
                                             Nuevo
                                         </button>
                                     </div>
+                                    <div class="col-md-3">
+                                        <router-link
+                                            :to="{
+                                                name: 'mantenimiento_maquinas.calendario',
+                                            }"
+                                            class="btn btn-outline-success bg-success btn-flat btn-block"
+                                        >
+                                            <i class="fa fa-calendar-alt"></i>
+                                            Ver calendario
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">

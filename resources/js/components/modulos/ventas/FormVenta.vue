@@ -506,15 +506,30 @@ export default {
                         let subtotal =
                             parseFloat(this.cantidad) *
                             parseFloat(response.data.producto.precio);
-                        this.venta.detalle_ventas.push({
-                            id: 0,
-                            venta_id: 0,
-                            producto_id: response.data.producto.id,
-                            cantidad: this.cantidad,
-                            precio: response.data.producto.precio,
-                            subtotal: subtotal.toFixed(2),
-                            producto: response.data.producto,
-                        });
+
+                        let existe = this.venta.detalle_ventas.find(
+                            (elem) =>
+                                elem.producto_id == response.data.producto.id
+                        );
+                        if (existe) {
+                            existe.cantidad += parseFloat(this.cantidad);
+                            subtotal =
+                                parseFloat(existe.cantidad) *
+                                parseFloat(response.data.producto.precio);
+                            existe.subtotal = subtotal.toFixed(2);
+                            
+                        } else {
+                            this.venta.detalle_ventas.push({
+                                id: 0,
+                                venta_id: 0,
+                                producto_id: response.data.producto.id,
+                                cantidad: this.cantidad,
+                                precio: response.data.producto.precio,
+                                subtotal: subtotal.toFixed(2),
+                                producto: response.data.producto,
+                            });
+                        }
+
                         this.sumaTotalVenta();
                         this.producto_id = "";
                         this.cantidad = 1;

@@ -18,17 +18,6 @@
                         >Inicio</router-link
                     >
                 </li>
-                <li
-                    class="nav-item d-none d-sm-inline-block"
-                    v-if="permisos.includes('tickets.create')"
-                >
-                    <router-link
-                        exact
-                        :to="{ name: 'tickets.create' }"
-                        class="nav-link text-white"
-                        >Nuevo ticket</router-link
-                    >
-                </li>
             </ul>
 
             <!-- Right navbar links -->
