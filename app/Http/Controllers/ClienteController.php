@@ -98,6 +98,9 @@ class ClienteController extends Controller
             $this->validacion['declaracion_jurada'] = 'file|mimes:pdf,doc,docx|max:2048';
         }
 
+        if ((float)$request->edad < 18 && !$cliente->declaracion_jurada) {
+            $this->validacion['declaracion_jurada'] = 'required|file|mimes:pdf,doc,docx|max:2048';
+        }
 
         $request->validate($this->validacion, $this->mensajes);
         $cliente->update(array_map('mb_strtoupper', $request->except('foto', 'password', 'declaracion_jurada')));
