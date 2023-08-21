@@ -125,7 +125,7 @@ class ProductoController extends Controller
         return response()->JSON(
             [
                 "sw" => false,
-                "msj" => "La cantidad que desea ingresar supera al stock disponible del producto.<br/> Stock actual: <b>" . $producto->stock_actual . " unidades</b>"
+                "msj" => "La cantidad solicitada para el producto <strong>" . $producto->nombre . "</strong>, supera al stock actual disponible.<br/> Stock actual: <b>" . $producto->stock_actual . " unidades</b>"
             ]
         );
     }

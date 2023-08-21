@@ -130,7 +130,7 @@
                                     :class="{
                                         'text-danger': errors.fecha_vencimiento,
                                     }"
-                                    >Fecha de vencimiento*</label
+                                    >Fecha de vencimiento</label
                                 >
 
                                 <el-input

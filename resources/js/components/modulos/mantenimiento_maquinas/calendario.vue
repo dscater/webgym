@@ -149,7 +149,7 @@ export default {
         getMantenimientoMaquinas() {
             this.showOverlay = true;
             this.muestra_modal = false;
-            let url = "/admin/mantenimiento_maquinas";
+            let url = "/admin/mantenimiento_maquinas/fechas_sugeridas";
             if (this.pagina != 0) {
                 url += "?page=" + this.pagina;
             }
@@ -167,7 +167,7 @@ export default {
                                 registro.maquina.nombre +
                                 " - " +
                                 registro.maquina.sucursal.nombre, // Título del evento
-                            start: registro.fecha_mantenimiento, // Fecha de inicio del evento
+                            start: registro.fecha_proximo, // Fecha de inicio del evento
                             backgroundColor:
                                 registro.estado == "PROGRAMADO"
                                     ? "#3788d8"

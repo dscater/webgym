@@ -94,6 +94,7 @@ Route::prefix('admin')->group(function () {
     ]);
 
     // MANTENIMIENTO MAQUINAS
+    Route::get("mantenimiento_maquinas/fechas_sugeridas", [MantenimientoMaquinaController::class, 'fechas_sugeridas']);
     Route::resource('mantenimiento_maquinas', MantenimientoMaquinaController::class)->only([
         'index', 'store', 'update', 'destroy', 'show'
     ]);

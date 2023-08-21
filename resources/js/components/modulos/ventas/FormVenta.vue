@@ -494,11 +494,21 @@ export default {
                 });
         },
         validaStock() {
+            let existe = this.venta.detalle_ventas.find(
+                (elem) => elem.producto_id == this.producto_id
+            );
+            let cantidad_vender = this.cantidad;
+            if (existe) {
+                cantidad_vender =
+                    parseFloat(existe.cantidad) + parseFloat(this.cantidad);
+            }
+
+            console.log(cantidad_vender);
             axios
                 .get("/admin/productos/valida_stock", {
                     params: {
                         id: this.producto_id,
-                        cantidad: this.cantidad,
+                        cantidad: cantidad_vender,
                     },
                 })
                 .then((response) => {
@@ -506,18 +516,14 @@ export default {
                         let subtotal =
                             parseFloat(this.cantidad) *
                             parseFloat(response.data.producto.precio);
-
-                        let existe = this.venta.detalle_ventas.find(
-                            (elem) =>
-                                elem.producto_id == response.data.producto.id
-                        );
                         if (existe) {
-                            existe.cantidad += parseFloat(this.cantidad);
+                            existe.cantidad =
+                                parseFloat(existe.cantidad) +
+                                parseFloat(this.cantidad);
                             subtotal =
                                 parseFloat(existe.cantidad) *
                                 parseFloat(response.data.producto.precio);
                             existe.subtotal = subtotal.toFixed(2);
-                            
                         } else {
                             this.venta.detalle_ventas.push({
                                 id: 0,
@@ -539,7 +545,7 @@ export default {
                             title: "ATENCIÓN",
                             html: response.data.msj,
                             showConfirmButton: false,
-                            timer: 2500,
+                            timer: 3500,
                         });
                     }
                 });

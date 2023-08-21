@@ -13,7 +13,6 @@ class IngresoProductoController extends Controller
         "producto_id" => "required",
         "cantidad" => "required|numeric",
         "fecha_ingreso" => "required|date",
-        "fecha_vencimiento" => "required|date",
     ];
 
     public function index()
@@ -56,7 +55,13 @@ class IngresoProductoController extends Controller
         $producto->ingresos = (float) $producto->ingresos - (float)$ingreso_producto->cantidad;
         $producto->save();
 
-        $ingreso_producto->update(array_map("mb_strtoupper", $request->all()));
+        $ingreso_producto->update(array_map("mb_strtoupper", $request->except("fecha_vencimiento")));
+        if ($request->fecha_vencimiento) {
+            $ingreso_producto->fecha_vencimiento = $request->fecha_vencimiento;
+        } else {
+            $ingreso_producto->fecha_vencimiento = null;
+        }
+        $ingreso_producto->save();
 
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual + (float)$ingreso_producto->cantidad;

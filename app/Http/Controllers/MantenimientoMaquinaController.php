@@ -28,6 +28,21 @@ class MantenimientoMaquinaController extends Controller
         return response()->JSON(['mantenimiento_maquinas' => $mantenimiento_maquinas, 'total' => count($mantenimiento_maquinas)], 200);
     }
 
+    public function fechas_sugeridas()
+    {
+        $mantenimiento_maquinas = MantenimientoMaquina::with("maquina.sucursal")
+            ->where("fecha_proximo", "!=", null)
+            ->get();
+
+        if (Auth::user()->tipo != 'GERENTE') {
+            $mantenimiento_maquinas = MantenimientoMaquina::with("maquina.sucursal")->where("sucursal_id", Auth::user()->sucursal_id)
+                ->where("fecha_proximo", "!=", null)
+                ->get();
+        }
+
+        return response()->JSON(['mantenimiento_maquinas' => $mantenimiento_maquinas, 'total' => count($mantenimiento_maquinas)], 200);
+    }
+
     public function store(Request $request)
     {
         if (isset($request->fecha_mantenimiento) && $request->fecha_mantenimiento != "") {
