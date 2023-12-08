@@ -31,8 +31,13 @@ class IngresoProductoController extends Controller
     {
         $request->validate($this->validacion);
         $request["fecha_registro"] = date("Y-m-d");
-        $ingreso_producto = IngresoProducto::create(array_map("mb_strtoupper", $request->all()));
-
+        $ingreso_producto = IngresoProducto::create(array_map("mb_strtoupper", $request->except("fecha_vencimiento")));
+        if ($request->fecha_vencimiento) {
+            $ingreso_producto->fecha_vencimiento = $request->fecha_vencimiento;
+        } else {
+            $ingreso_producto->fecha_vencimiento = null;
+        }
+        $ingreso_producto->save();
         $producto = Producto::find($ingreso_producto->producto_id);
         $producto->stock_actual = (float) $producto->stock_actual + (float)$ingreso_producto->cantidad;
         $producto->ingresos = (float) $producto->ingresos + (float)$ingreso_producto->cantidad;
