@@ -74,28 +74,17 @@
                             </div>
 
                             <div class="card-body">
-                                <strong
-                                    ><i
-                                        class="fas fa-envelope-open-text mr-1"
-                                    ></i>
-                                    Cargo</strong
-                                >
-                                <p
-                                    class="text-muted"
-                                    v-text="oUsuario?.cargo"
-                                ></p>
-                                <hr />
-                                <strong
-                                    ><i
-                                        class="fas fa-envelope-open-text mr-1"
-                                    ></i>
-                                    Unidad Organizacional</strong
-                                >
-                                <p
-                                    class="text-muted"
-                                    v-text="oUsuario?.unidad.nombre"
-                                ></p>
-                                <hr />
+                                <template v-if="oUsuario?.sucursal">
+                                    <strong
+                                        ><i class="fas fa-id-card mr-1"></i>
+                                        Sucursal:</strong
+                                    >
+                                    <p
+                                        class="text-muted"
+                                        v-text="oUsuario?.sucursal?.nombre"
+                                    ></p>
+                                    <hr />
+                                </template>
                                 <strong
                                     ><i
                                         class="fas fa-envelope-open-text mr-1"
@@ -105,33 +94,6 @@
                                 <p
                                     class="text-muted"
                                     v-text="oUsuario?.correo"
-                                ></p>
-                                <hr />
-                                <strong
-                                    ><i class="fas fa-id-card mr-1"></i>
-                                    C.I:</strong
-                                >
-                                <p
-                                    class="text-muted"
-                                    v-text="oUsuario?.full_ci"
-                                ></p>
-                                <hr />
-                                <strong
-                                    ><i class="fas fa-phone mr-1"></i
-                                    >Teléfono:</strong
-                                >
-                                <p
-                                    class="text-muted"
-                                    v-text="`${oUsuario ? oUsuario.fono : ''}`"
-                                ></p>
-                                <hr />
-                                <strong
-                                    ><i class="fa fa-map-marker mr-1"></i>
-                                    Dirección:</strong
-                                >
-                                <p
-                                    class="text-muted"
-                                    v-text="oUsuario?.dir"
                                 ></p>
                             </div>
                         </div>
